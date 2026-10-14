@@ -29,6 +29,9 @@ what is not claimed yet. Diogo is the owner; he says what changes.
   issues labelled `next`, or with none labelled, the newest open enhancements). Without GitHub it
   keeps what the source has. `node build.mjs` (Node 18+, no dependencies; `GITHUB_TOKEN` optional).
 - `site/media/`: the favicon (provenance in `site/media/README.md`).
+- `promo/`: the launch video and stills, made in an omabox box on a demo library (3,500 made-up
+  torrents, a filled-in seeding year); `promo/README.md` says how to make them again. Not part of
+  the build. The finished files of a round are kept in `.local/promo-<date>/` (git-ignored).
 - `/install` and `/changelog` don't exist yet: they come after the home page is approved.
 
 ## Publishing the draft
