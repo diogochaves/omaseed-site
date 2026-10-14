@@ -14,7 +14,10 @@
 // The theme colours in the home page come from Omarchy itself, which CI doesn't have: run
 // `node themes.mjs` on an Omarchy machine to refresh them.
 
+import { createHash } from "node:crypto";
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+// The link card's address changes with the card: X and others keep a card by its URL for days.
+const OG_V = createHash("sha256").update(await readFile("site/media/og.png")).digest("hex").slice(0, 8);
 
 const REPO = "diogochaves/omaseed";
 const HOME = "https://omaseed.app";
@@ -68,6 +71,11 @@ ${SITE === HOME ? "" : '<meta name="robots" content="noindex">\n'}<link rel="can
 <meta property="og:url" content="${SITE}${page.path}">
 <meta property="og:title" content="${esc(page.title)}">
 <meta property="og:description" content="${esc(page.card || page.desc)}">
+<meta property="og:image" content="${SITE}/media/og.png?v=${OG_V}">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="omaseed: Torrents, finally at home on Omarchy. The seed console beside the headline.">
+<meta name="twitter:card" content="summary_large_image">
 ${page.home ? `<script type="application/ld+json">${JSON.stringify({
   "@context": "https://schema.org", "@type": "SoftwareApplication", name: "omaseed", url: `${SITE}/`,
   description: "A native torrent client for Omarchy, for one qBittorrent server or many.",

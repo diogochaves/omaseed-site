@@ -37,6 +37,11 @@ Where the work stopped and what comes next. Replace this file as the work moves 
   run 38502344180); www.omaseed.app redirects to it. The deploy token is omabox-site's, extended
   to omaseed.app and rolled the same day; both repos hold the new value.
 
+- Link card (2026-10-14): `site/media/og.png`, from `og/card.html` (`og/README.md`), linked in the
+  head as og:image with a version from its bytes. The same PNG is meant for omaseed's GitHub social
+  preview (repo Settings › Social preview, by hand) and its `docs/media/social-preview.png` on
+  the readme-showcase branch, which Diogo replaces himself.
+
 ## Next (in this order)
 1. Diogo reviews the live page (and the artifact, version 5). Open with him: label `next` on omaseed issues to choose "What's next"
    (today it shows the newest four enhancements). Known glitch: opening the page at a `#section`
@@ -44,7 +49,7 @@ Where the work stopped and what comes next. Replace this file as the work moves 
 2. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
    numbers and the method on the page. Until then the page makes no such claim.
 3. After the home page is approved: `/install`, `/changelog` (read from the omaseed repo's latest
-   tag, like omabox-site), and a link card image (the head has no og:image yet).
+   tag, like omabox-site).
 
 ## Standing rules
 - The repo is private on GitHub (diogochaves/omaseed-site); pushing to main deploys omaseed.app
