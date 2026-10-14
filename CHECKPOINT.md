@@ -33,6 +33,9 @@ Where the work stopped and what comes next. Replace this file as the work moves 
 - The hero's "NEW" pill text (`v0.2.0: errors explained, one-line install`) is hand-written: the
   build updates only the version number in it, so change the words at each release.
 
+- Hosting set up 2026-10-13 (Diogo asked): deploy workflow, www redirect, `SITE_URL` variable.
+  It goes live once the `CLOUDFLARE_API_TOKEN` secret is in the repo and the workflow runs.
+
 ## Next (in this order)
 1. Diogo reviews version 4. Open with him: label `next` on omaseed issues to choose "What's next"
    (today it shows the newest four enhancements). Known glitch: opening the page at a `#section`
@@ -40,11 +43,11 @@ Where the work stopped and what comes next. Replace this file as the work moves 
 2. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
    numbers and the method on the page. Until then the page makes no such claim.
 3. After the home page is approved: `/install`, `/changelog` (read from the omaseed repo's latest
-   tag, like omabox-site), a link card image, then hosting (Diogo's call).
+   tag, like omabox-site), and a link card image (the head has no og:image yet).
 
 ## Standing rules
-- Nothing hosted or put on a domain until Diogo asks. The repo is private on GitHub
-  (diogochaves/omaseed-site, created 2026-10-13 at his request); pushing to it is fine.
+- The repo is private on GitHub (diogochaves/omaseed-site); pushing to main deploys omaseed.app
+  (Cloudflare Pages, as omabox.app; AGENTS.md, "Hosting"). Push only what Diogo has seen.
 - Windows, screenshots, running omaseed: through omabox (load the omabox skill).
 - omaseed's design is approved and its spec files are never edited. The site shows it, it does not
   redesign it.

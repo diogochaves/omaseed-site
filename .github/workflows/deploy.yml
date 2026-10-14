@@ -1,0 +1,72 @@
+# Builds the site and deploys it to Cloudflare Pages (project "omaseed"): on every push to main, once a
+# day (so a new omaseed release, its version and the open issues in "What's next" show up), and by
+# hand from the Actions tab. Copied from omabox-site's.
+#
+# The repo variable SITE_URL is https://omaseed.app; the last step keeps omaseed.app and
+# www.omaseed.app attached. Without it the build targets omaseed.pages.dev with noindex.
+# The repo secret CLOUDFLARE_API_TOKEN needs Cloudflare Pages: Edit (account) and DNS: Edit and
+# Zone: Read on omaseed.app.
+
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "27 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: 433e2ce2a5dce0c5eae78569eccd4122
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  PROJECT: omaseed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Build
+        run: node build.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://omaseed.pages.dev' }}
+
+      - name: Create the Pages project if it doesn't exist
+        run: |
+          npx --yes wrangler@4 pages project list | grep -qw "$PROJECT" ||
+            npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main
+
+      - name: Deploy
+        run: npx --yes wrangler@4 pages deploy dist --project-name "$PROJECT" --branch main --commit-dirty=true
+
+      # Once SITE_URL is omaseed.app: attach omaseed.app and www.omaseed.app to the project and point
+      # their DNS at it (www only redirects, in functions/_middleware.js). All no-ops when already done.
+      - name: Attach omaseed.app and www.omaseed.app
+        if: vars.SITE_URL == 'https://omaseed.app'
+        run: |
+          api() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" "$@"; }
+          A=https://api.cloudflare.com/client/v4
+          zone=$(api "$A/zones?name=omaseed.app" | jq -r '.result[0].id // empty')
+          for d in omaseed.app www.omaseed.app; do
+            echo "== $d"
+            api -X POST "$A/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PROJECT/domains" -d "{\"name\":\"$d\"}" |
+              jq -c '{success, errors: [.errors[]?.message], status: .result.status}'
+            if [ -z "$zone" ]; then echo "::warning::can't read the omaseed.app zone: add a proxied CNAME $d -> $PROJECT.pages.dev by hand"; continue; fi
+            if [ "$(api "$A/zones/$zone/dns_records?name=$d" | jq '.result | length')" = 0 ]; then
+              api -X POST "$A/zones/$zone/dns_records" -d "{\"type\":\"CNAME\",\"name\":\"$d\",\"content\":\"$PROJECT.pages.dev\",\"proxied\":true}" |
+                jq -c '{success, errors: [.errors[]?.message]}'
+            else
+              api "$A/zones/$zone/dns_records?name=$d" | jq -c '.result[] | {type, content, proxied}'
+            fi
+          done
+          sleep 20
+          for d in omaseed.app www.omaseed.app; do api "$A/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PROJECT/domains/$d" | jq -c "{domain: \"$d\", status: .result.status}"; done

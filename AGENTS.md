@@ -43,7 +43,20 @@ What each replica on the page is drawn from, and the exact words it copies, is i
 ## Repository
 
 Private, <https://github.com/diogochaves/omaseed-site> (created 2026-10-13 at Diogo's request).
-No hosting and no domain yet: those are his call.
+
+## Hosting (as omabox.app)
+
+Cloudflare Pages project `omaseed` (account 433e2ce2a5dce0c5eae78569eccd4122), deployed by
+`.github/workflows/deploy.yml` with wrangler: on every push to main, daily at 06:27 UTC (a new
+omaseed release, its version and the open issues show up) and by hand (`gh workflow run deploy -R
+diogochaves/omaseed-site`). The token is the repo secret `CLOUDFLARE_API_TOKEN` (Cloudflare Pages:
+Edit on the account; DNS: Edit and Zone: Read on omaseed.app). The repo variable `SITE_URL` is
+`https://omaseed.app` (canonical, link card, robots, sitemap; any other value gets noindex). The
+workflow's last step keeps omaseed.app and www.omaseed.app attached to the project and their DNS
+pointed at it; www only redirects to omaseed.app (301) in `functions/_middleware.js`, and
+`dist/_routes.json` keeps `/media/*` out of it. Decided 2026-10-13 (Diogo: "host it on
+cloudflare, like omabox.app"). The artifact stays where Diogo reviews drafts; omaseed.app is what
+main builds.
 
 ## Checking a change
 
