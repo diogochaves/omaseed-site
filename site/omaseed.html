@@ -1,0 +1,1807 @@
+<title>omaseed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one centred column of statements, broken by the app itself at full width, Raycast and
+   Linear style. Every colour is an Omarchy theme key (colors.toml), so picking a theme repaints the
+   page the way omaseed repaints itself. Tokyo Night by default, Lupine for a light viewer. */
+:root {
+  --accent: #7aa2f7; --selection: #292e42; --muted: #414868;
+  --bg: #1a1b26; --bg-dark: #13141c; --bg-darker: #0e0e14; --bg-light: #24283b;
+  --fg: #a9b1d6; --fg-dark: #565f89; --fg-light: #b4bee6; --fg-bright: #c0caf5;
+  --red: #f7768e; --yellow: #e0af68; --orange: #eb927b; --green: #9ece6a; --cyan: #449dab; --blue: #7aa2f7; --magenta: #ad8ee6;
+  color-scheme: dark;
+
+  --dim: color-mix(in srgb, var(--fg) 52%, var(--bg-dark));        /* the grey half of a two-tone line */
+  --fill: color-mix(in srgb, var(--fg) 4%, transparent);
+  --fill-hover: color-mix(in srgb, var(--fg) 8%, transparent);
+  --fill-sel: color-mix(in srgb, var(--fg) 18%, transparent);
+  --border: color-mix(in srgb, var(--fg) 40%, transparent);
+  --border-hover: color-mix(in srgb, var(--fg) 25%, transparent);
+  --hairline: color-mix(in srgb, var(--fg) 12%, transparent);
+  --faint: color-mix(in srgb, var(--fg) 5%, transparent);
+  --glass: color-mix(in srgb, var(--bg) 90%, transparent);
+  --st-down: var(--blue); --st-seed: var(--green); --st-stop: var(--fg-dark); --st-err: var(--red);
+  --st-check: var(--yellow); --st-queue: var(--magenta); --st-stall: var(--orange);
+
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", "JetBrainsMono Nerd Font", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --g: 16px; --col: 1120px;
+}
+@media (min-width: 760px) { :root { --g: 32px; } }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --accent: #3264eb; --selection: #d0d0d0; --muted: #9e9e9e;
+  --bg: #fafafa; --bg-dark: #ececec; --bg-darker: #dedede; --bg-light: #f5f5f5;
+  --fg: #212121; --fg-dark: #757575; --fg-light: #424242; --fg-bright: #000000;
+  --red: #c900c4; --yellow: #026fde; --orange: #026fde; --green: #4a2fd0; --cyan: #0c67de; --blue: #3264eb; --magenta: #8a4ad7;
+  color-scheme: light;
+} }
+:root[data-theme="light"] {
+  --accent: #3264eb; --selection: #d0d0d0; --muted: #9e9e9e;
+  --bg: #fafafa; --bg-dark: #ececec; --bg-darker: #dedede; --bg-light: #f5f5f5;
+  --fg: #212121; --fg-dark: #757575; --fg-light: #424242; --fg-bright: #000000;
+  --red: #c900c4; --yellow: #026fde; --orange: #026fde; --green: #4a2fd0; --cyan: #0c67de; --blue: #3264eb; --magenta: #8a4ad7;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body { margin: 0; background: var(--bg-dark); color: var(--fg); font: 400 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; transition: background-color .25s; }
+a { color: var(--accent); text-underline-offset: 3px; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; color: var(--fg-bright); font-weight: 600; text-wrap: balance; }
+p { margin: 0; }
+code, kbd, pre { font-family: var(--mono); }
+:not(pre) > code { font-size: .84em; color: var(--fg-bright); background: var(--fill); padding: .05em .35em; overflow-wrap: anywhere; }
+kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border); padding: 0 .35em; }
+.wrap { max-width: calc(var(--col) + 2 * var(--g)); margin: 0 auto; padding-inline: var(--g); }
+.lbl { font: 500 11px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-dark); }
+.tag { font: 500 12px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.two { font-size: clamp(28px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -.025em; max-width: 24em; }
+.two span { color: var(--dim); }
+.lead { color: var(--dim); font-size: clamp(17px, 1.5vw, 19px); max-width: 38em; }
+
+/* ── the floating bar ──────────────────────────────────────────────────────────── */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; padding: 12px var(--g) 0; }
+.topbar .in { max-width: calc(var(--col) + 40px); margin: 0 auto; display: flex; align-items: center; gap: 6px; height: 52px; padding: 0 8px 0 14px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent); border: 1px solid var(--hairline); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); }
+.brand { display: flex; align-items: center; gap: 9px; color: var(--fg-bright); text-decoration: none; font: 600 15px var(--mono); margin-right: auto; }
+.brand svg { width: 20px; height: 20px; fill: var(--accent); }
+.topbar nav { display: none; gap: 2px; margin-right: 10px; }
+.topbar nav a, .topbar .gh { color: var(--fg); text-decoration: none; font-size: 14px; padding: 6px 10px; }
+.topbar nav a:hover, .topbar .gh:hover { color: var(--fg-bright); background: var(--fill-hover); }
+.topbar .gh { display: inline-flex; align-items: center; gap: 7px; }
+.gh svg { width: 16px; height: 16px; fill: currentColor; }
+@media (min-width: 860px) { .topbar nav { display: flex; } }
+@media (max-width: 480px) { .topbar .gh span { display: none; } }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; background: var(--fg-bright); color: var(--bg-dark); font: 600 14px var(--sans); text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; }
+.pill:hover { background: color-mix(in srgb, var(--fg-bright) 86%, var(--bg-dark)); }
+.btn2 { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; color: var(--fg-bright); border: 1px solid var(--border); font: 500 14px var(--sans); text-decoration: none; }
+.btn2:hover { background: var(--fill-hover); }
+
+/* ── hero ──────────────────────────────────────────────────────────────────────── */
+.hero { padding-block: clamp(56px, 9vw, 112px) 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; justify-items: start; }
+.news { display: inline-flex; align-items: center; gap: 10px; font: 500 12.5px var(--mono); color: var(--fg); text-decoration: none; border: 1px solid var(--hairline); padding: 5px 12px 5px 6px; background: var(--fill); }
+.news b { background: var(--accent); color: var(--bg-dark); font-weight: 600; padding: 1px 6px; letter-spacing: .06em; }
+.news:hover { border-color: var(--border); color: var(--fg-bright); }
+.hero h1 { font-size: clamp(42px, 7.2vw, 88px); line-height: .98; letter-spacing: -.045em; max-width: 11.5em; }
+.hero .lead { font-size: clamp(18px, 1.8vw, 22px); line-height: 1.5; max-width: 34em; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.cmd { display: flex; align-items: center; gap: 12px; max-width: 100%; min-width: 0; font: 13px/1.5 var(--mono); color: var(--fg-bright); background: var(--bg); border: 1px solid var(--hairline); padding: 6px 6px 6px 14px; }
+.cmd code { background: none; padding: 0; font-size: inherit; overflow-x: auto; white-space: nowrap; min-width: 0; scrollbar-width: none; }
+.cmd code::-webkit-scrollbar { display: none; }
+.cmd .p { color: var(--fg-dark); user-select: none; }
+.copy { flex: none; font: 500 12px var(--mono); color: var(--fg); background: var(--fill); border: 1px solid var(--hairline); padding: 4px 10px; cursor: pointer; }
+.copy:hover { color: var(--fg-bright); border-color: var(--border); }
+
+/* ── the window on its desk ────────────────────────────────────────────────────── */
+.stage { max-width: 1440px; margin: 0 auto; padding-inline: var(--g); }
+.desk { position: relative; padding: clamp(10px, 2.4vw, 36px); background:
+  radial-gradient(ellipse at 16% 0%, color-mix(in srgb, var(--accent) 34%, var(--bg-darker)) 0%, transparent 55%),
+  radial-gradient(ellipse at 86% 100%, color-mix(in srgb, var(--magenta) 28%, var(--bg-darker)) 0%, transparent 58%),
+  radial-gradient(ellipse at 60% 40%, color-mix(in srgb, var(--cyan) 12%, var(--bg-darker)) 0%, transparent 62%),
+  var(--bg-darker); border: 1px solid var(--hairline); }
+.demo-tag { position: absolute; top: 0; right: 0; font: 500 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--bg-dark); background: var(--fg-dark); padding: 5px 8px; }
+.stage-foot { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; padding-top: 14px; }
+.stage-foot .how { font-size: 14px; color: var(--dim); }
+.stage-foot .how kbd { font-size: 12px; }
+
+/* theme switch: dark or light, then every bundled theme of that mode */
+.themes { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; min-width: 0; max-width: 100%; }
+.themes .seg { margin-right: 8px; }
+.seg { display: flex; border: 1px solid var(--border); flex: none; }
+.seg button { font: 12px var(--mono); color: var(--fg); background: var(--fill); border: 0; padding: 5px 10px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button[aria-pressed="true"] { background: var(--fill-sel); color: var(--fg-bright); }
+.chips { display: contents; }
+.chips button { flex: none; display: inline-flex; align-items: center; gap: 7px; font: 12px var(--mono); color: var(--fg); background: transparent; border: 1px solid var(--hairline); padding: 4px 9px; cursor: pointer; white-space: nowrap; }
+.chips button:hover { border-color: var(--border); }
+.chips button[aria-pressed="true"] { color: var(--fg-bright); background: var(--fill-sel); border-color: transparent; }
+.chips i { width: 10px; height: 10px; border: 1px solid var(--hairline); }
+.stage-foot .themes { flex: 1 1 100%; justify-content: flex-end; }
+@media (max-width: 900px) { .stage-foot .themes { justify-content: flex-start; } }
+
+/* ── omaseed's main window, from docs/05-ui-spec-v2.html and the screenshots ────── */
+.win { --base: 12px; container-type: inline-size; position: relative; height: 600px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden;
+  background: var(--glass); border: 1px solid var(--accent); font: 400 var(--base)/1.4 var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; text-align: left; }
+.win:focus { outline: none; }
+.win:not(:focus-within) { border-color: var(--muted); }
+.win .l { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dark); }
+.win button { background: none; border: 0; padding: 0; cursor: pointer; }
+.top { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--hairline); min-width: 0; }
+.top .mk { width: 26px; height: 26px; fill: var(--accent); flex: none; }
+.top .nm { display: grid; gap: 1px; flex: none; }
+.top .nm b { color: var(--fg-bright); font-size: 13px; font-weight: 600; }
+.top .nm .l { display: flex; gap: 6px; align-items: center; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; }
+.top .stat { display: grid; flex: none; }
+.top .stat.d { margin-left: 18px; }
+.top .stat .v { color: var(--fg-bright); font-size: 16px; font-weight: 500; line-height: 1.15; white-space: nowrap; }
+.top .stat .v i { font-style: normal; font-size: 12px; margin-right: 3px; }
+.top .stat.d i { color: var(--st-down); } .top .stat.u i { color: var(--st-seed); }
+.top .faces { display: flex; gap: 2px; margin-left: 18px; align-self: stretch; }
+.top .faces button { color: var(--fg-dark); padding: 0 10px; font-size: 13px; box-shadow: none; }
+.top .faces button[aria-selected="true"] { color: var(--fg-bright); box-shadow: inset 0 -2px 0 var(--accent); }
+.top .faces sup { font-size: 9px; margin-left: 2px; color: var(--fg-dark); }
+.top .grow { flex: 1; }
+.flt { display: flex; align-items: center; gap: 8px; width: 240px; height: 28px; padding: 0 10px; border: 1px solid var(--border); background: var(--fill); }
+.flt:focus-within { border-color: var(--accent); }
+.flt span { color: var(--fg-dark); }
+.flt input { flex: 1; min-width: 0; border: 0; background: none; outline: none; color: var(--fg-bright); font-size: 12px; }
+.flt input::placeholder { color: var(--fg-dark); }
+.flt em { font-style: normal; color: var(--fg-dark); font-size: 10px; }
+.acts { display: flex; gap: 2px; }
+.acts span, .acts button { width: 28px; height: 28px; display: grid; place-items: center; color: var(--fg-dark); font-size: 13px; }
+.acts .on { color: var(--accent); border: 1px solid var(--accent); }
+.acts button:hover { color: var(--fg-bright); background: var(--fill-hover); }
+
+.body { display: grid; grid-template-columns: 170px minmax(0, 1fr) 300px; min-height: 0; }
+.rail { padding: 10px 0; overflow: hidden auto; scrollbar-width: none; border-right: 1px solid var(--hairline); display: grid; align-content: start; gap: 12px; }
+.rail .grp .l { padding: 0 16px 4px; display: block; }
+.rail button { display: flex; width: 100%; gap: 8px; align-items: center; height: 25px; padding: 0 16px; color: var(--fg); text-align: left; font-size: 12px; }
+.rail button:hover { background: var(--fill-hover); }
+.rail button .g { width: 12px; text-align: center; color: var(--fg-dark); font-size: 11px; }
+.rail button .n { margin-left: auto; color: var(--fg-dark); font-size: 11px; }
+.rail button[aria-pressed="true"] { background: var(--fill-sel); color: var(--fg-bright); }
+.rail button[aria-pressed="true"] .g { color: var(--accent); }
+
+.content { position: relative; min-width: 0; min-height: 0; overflow: hidden auto; scrollbar-width: thin; }
+.tbl { display: grid; grid-template-columns: minmax(0, 1fr) 68px 116px 104px 56px 72px 72px 56px 48px; align-content: start; padding: 0 8px; }
+.tbl > div, .tbl .r > div { height: 29px; display: flex; align-items: center; padding: 0 7px; white-space: nowrap; overflow: hidden; min-width: 0; }
+.tbl .h { height: 26px; font-size: 10px; color: var(--fg-dark); border-bottom: 1px solid var(--hairline); letter-spacing: .04em; }
+.tbl .h.sort { color: var(--fg); }
+.tbl .num { justify-content: flex-end; }
+.tbl .r { display: contents; cursor: default; }
+.tbl .r > div { border-bottom: 1px solid var(--faint); }
+.tbl .r:hover > div { background: var(--fill); }
+.tbl .r.sel > div { background: var(--fill-sel); color: var(--fg-bright); }
+.tbl .r.cur > div { background: var(--fill-hover); box-shadow: inset 0 1px 0 var(--border-hover), inset 0 -1px 0 var(--border-hover); }
+.tbl .r.cur > div:first-child { box-shadow: inset 1px 1px 0 var(--border-hover), inset 0 -1px 0 var(--border-hover); }
+.tbl .r.cur > div:last-child { box-shadow: inset -1px 1px 0 var(--border-hover), inset 0 -1px 0 var(--border-hover); }
+.tbl .r.sel.cur > div { background: color-mix(in srgb, var(--fg) 24%, transparent); }
+.tbl .c-nm { display: grid !important; grid-auto-flow: column; grid-template-columns: minmax(0, auto); grid-auto-columns: auto; justify-content: start; gap: 8px; }
+.tbl .c-nm span { overflow: hidden; text-overflow: ellipsis; }
+.tbl .c-nm em { font-style: normal; color: var(--fg-dark); font-size: 11px; }
+.tbl .c-nm em.pv { color: var(--magenta); }
+.tbl .c-pg { display: grid !important; grid-template-columns: 1fr 42px; gap: 8px; }
+.tbl .c-pg .bar { height: 2px; background: var(--hairline); position: relative; }
+.tbl .c-pg .bar b { position: absolute; inset: 0 auto 0 0; background: var(--st); }
+.tbl .c-pg span { text-align: right; color: var(--fg-dark); font-size: 11px; }
+.tbl .c-st { gap: 6px; } .tbl .c-st i { font-style: normal; width: 12px; text-align: center; }
+.tbl .dim0 { color: var(--fg-dark); }
+.empty { padding: 40px 16px; color: var(--fg-dark); grid-column: 1 / -1; height: auto !important; white-space: normal !important; }
+
+.det { border-left: 1px solid var(--hairline); display: grid; grid-template-rows: auto auto auto minmax(0, 1fr); min-height: 0; overflow: hidden; }
+.det .hd { padding: 12px 16px 6px; display: grid; gap: 2px; }
+.det .hd b { color: var(--fg-bright); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.det .hd span { color: var(--fg-dark); font-size: 11px; }
+.strip { display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 16px 10px; border-bottom: 1px solid var(--hairline); }
+.strip div { display: grid; gap: 1px; } .strip .l { font-size: 9px; } .strip .v { color: var(--fg-bright); font-size: 11px; white-space: nowrap; }
+.tabs { display: flex; padding: 0 8px; border-bottom: 1px solid var(--hairline); overflow: hidden; }
+.tabs button { height: 28px; padding: 0 8px; font-size: 11px; color: var(--fg-dark); white-space: nowrap; }
+.tabs button i { font-style: normal; font-size: 10px; margin-left: 4px; }
+.tabs button[aria-selected="true"] { color: var(--fg-bright); box-shadow: inset 0 -1px 0 var(--fg-bright); }
+.pane { overflow: hidden auto; scrollbar-width: thin; padding: 8px 16px 16px; font-size: 11px; }
+.pieces { display: grid; gap: 6px; padding-bottom: 8px; }
+.pieces .t { display: flex; justify-content: space-between; }
+.pieces svg { width: 100%; height: 10px; display: block; }
+.pieces rect { fill: var(--hairline); } .pieces rect.h { fill: var(--st, var(--green)); }
+.kv { display: grid; grid-template-columns: 96px minmax(0, 1fr); }
+.kv .k, .kv .v { padding: 5px 0; border-bottom: 1px solid var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kv .k { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dark); }
+.kv .v { color: var(--fg-bright); }
+.kv .sec { grid-column: 1 / -1; padding: 12px 0 4px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.list { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+.list > div { padding: 5px 0; border-bottom: 1px solid var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list > div:nth-child(2n) { text-align: right; color: var(--fg-dark); padding-left: 10px; }
+.list .gh2 { color: var(--fg-dark); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; }
+
+.selbar { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; height: 36px; padding: 0 6px 0 12px; background: var(--bg); border: 1px solid var(--border); white-space: nowrap; box-shadow: 0 10px 30px rgb(0 0 0 / .25); }
+.selbar b { color: var(--fg-bright); font-weight: 500; }
+.selbar span { color: var(--fg-dark); }
+.selbar .x { color: var(--fg-dark); font-size: 10px; padding: 0 4px; } .selbar .x:hover { color: var(--accent); }
+.selbar .sum { display: flex; gap: 12px; font-size: 11px; } .selbar .sum b { font-weight: 400; }
+.selbar .ic { display: flex; gap: 2px; padding-left: 8px; border-left: 1px solid var(--hairline); align-items: center; }
+.selbar .ic i { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--hairline); }
+.selbar .ic button { width: 26px; height: 26px; color: var(--fg); display: grid; place-items: center; }
+.selbar .ic svg { width: 16px; height: 16px; }
+.selbar .ic button:hover { color: var(--fg-bright); background: var(--fill-hover); }
+
+.foot { display: flex; align-items: center; gap: 14px; height: 28px; padding: 0 16px; border-top: 1px solid var(--hairline); font-size: 11px; color: var(--fg-dark); white-space: nowrap; overflow: hidden; }
+.foot b { color: var(--fg); font-weight: 500; }
+.foot .facts { display: flex; gap: 8px; }
+.foot .hints { display: flex; gap: 14px; margin-left: auto; overflow: hidden; }
+.foot .hints span:last-child { margin-left: 10px; }
+
+/* the seed console, inside the window */
+.seed { padding: 14px 16px 24px; display: grid; gap: 18px; align-content: start; }
+.seed .scope { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.seed .scope b { color: var(--fg-bright); font-weight: 500; }
+.seed .scope .r { margin-left: auto; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.tiles > div { padding: 10px 14px 10px 0; display: grid; gap: 1px; }
+.tiles > div + div { padding-left: 14px; border-left: 1px solid var(--hairline); }
+.tiles .v { color: var(--fg-bright); font-size: 22px; line-height: 1.2; }
+.tiles .v small { font-size: 12px; color: var(--fg-dark); margin-left: 3px; }
+.tiles .v.neg { color: var(--red); }
+.tiles .s { font-size: 10.5px; color: var(--fg-dark); }
+.panel-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.panel-h .t { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.panel-h .m { font-size: 11px; color: var(--fg-dark); }
+.panel-h .rng { margin-left: auto; display: flex; gap: 2px; }
+.rng button { font: 11px var(--mono); color: var(--fg); background: var(--fill); border: 1px solid var(--hairline); padding: 2px 8px; cursor: pointer; }
+.rng button[aria-pressed="true"] { background: var(--fill-sel); color: var(--fg-bright); border-color: transparent; }
+.seed-2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font: 10px var(--mono); fill: var(--fg-dark); }
+.chart .grid { stroke: var(--hairline); stroke-width: 1; fill: none; }
+.chart .area { fill: color-mix(in srgb, var(--green) 22%, transparent); }
+.chart .line { fill: none; stroke: var(--green); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.chart .pk { stroke: var(--green); stroke-dasharray: 2 3; fill: none; }
+.chart .pkt { fill: var(--green); }
+.chart .end { fill: var(--green); }
+.chart .cell { fill: var(--faint); }
+.chart .l1 { fill: color-mix(in srgb, var(--green) 28%, var(--bg)); }
+.chart .l2 { fill: color-mix(in srgb, var(--green) 50%, var(--bg)); }
+.chart .l3 { fill: color-mix(in srgb, var(--green) 74%, var(--bg)); }
+.chart .l4 { fill: var(--green); }
+.chart .today { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+.chart .pb { stroke: var(--green); stroke-dasharray: 3 3; }
+.chart .dt { fill: color-mix(in srgb, var(--green) 80%, transparent); }
+.chart .dt.lo { fill: color-mix(in srgb, var(--yellow) 80%, transparent); }
+.chart .band { fill: var(--fill); }
+.yearfoot { display: flex; gap: 6px 18px; flex-wrap: wrap; font-size: 11px; color: var(--fg-dark); }
+.yearfoot b { color: var(--fg-bright); font-weight: 500; }
+.alive .buckets { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; font-size: 11px; }
+.alive .buckets div { display: grid; gap: 1px; } .alive .buckets b { color: var(--fg-bright); font-weight: 500; } .alive .buckets span { color: var(--fg-dark); font-size: 10px; white-space: nowrap; }
+.alive .stack { display: flex; height: 8px; margin: 10px 0; background: var(--faint); }
+.alive .stack i { display: block; height: 100%; }
+.alive ol { list-style: none; margin: 0; padding: 0; display: grid; font-size: 11.5px; }
+.alive li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; padding: 6px 8px; border-bottom: 1px solid var(--faint); }
+.alive li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-bright); }
+.alive li span + span { color: var(--fg-dark); white-space: nowrap; }
+.alive li.rare span:nth-child(2) { color: var(--yellow); }
+
+/* help sheet over the window */
+.scrim { position: absolute; inset: 0; background: color-mix(in srgb, var(--bg) 70%, transparent); display: grid; place-items: center; padding: 16px; z-index: 3; }
+.sheet { background: var(--bg); border: 1px solid var(--accent); width: min(440px, 100%); padding: 16px; display: grid; gap: 12px; }
+.sheet .t { display: flex; color: var(--fg-bright); font-weight: 600; font-size: 13px; }
+.sheet .t button { margin-left: auto; color: var(--fg-dark); font-size: 11px; }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 5px 16px; font-size: 11.5px; }
+.keys b { color: var(--fg-bright); font-weight: 500; text-align: right; } .keys span { color: var(--fg-dark); }
+.sheet p { font-size: 11px; color: var(--fg-dark); border-top: 1px solid var(--hairline); padding-top: 8px; }
+
+/* narrower windows: details go, then columns and the rail, as the app folds them */
+@container (max-width: 1180px) {
+  .body { grid-template-columns: 170px minmax(0, 1fr); }
+  .det { display: none; }
+  .tbl { grid-template-columns: minmax(0, 1fr) 68px 116px 104px 72px 72px 48px; }
+  .tbl .c-sp, .tbl .c-eta { display: none !important; }
+}
+@container (max-width: 900px) { .flt { display: none; } .top .faces { margin-left: auto; } .top .grow { display: none; } }
+@container (max-width: 760px) {
+  .body { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+  .tbl { grid-template-columns: minmax(0, 1fr) 100px 104px; }
+  .tbl .c-sz, .tbl .c-dl, .tbl .c-ul, .tbl .c-rt { display: none !important; }
+  .foot .hints span:not(:last-child) { display: none; }
+  .seed-2 { grid-template-columns: minmax(0, 1fr); }
+  .selbar .ic { display: none; }
+}
+@container (max-width: 560px) {
+  .top { gap: 10px; padding: 8px 10px; }
+  .top .stat, .top .nm .l { display: none; }
+  .top .faces { margin-left: auto; }
+  .tbl .c-nm em { display: none; }
+  .tbl { grid-template-columns: minmax(0, 1fr) 56px 100px; }
+  .tbl .c-pg { grid-template-columns: 1fr !important; } .tbl .c-pg span { display: none; }
+  .acts, .selbar { display: none !important; }
+  .foot .facts span:nth-child(n+4) { display: none; }
+}
+
+/* ── sections ──────────────────────────────────────────────────────────────────── */
+.sec { padding-block: clamp(80px, 11vw, 150px) 0; display: grid; gap: 40px; scroll-margin-top: 72px; }
+.sec > .head { display: grid; gap: 18px; }
+.blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 40px 48px; }
+.blocks div { display: grid; gap: 8px; align-content: start; }
+.blocks h3 { font-size: 17px; letter-spacing: -.01em; }
+.blocks p { color: var(--dim); font-size: 15.5px; }
+.slices { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.slice { grid-column: span 12; background: var(--bg); border: 1px solid var(--hairline); padding: clamp(16px, 2.4vw, 28px); display: grid; gap: 18px; align-content: start; min-width: 0; font-family: var(--mono); font-size: 12px; }
+.slice > header { display: grid; gap: 6px; font-family: var(--sans); }
+.slice > header h3 { font-size: 18px; letter-spacing: -.01em; }
+.slice > header p { color: var(--dim); font-size: 15px; max-width: 34em; }
+@media (min-width: 960px) { .slice.half { grid-column: span 6; } .slice.wide { grid-column: span 7; } .slice.narrow { grid-column: span 5; } }
+.trk { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; font-size: 12px; }
+.trk > div { padding: 7px 0; border-bottom: 1px solid var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trk > div:not(:nth-child(4n+1)) { text-align: right; padding-left: 24px; }
+.trk .h { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dark); }
+.trk .v { color: var(--fg-bright); }
+.where { font-size: 14px; color: var(--dim); }
+.where code { font-size: 13px; }
+
+.engine { display: flex; gap: 14px 28px; flex-wrap: wrap; align-items: baseline; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); padding-block: 26px; }
+.engine p:not(.tag) { font-size: clamp(19px, 2vw, 24px); letter-spacing: -.015em; color: var(--fg-bright); max-width: 36em; }
+.engine p span { color: var(--dim); }
+
+.box { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .box { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 56px; } }
+.box .two { font-size: clamp(26px, 2.8vw, 36px); }
+.omb { justify-self: start; margin-bottom: -16px; display: inline-flex; align-items: center; gap: 14px; color: var(--fg-bright); text-decoration: none; font: 700 26px var(--sans); letter-spacing: -.01em; }
+.omb svg { width: 52px; height: 52px; fill: var(--green); filter: drop-shadow(0 0 18px color-mix(in srgb, var(--green) 40%, transparent)); }
+.walks { margin: 0; font: 12.5px/1.9 var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--hairline); padding: 16px 18px; overflow-x: auto; }
+.walks .p { color: var(--fg-dark); }
+.walks b { color: var(--green); font-weight: 500; }
+
+.rel { display: grid; gap: 0; border-top: 1px solid var(--hairline); }
+.rel article { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px 40px; padding-block: 28px; border-bottom: 1px solid var(--hairline); }
+@media (min-width: 860px) { .rel article { grid-template-columns: 220px minmax(0, 1fr); } }
+.rel .when { display: grid; gap: 4px; align-content: start; }
+.rel .when b { font: 600 20px var(--mono); color: var(--fg-bright); }
+.rel .when a { color: inherit; text-decoration: none; }
+.rel h3 { font-size: 20px; letter-spacing: -.015em; }
+.rel ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--dim); font-size: 15.5px; max-width: 46em; }
+.rel li { padding-left: 18px; position: relative; }
+.rel li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dark); }
+.rel li b { color: var(--fg-bright); font-weight: 500; }
+.rel + .more, .rel .more { font-size: 14px; justify-self: start; }
+
+.next { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 40px; }
+.next li { border-top: 1px solid var(--hairline); padding-block: 14px; display: flex; gap: 14px; align-items: baseline; }
+.next a { color: var(--fg-bright); text-decoration: none; font-size: 15.5px; }
+.next a:hover { color: var(--accent); }
+.next span { font: 12px var(--mono); color: var(--fg-dark); flex: none; width: 3.2em; }
+
+.get { padding-block: clamp(96px, 12vw, 160px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; justify-items: start; }
+.get h2 { font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: -.04em; }
+.code { margin: 0; width: 100%; max-width: 720px; background: var(--bg); border: 1px solid var(--hairline); font: 13.5px/1.75 var(--mono); color: var(--fg-bright); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.code pre { margin: 0; padding: 14px 16px; overflow-x: auto; font: inherit; }
+.code pre .p { color: var(--fg-dark); user-select: none; }
+.code .copy { margin: 10px; }
+.get .small { font-size: 15px; color: var(--dim); max-width: 44em; }
+.code.wide { max-width: 880px; } .code.wide pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ── omaseed's kit: sheets, fields, chips, banners, menus (docs/05, 17, 19, 25, 26) ── */
+.k { font: 12px/1.4 var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; text-align: left; }
+.k button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.k-sheet { background: var(--bg); border: 1px solid var(--accent); padding: 14px 16px 12px; display: grid; gap: 12px; width: 100%; max-width: 600px; }
+.k-sheet.narrow { max-width: 460px; } .k-sheet.conf { max-width: 370px; padding: 18px; gap: 16px; } .k-sheet.conf.wide { max-width: 520px; }
+.k-hd { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.k-ic { width: 30px; height: 30px; border: 1px solid var(--hairline); display: grid; place-items: center; color: var(--fg-bright); font-size: 13px; }
+.k-hd b { display: block; color: var(--fg-bright); font-weight: 600; }
+.k-hd .s { display: block; color: var(--fg-dark); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-esc { color: var(--fg-dark); font-size: 10px; align-self: start; }
+.k-grp { display: grid; gap: 5px; min-width: 0; }
+.k-lab { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dark); display: flex; justify-content: space-between; gap: 10px; }
+.k-lab span + span { text-transform: none; letter-spacing: 0; }
+.k-fld { border: 1px solid var(--hairline); min-height: 28px; padding: 4px 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--fg); min-width: 0; }
+.k-fld > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.k-fld.ph > span:first-child { color: var(--fg-dark); }
+.k-fld.on, .k-fld:focus-within { border-color: var(--accent); color: var(--fg-bright); }
+.k-fld.hl { border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--fg-bright); }
+.k-fld input { flex: 1; min-width: 0; border: 0; background: none; outline: none; color: var(--fg-bright); font: inherit; padding: 0; }
+.k-fld input::placeholder { color: var(--fg-dark); }
+.k-fld .tr { color: var(--fg-dark); font-size: 10.5px; white-space: nowrap; flex: none; }
+.k-kc { border: 1px solid var(--hairline); padding: 0 4px; color: var(--fg); margin-left: 4px; }
+.k-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.k-three { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.k-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.k-chip { border: 1px solid var(--hairline) !important; padding: 2px 8px !important; font-size: 11px; color: var(--fg); }
+.k-chip.on { background: var(--fill-sel) !important; border-color: transparent !important; color: var(--fg-bright); }
+.k-togs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.k-tog { display: flex !important; gap: 9px; align-items: center; font-size: 11px; text-align: left; }
+.k-tog i { flex: none; width: 26px; height: 13px; border: 1px solid var(--hairline); background: var(--fill-hover); position: relative; }
+.k-tog i::after { content: ""; position: absolute; left: 2px; top: 2px; width: 8px; height: 7px; background: var(--fg-dark); }
+.k-tog.on i { background: color-mix(in srgb, var(--accent) 30%, transparent); border-color: var(--accent); }
+.k-tog.on i::after { left: auto; right: 2px; background: var(--fg-bright); }
+.k-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.k-btns.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.k-btns > * { border: 1px solid var(--hairline) !important; min-height: 28px; display: grid !important; place-items: center; font-size: 11px; color: var(--fg); background: var(--fill) !important; }
+.k-btns > *:hover { background: var(--fill-hover) !important; }
+.k-btns .pri { border-color: var(--accent) !important; color: var(--accent); background: transparent !important; }
+.k-btns .cur { outline: 1px solid var(--accent); outline-offset: 1px; }
+.k-btns .dng { border-color: color-mix(in srgb, var(--red) 55%, transparent) !important; color: var(--red); }
+.k-btns .dng.cur { outline-color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent) !important; }
+.k-hints { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 10.5px; color: var(--fg-dark); border-top: 1px solid var(--hairline); padding-top: 8px; }
+.k-hints b { color: var(--fg); font-weight: 500; } .k-hints .sp { flex: 1; }
+.k-ban { display: grid; grid-template-columns: 2px 14px minmax(0, 1fr) auto; gap: 0 10px; align-items: start; font-size: 11.5px; line-height: 1.5; }
+.k-ban > i { align-self: stretch; background: var(--yellow); }
+.k-ban > .g, .k-ban > .tx { color: var(--yellow); }
+.k-ban.acc > i { background: var(--accent); } .k-ban.acc > .g { color: var(--accent); } .k-ban.acc > .tx { color: var(--fg); }
+.k-ban .tx b { color: var(--fg-bright); font-weight: 500; }
+.k-ban.dim > i { background: var(--hairline); } .k-ban.dim > .g, .k-ban.dim > .tx { color: var(--fg-dark); }
+.k-ban.ok > i { background: var(--green); } .k-ban.ok > .g { color: var(--green); } .k-ban.ok > .tx { color: var(--fg); }
+.k-ban .act { border: 1px solid var(--accent) !important; color: var(--accent); padding: 2px 9px !important; font-size: 11px; align-self: center; white-space: nowrap; }
+.k-ban .sub { display: block; color: var(--fg-dark); font-size: 11px; }
+.k-trk { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; font-size: 11px; margin-top: 4px; }
+.k-trk .n { color: var(--green); } .k-trk .o { color: var(--fg-dark); }
+.k-free { font-size: 11px; color: var(--fg-dark); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.k-free b { color: var(--fg); font-weight: 500; }
+.k-free .meter { width: 96px; height: 4px; background: var(--fill-hover); position: relative; align-self: center; display: inline-block; }
+.k-free .meter i { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+.k-free .meter u { position: absolute; top: 0; bottom: 0; background: var(--accent); min-width: 2px; }
+.k-free.warn, .k-free.warn b { color: var(--yellow); } .k-free.warn .meter u { background: var(--yellow); }
+.k-free.bad, .k-free.bad b { color: var(--red); } .k-free.bad .meter u { background: var(--red); }
+.k-free.good, .k-free.good b { color: var(--green); }
+.k-list { border: 1px solid var(--hairline); background: var(--fill); }
+.k-list > div { display: grid; gap: 8px; align-items: center; padding: 4px 10px; min-height: 25px; border-bottom: 1px solid var(--faint); }
+.k-list > div:last-child { border-bottom: 0; }
+.k-list > div > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.k-dl > div { grid-template-columns: 12px minmax(0, 1fr) auto 58px 112px; cursor: pointer; }
+.k-dl > div:hover { background: var(--fill-hover); }
+.k-dl > div.on { background: var(--fill-sel); }
+.k-dl .t { color: var(--accent); } .k-dl .lib { color: var(--fg-dark); font-size: 10px; }
+.k-dl .lib-row span:nth-child(2), .k-dl .lib-row span:nth-child(4) { color: var(--fg-dark); }
+.k-dl .r, .k-files .r { text-align: right; } .k-dl .a { text-align: right; color: var(--fg-dark); }
+.k-files > div { grid-template-columns: 14px minmax(0, 1fr) 64px 58px; }
+.k-files .hdr { color: var(--fg-dark); font-size: 10px; }
+.k-files .t { cursor: pointer; } .k-files .t:hover { color: var(--fg-bright); }
+.k-files .f { color: var(--fg-dark); }
+.k-files .p { color: var(--fg-dark); cursor: pointer; } .k-files .p.hi { color: var(--yellow); } .k-files .p.skip { text-decoration: line-through; }
+.k-files .off { color: var(--fg-dark); }
+.k-menu { position: absolute; z-index: 5; width: 250px; background: var(--bg); border: 1px solid var(--accent); padding: 6px 0; max-height: calc(100% - 16px); overflow: hidden auto; scrollbar-width: thin; }
+.k-menu .mh { color: var(--fg-dark); font-size: 10.5px; padding: 2px 14px 6px; border-bottom: 1px solid var(--hairline); margin-bottom: 4px; }
+.k-menu .it { display: flex !important; gap: 8px; align-items: center; width: 100%; height: 25px; padding: 0 14px !important; color: var(--fg); text-align: left; }
+.k-menu .it .g { width: 12px; color: var(--fg-dark); text-align: center; font-size: 10px; }
+.k-menu .it .kk { margin-left: auto; color: var(--fg-dark); font-size: 10px; }
+.k-menu .it.cur { background: var(--fill-hover); color: var(--accent); }
+.k-menu .it.danger { color: var(--red); }
+.k-menu .sep { height: 1px; background: var(--hairline); margin: 4px 14px; }
+.k-conf .msg { color: var(--fg-bright); font-size: 14px; line-height: 1.35; }
+.k-conf .sub { color: var(--fg-dark); font-size: 11px; display: grid; gap: 1px; }
+.k-conf .sub span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-conf .bts { display: flex; gap: 8px; justify-content: flex-end; }
+.k-conf .bts > * { width: 88px; min-height: 26px; border: 1px solid var(--border) !important; background: var(--fill) !important; font-size: 10.5px; display: grid !important; place-items: center; }
+.k-conf .bts .dng { color: var(--red); }
+.k-conf .bts .cur { outline: 1px solid var(--accent); outline-offset: 1px; }
+.k-conf .bts .dng.cur { outline: 0; border-color: var(--red) !important; background: color-mix(in srgb, var(--red) 10%, transparent) !important; }
+.k-warnb { border-left: 2px solid var(--yellow); padding: 6px 10px; background: color-mix(in srgb, var(--yellow) 8%, transparent); color: var(--yellow); font-size: 11px; display: grid; gap: 3px; }
+.k-warnb .l { color: var(--fg); } .k-warnb .l b { color: var(--fg-bright); font-weight: 500; } .k-warnb .l span { color: var(--fg-dark); }
+.k-warnb .stop { justify-self: start; margin-top: 4px; border: 1px solid var(--border) !important; padding: 2px 10px !important; color: var(--fg); }
+.k-pick { display: grid; gap: 2px; font-size: 11px; }
+.k-pick > div { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 0 8px; padding: 5px 8px; border: 1px solid transparent; }
+.k-pick > div.cur { border-color: var(--border-hover); background: var(--fill-hover); }
+.k-pick .r { color: var(--fg-dark); } .k-pick .cur .r { color: var(--accent); }
+.k-pick b { color: var(--fg); font-weight: 400; } .k-pick .cur b { color: var(--fg-bright); }
+.k-pick span:last-child { grid-column: 2; color: var(--fg-dark); font-size: 10.5px; }
+.k-eb { border-left: 1px solid var(--red); padding: 6px 0 6px 12px; display: grid; grid-template-columns: 16px minmax(0, 1fr); column-gap: 8px; row-gap: 3px; background: var(--fill); font-size: 12px; }
+.k-eb > .g { color: var(--red); } .k-eb > .h { color: var(--fg-bright); font-weight: 500; }
+.k-eb > .l { grid-column: 2; font-size: 11px; overflow-wrap: anywhere; } .k-eb > .l.d { color: var(--fg-dark); }
+.k-eb > .eacts { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 4px; font-size: 11px; color: var(--fg-dark); }
+.k-eb > .eacts span { white-space: nowrap; } .k-eb > .eacts b { color: var(--fg); font-weight: 500; margin-right: 6px; }
+.k-drop { position: absolute; inset: 6px; z-index: 6; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); display: grid; place-items: center; pointer-events: none; }
+.k-drop span { background: var(--bg); border: 1px solid var(--accent); padding: 12px 24px; color: var(--fg-bright); font-size: 14px; }
+.layer { position: absolute; inset: 0; z-index: 4; background: color-mix(in srgb, var(--bg) 70%, transparent); display: grid; place-items: center; padding: 12px; overflow: hidden; }
+.layer.menu { display: block; padding: 0; }
+.layer > .k-sheet { max-height: 100%; overflow: hidden auto; scrollbar-width: thin; }
+
+/* pointers to what can be tried in the window */
+.beacon { position: relative; }
+.beacon::after { content: ""; position: absolute; top: 4px; right: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: ping 1.8s ease-out infinite; pointer-events: none; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } 80%, 100% { box-shadow: 0 0 0 7px transparent; } }
+.try { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.try .lbl { margin-right: 4px; }
+.try button { display: inline-flex; align-items: center; gap: 8px; font: 13px var(--sans); color: var(--fg-bright); background: var(--bg); border: 1px solid var(--hairline); padding: 6px 12px; cursor: pointer; }
+.try button:hover { border-color: var(--accent); }
+.try button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.try button.done { color: var(--fg); }
+.try button.done::before { content: "✓"; width: auto; height: auto; background: none; color: var(--green); font: 11px var(--mono); }
+.try kbd { font-size: 11px; }
+.stage-foot .theme-row { display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex: 1 1 520px; min-width: 0; }
+
+/* replicas in the sections */
+.rep { display: grid; place-items: center; padding: clamp(14px, 3vw, 32px); background:
+  radial-gradient(ellipse at 20% 0%, color-mix(in srgb, var(--accent) 22%, var(--bg-darker)) 0%, transparent 60%),
+  radial-gradient(ellipse at 90% 100%, color-mix(in srgb, var(--magenta) 18%, var(--bg-darker)) 0%, transparent 60%), var(--bg-darker);
+  border: 1px solid var(--hairline); min-width: 0; overflow: hidden; }
+.rep.plain { background: var(--bg-darker); }
+.rep > * { max-width: 100%; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (min-width: 960px) { .pair { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; } .pair.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+.pair .blocks { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+.cap2 { font-size: 13px; color: var(--dim); margin-top: 10px; }
+.cap2 b { color: var(--fg); font-weight: 500; }
+.reps { display: grid; gap: 14px; width: 100%; }
+.next-tag { font: 500 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 1px 6px; margin-left: 8px; vertical-align: 2px; }
+
+/* the settings modal's servers pane */
+.k-set { display: grid; grid-template-columns: 170px minmax(0, 1fr); background: var(--bg); border: 1px solid var(--accent); width: 100%; max-width: 680px; }
+.k-set nav { border-right: 1px solid var(--hairline); padding: 12px 0; display: grid; align-content: start; }
+.k-set nav .l { padding: 0 14px 6px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dark); }
+.k-set nav .l.q { padding-top: 12px; } .k-set nav .v { padding: 0 14px 6px; font-size: 10.5px; color: var(--fg-dark); }
+.k-set nav span.it { display: flex; gap: 8px; align-items: center; height: 24px; padding: 0 14px; }
+.k-set nav span.it i { width: 14px; text-align: center; font-style: normal; color: var(--fg-dark); }
+.k-set nav span.it.on { background: var(--fill-sel); color: var(--fg-bright); }
+.k-set .pane { padding: 14px 16px; display: grid; gap: 10px; align-content: start; }
+.k-set .pane > .t { display: flex; color: var(--fg-bright); font-weight: 600; font-size: 13px; } .k-set .pane > .t span { margin-left: auto; color: var(--fg-dark); font-weight: 400; font-size: 10px; }
+.k-srv { display: grid; gap: 6px; }
+.k-srv > div { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border: 1px solid var(--hairline); }
+.k-srv > div.add { border-style: dashed; color: var(--fg-dark); }
+.k-srv .d { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex: none; }
+.k-srv .d.err { background: var(--red); }
+.k-srv .t { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.k-srv .t b { color: var(--fg-bright); font-weight: 500; } .k-srv .t span { color: var(--fg-dark); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-srv .s { font-size: 11px; color: var(--fg-dark); } .k-srv .s.err { color: var(--red); }
+.k-fp { border: 1px solid var(--hairline); background: var(--fill); padding: 8px 10px; font-size: 11px; color: var(--fg-bright); display: grid; gap: 2px; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .k-set { grid-template-columns: minmax(0, 1fr); } .k-set nav { display: none; } .k-two, .k-three { grid-template-columns: minmax(0, 1fr); } .k-togs { grid-template-columns: minmax(0, 1fr); } .k-dl > div { grid-template-columns: 12px minmax(0, 1fr) 58px; } .k-dl .a, .k-dl .lib { display: none; } }
+
+/* the bar widget and its popup (docs/19, plugin/) */
+.barw { display: grid; gap: 14px; width: 100%; max-width: 460px; justify-items: end; }
+.obar { width: 100%; height: 30px; display: flex; align-items: center; gap: 14px; padding: 0 12px; background: var(--bg); border: 1px solid var(--hairline); font-size: 11.5px; color: var(--fg); }
+.obar .ws { display: flex; gap: 10px; color: var(--fg-dark); } .obar .ws b { color: var(--fg-bright); font-weight: 500; }
+.obar .clk { margin: 0 auto; color: var(--fg-bright); }
+.obar .me { display: flex !important; align-items: center; gap: 8px; padding: 0 6px !important; height: 30px; position: relative; }
+.obar .me.open::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--accent); }
+.obar .me .sp { font-size: 11px; white-space: nowrap; } .obar .me .sp.alt { color: var(--yellow); }
+.mk3 { display: block; overflow: visible; }
+.mk3 .a { fill: color-mix(in srgb, var(--fg) 30%, transparent); }
+.mk3 .a.dn { fill: var(--blue); } .mk3 .a.up { fill: var(--green); }
+.mk3 .q { fill: var(--fg); } .mk3 .q.alt { fill: var(--yellow); } .mk3 .q.err { fill: var(--red); }
+.states { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+.pop { width: 100%; background: var(--bg); border: 1px solid var(--accent); }
+.pop .hd { display: flex; gap: 12px; align-items: center; padding: 14px 14px 12px; }
+.pop .hd .t { display: grid; gap: 2px; } .pop .hd .t b { font-size: 13px; color: var(--fg-bright); } .pop .hd .t b::after { content: " ↗"; color: var(--fg-dark); font-weight: 400; font-size: 11px; }
+.pop .hd .t span { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dark); display: flex; gap: 6px; align-items: center; }
+.pop .hd .t span i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.pop .ib { margin-left: auto; display: flex; gap: 6px; }
+.pop .ib > * { width: 26px; height: 26px; border: 1px solid var(--border) !important; display: grid !important; place-items: center; color: var(--fg); font-size: 12px; }
+.pop .ib .alt.on { border-color: var(--yellow) !important; color: var(--yellow); }
+.pop .sepl { height: 1px; background: var(--hairline); margin: 0 14px; }
+.pop .blk { padding: 12px 14px; display: grid; gap: 8px; }
+.pop .speeds { display: flex; gap: 28px; }
+.pop .stat { display: grid; } .pop .stat b { font-size: 17px; font-weight: 500; color: var(--fg-bright); white-space: nowrap; }
+.pop .stat b i { font-style: normal; margin-right: 6px; } .pop .stat b.alt, .pop .stat b.alt i { color: var(--yellow) !important; }
+.pop .stat span { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dark); }
+.pop .altl { font-size: 11px; color: var(--yellow); }
+.pop .spark { width: 100%; height: 40px; display: block; }
+.pop .spark .ar { fill: color-mix(in srgb, var(--green) 18%, transparent); } .pop .spark .ln { fill: none; stroke: var(--green); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.pop .scap { display: flex; justify-content: space-between; font-size: 10px; color: var(--fg-dark); }
+.pop .sec2 { border-top: 1px solid var(--hairline); }
+.pop .sh { display: flex !important; gap: 8px; align-items: baseline; width: 100%; padding: 9px 14px !important; text-align: left; }
+.pop .sh .c { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dark); flex: none; }
+.pop .sh .sum { flex: 1; font-size: 11px; color: var(--fg-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pop .sec2:not(.folded) .sum { visibility: hidden; }
+.pop .sh .ch { color: var(--fg-dark); font-size: 10px; } .pop .sec2.folded .ch { transform: rotate(-90deg); }
+.pop .sb { padding: 0 14px 12px; display: grid; gap: 8px; } .pop .sec2.folded .sb { display: none; }
+.pop .src { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 11.5px; }
+.pop .src .ck { width: 12px; height: 12px; border: 1px solid var(--border); } .pop .src .ck.on { background: var(--accent); border-color: var(--accent); }
+.pop .src span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pop .src .o { color: var(--fg-dark); font-size: 10.5px; } .pop .src .o.dup { color: var(--red); }
+.pop .note { font-size: 10.5px; color: var(--fg-dark); }
+.pop .row2 { display: grid; gap: 4px; font-size: 11.5px; }
+.pop .row2 .tp { display: flex; justify-content: space-between; gap: 10px; } .pop .row2 .tp span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .pop .row2 .tp span:last-child { color: var(--fg-dark); white-space: nowrap; }
+.pop .row2 .pg { height: 2px; background: var(--hairline); } .pop .row2 .pg i { display: block; height: 2px; background: var(--blue); }
+.pop .row2.alt .pg i { background: var(--yellow); }
+.pop .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; align-items: end; height: 40px; }
+.pop .week i { background: color-mix(in srgb, var(--fg) 20%, transparent); display: block; } .pop .week i.today { background: var(--green); }
+.pop .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 9.5px; color: var(--fg-dark); text-align: center; }
+.pop .feed { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 1px 8px; font-size: 11.5px; }
+.pop .feed .g { color: var(--green); } .pop .feed .m { grid-column: 2; font-size: 10.5px; color: var(--fg-dark); }
+.pop .feed .bd { font-size: 10px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 0 5px; margin-left: 6px; }
+.pop .ft { padding: 9px 14px 11px; font-size: 10px; color: var(--fg-dark); border-top: 1px solid var(--hairline); line-height: 1.7; } .pop .ft b { color: var(--fg); font-weight: 500; }
+
+/* notifications and the help sheet */
+.notes { display: grid; gap: 10px; width: 100%; max-width: 400px; }
+.k-notif { background: var(--bg); border: 1px solid var(--accent); padding: 10px 14px 12px; display: grid; gap: 5px; position: relative; overflow: hidden; }
+.k-notif .t { display: flex; gap: 8px; align-items: center; color: var(--fg-bright); font-weight: 600; } .k-notif .t .g { color: var(--accent); }
+.k-notif .t .app { margin-left: auto; color: var(--fg-dark); font-size: 10px; font-weight: 400; }
+.k-notif .b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+.k-notif .a { display: flex; gap: 14px; font-size: 11px; color: var(--accent); }
+.k-notif .cd { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--accent); width: 62%; }
+.k-notif.warn { border-color: var(--yellow); } .k-notif.warn .t, .k-notif.warn .t .g { color: var(--yellow); } .k-notif.warn .cd { background: var(--yellow); }
+.k-help { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 26px; }
+.k-help h4 { margin: 10px 0 2px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+.k-help h4 + p { font-size: 10.5px; color: var(--fg-dark); margin-bottom: 4px; }
+.k-help div.r { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--faint); font-size: 11px; }
+.k-help div.r b { color: var(--fg-bright); font-weight: 500; }
+@media (max-width: 640px) { .k-help { grid-template-columns: minmax(0, 1fr); } }
+
+.oss { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.oss a { display: grid; gap: 6px; align-content: start; padding: 20px; background: var(--bg); border: 1px solid var(--hairline); color: var(--fg); text-decoration: none; }
+.oss a:hover { border-color: var(--accent); }
+.oss b { color: var(--fg-bright); font-weight: 600; font-size: 16.5px; }
+.oss a > span:last-child { color: var(--dim); font-size: 14.5px; }
+.get details { width: 100%; max-width: 720px; font-size: 15px; color: var(--dim); }
+.get summary { cursor: pointer; color: var(--fg); }
+.get details[open] summary { margin-bottom: 12px; }
+.get details .code { margin-bottom: 10px; }
+footer { border-top: 1px solid var(--hairline); padding-block: 36px 56px; display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: center; font-size: 14px; color: var(--dim); }
+footer .brand { margin-right: 0; font-size: 14px; }
+footer nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; }
+footer nav a { color: var(--fg); text-decoration: none; }
+footer nav a:hover { color: var(--fg-bright); }
+footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
+</style>
+<!-- body -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 24 24"><path d="M1 8 H6 V18 H16 V23 H1 Z M8 1 H23 V16 H18 V6 H8 Z M9 9 H15 V15 H9 Z"/></symbol>
+  <symbol id="omb" viewBox="0 0 15 15"><path d="M0 0h8v1H0zM13 0h2v1h-2zM0 1h1v13H0zM14 1h1v13h-1zM0 14h2v1H0zM7 14h8v1H7zM4 4h7v2H4zM4 6h1v4H4zM10 6h1v4h-1zM4 10h7v1H4z"/></symbol>
+  <symbol id="ghm" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
+</svg>
+
+<div class="topbar"><div class="in">
+  <a class="brand" href="#top" aria-label="omaseed, top of the page"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
+  <nav aria-label="Sections"><a href="#seed">Seed console</a><a href="#adding">Adding</a><a href="#servers">Servers</a><a href="#omarchy">Omarchy</a><a href="#new">Changelog</a></nav>
+  <a class="gh" href="https://github.com/diogochaves/omaseed"><svg aria-hidden="true"><use href="#ghm"/></svg><span>GitHub</span></a>
+  <a class="pill" href="#install">Install</a>
+</div></div>
+
+<main id="top">
+  <section class="wrap hero">
+    <a class="news" href="#new"><b>NEW</b>v<span class="ver">0.2.0</span>: errors explained, one-line install</a>
+    <h1>Torrents, finally at home on Omarchy.</h1>
+    <p class="lead">A native client for one server or many. Your theme, your keys, your seeding history. Powered by qBittorrent.</p>
+    <div class="cta">
+      <a class="pill" href="#install">Install omaseed</a>
+      <div class="cmd"><code><span class="p">$ </span>curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst</code><button class="copy" type="button" data-copy="curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst">Copy</button></div>
+    </div>
+  </section>
+
+  <section class="stage" aria-label="A working copy of omaseed's main window, with demo data">
+    <div class="desk">
+      <span class="demo-tag">Demo data</span>
+      <div class="win" id="app" tabindex="0" aria-label="omaseed demo window. Demo data. Keys: j and k move, space selects, p stops or starts, backtick flips to the seed console, question mark shows the keys.">
+        <div class="top">
+          <svg class="mk" aria-hidden="true"><use href="#mark"/></svg>
+          <div class="nm"><b>omaseed</b><span class="l"><span class="dot"></span>home · qBittorrent 5.2.3</span></div>
+          <div class="stat d"><span class="v"><i>↓</i><span id="sDown">0</span></span><span class="l">download</span></div>
+          <div class="stat u"><span class="v"><i>↑</i><span id="sUp">0</span></span><span class="l">upload · <span id="sToday">0</span> today</span></div>
+          <div class="faces" role="tablist" aria-label="Faces"><button type="button" role="tab" id="fLib" aria-selected="true">library</button><button type="button" role="tab" id="fSeed" class="beacon" aria-selected="false">seed<sup>`</sup></button></div>
+          <div class="grow"></div>
+          <label class="flt"><span>/</span><input id="q" type="text" placeholder="filter torrents" autocomplete="off" spellcheck="false" aria-label="Filter torrents"><em id="qn">16</em></label>
+          <div class="acts"><button type="button" class="on beacon" id="addBtn" title="Add a torrent (a)">+</button><button type="button" id="helpBtn" title="Every key in this demo (?)">?</button></div>
+        </div>
+        <div class="body">
+          <aside class="rail" id="rail" aria-label="Filters"></aside>
+          <div class="content" id="content">
+            <div class="tbl" id="tbl" aria-label="Torrents (demo data)"></div>
+            <div class="seed" id="seedView" hidden></div>
+            <div class="selbar" id="selbar" hidden></div>
+          </div>
+          <aside class="det" id="det" aria-label="Details"></aside>
+        </div>
+        <div class="foot" id="foot"></div>
+        <div class="k layer" id="layer" hidden></div>
+        <div class="k-drop" id="drop" hidden><span>drop to add</span></div>
+      </div>
+    </div>
+    <div class="stage-foot">
+      <div class="try" id="try"><span class="lbl">Try</span>
+        <button type="button" data-try="menu">Right-click a torrent</button>
+        <button type="button" data-try="seed">The seed console <kbd>`</kbd></button>
+        <button type="button" data-try="add">Add a torrent <kbd>a</kbd></button>
+        <button type="button" data-try="help">Every key <kbd>?</kbd></button>
+        <span class="how">or drop a .torrent file on the window.</span>
+      </div>
+      <div class="themes" role="group" aria-label="Omarchy theme">
+        <div class="seg" id="modeSeg"><button type="button" data-mode="dark" aria-pressed="true">Dark</button><button type="button" data-mode="light" aria-pressed="false">Light</button></div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="seed">
+    <div class="head">
+      <p class="tag">Seed console</p>
+      <h2 class="two">See what you give back. <span>qBittorrent counts your uploads but keeps no history of them. omaseed keeps its own, so a year of seeding is one key away.</span></h2>
+    </div>
+    <div class="slices" id="slices">
+      <article class="slice">
+        <header><h3>The tide</h3><p>Upload over time, from the last hour to the last year.</p></header>
+        <div class="panel-h"><span class="t">The tide</span><span class="m" id="bigTideM"></span><div class="rng" id="bigRng"></div></div>
+        <div id="bigTide"></div>
+      </article>
+      <article class="slice">
+        <header><h3>The year</h3><p>A cell for every day of the last year, and the streak you're on.</p></header>
+        <div id="bigYear"></div>
+      </article>
+      <article class="slice half alive">
+        <header><h3>Keeping alive</h3><p>The torrents few others still seed, rarest first.</p></header>
+        <div id="bigAlive"></div>
+      </article>
+      <article class="slice half">
+        <header><h3>Trackers</h3><p>What you've given to each tracker, for the ones that count it.</p></header>
+        <div id="bigTrk"></div>
+      </article>
+      <article class="slice">
+        <header><h3>Ratio ladder</h3><p>Every torrent by its ratio, against the line where it has paid back what it took.</p></header>
+        <div id="bigLadder"></div>
+      </article>
+    </div>
+    <p class="where">Everything above is demo data on this page. omaseed writes the real history to <code>~/.local/share/omaseed/ledger/</code> on your machine, so it stays when a server is replaced, and backs it up with the rest of its settings.</p>
+  </section>
+
+  <section class="wrap sec" id="adding">
+    <div class="head">
+      <p class="tag">Adding torrents</p>
+      <h2 class="two">It knows your library before you add. <span>The add sheet looks at your Downloads folder, your disk and what you already seed, so nothing is downloaded twice.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice half"><header><h3>Your newest downloads</h3><p>The newest .torrent files in Downloads are waiting when you open it. Tick several to add them together.</p></header><div class="rep k" id="repDl"></div></article>
+      <article class="slice half"><header><h3>Files already on disk</h3><p>When another torrent already has the same files on disk, one click saves this one beside them, and it seeds without downloading.</p></header><div class="rep k" id="repMatch"></div></article>
+      <article class="slice half"><header><h3>Already in your library</h3><p>A torrent you already have is caught before it's added. A public one's new trackers can be merged into it.</p></header><div class="rep k" id="repDup"></div></article>
+      <article class="slice half"><header><h3>Room on the disk</h3><p>What it needs and what's left on that drive: yellow when it leaves little, red when it won't fit.</p></header><div class="rep plain k" id="repFree"></div></article>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="servers">
+    <div class="head">
+      <p class="tag">Any server</p>
+      <h2 class="two">This PC, a NAS, or all of them at once. <span>omaseed is a window onto qBittorrent wherever it runs.</span></h2>
+    </div>
+    <div class="pair">
+      <div class="blocks">
+        <div><h3>Finds the one on this PC</h3><p>First run looks for a qBittorrent on this machine and signs in, or offers to install one.</p></div>
+        <div><h3>Or any on the network</h3><p>A NAS, a seedbox, the machine under the desk: qBittorrent 5.2 or newer with its Web UI on.</p></div>
+        <div><h3>Several at once</h3><p>Add as many servers as you run, and switch between them from the rail, the top of the window or the tray.</p></div>
+        <div><h3>Signs in your way</h3><p>An API key, a username and password, or nothing for a server that lets localhost in. Secrets go to the system keyring.</p></div>
+        <div><h3>Self-signed HTTPS</h3><p>omaseed shows the certificate's fingerprint and trusts that one certificate once you say so.</p></div>
+        <div><h3>Opens what you click</h3><p>Magnet links and <code>.torrent</code> files open in omaseed, from the browser, the clipboard, a drag or your Downloads folder.</p></div>
+      </div>
+      <div class="reps"><div class="rep k" id="repSrv"></div><div class="rep plain k" id="repCert"></div></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="omarchy">
+    <div class="head">
+      <p class="tag">Omarchy</p>
+      <h2 class="two">It looks like the rest of your desktop. <span>omaseed reads your Omarchy theme and repaints the moment it changes. Pick a theme under the window above and this page does the same.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice wide"><header><h3>In your bar</h3><p>The mark in the bar is the readout: the down arrow lights while downloading, the up arrow while seeding, the square says how the server is. Click it for the popup.</p></header>
+        <div class="rep k" id="repBar"></div></article>
+      <article class="slice narrow"><header><h3>Speaks up when it matters</h3><p>A finished download, a server that went away and came back, a disk filling up.</p></header>
+        <div class="rep k" id="repNotes"></div></article>
+      <article class="slice"><header><h3>Keyboard first</h3><p>Every action has a key, and <kbd>?</kbd> lists them all, with a filter. The mouse works everywhere too: right-click menus, drag and drop, double-click for details.</p></header>
+        <div class="rep k" id="repHelp"></div></article>
+    </div>
+    <div class="blocks">
+      <div><h3>Every theme, live</h3><p>All <span id="nThemes">22</span> bundled themes, the light ones too, with your font, base size, transparency and window rounding.</p></div>
+      <div><h3>In the Omarchy menu</h3><p>A Torrents row for the menu, and a window rule so its translucent window looks right.</p></div>
+      <div><h3>Any Linux, too</h3><p>Built for Omarchy, and runs on any Linux with a bundled theme when Omarchy isn't there.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="careful">
+    <div class="head">
+      <p class="tag">Careful with your data</p>
+      <h2 class="two">It asks before it costs you a seed. <span>Deleting files another torrent still seeds, or the last copy anyone has, gets a question first.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice half"><header><h3>Shared files</h3><p>Two torrents seeding the same files: deleting one asks whether the other keeps them.</p></header><div class="rep k" id="repShared"></div></article>
+      <article class="slice half"><header><h3>The last seed</h3><p>If you are the only one still seeding it, omaseed says so, and offers to stop it instead.</p></header><div class="rep k" id="repLast"></div></article>
+      <article class="slice"><header><h3>Why it errored<span class="next-tag">new in 0.2.0</span></h3><p>qBittorrent's API never says why a torrent stopped. omaseed reads qBittorrent's log and says it in plain words, with the keys that fix it.</p></header><div class="rep plain k" id="repErr"></div></article>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="engine">
+      <p class="tag">Powered by qBittorrent</p>
+      <p>omaseed has no torrent engine of its own. <span>qBittorrent does the transferring, on this machine or another, and omaseed is the window you see it through.</span></p>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="omabox">
+    <a class="omb" href="https://omabox.app" aria-label="omabox.app"><svg aria-hidden="true" shape-rendering="crispEdges"><use href="#omb"/></svg><span>omabox</span></a>
+    <div class="box">
+      <div class="head" style="display:grid;gap:18px">
+        <p class="tag">Built with omabox</p>
+        <h2 class="two">No desktops were harmed in the making of omaseed. <span>And no mouse was captured. Every window, scale and multi-monitor check ran inside omabox, an invisible Omarchy desktop, so the AI agent building omaseed never touched the desktop it was building for.</span></h2>
+        <div class="cta"><a class="btn2" href="https://omabox.app">omabox.app</a></div>
+      </div>
+      <pre class="walks"><span class="p"># the walks in omaseed's repo, each run in a box</span>
+<b>scripts/dev/</b>actions-walk.sh
+<b>scripts/dev/</b>error-walk.sh
+<b>scripts/dev/</b>magnet-walk.sh
+<b>scripts/dev/</b>notify-walk.sh
+<b>scripts/dev/</b>servers-walk.sh
+<b>scripts/dev/</b>settings-walk.sh
+<b>scripts/dev/</b>strict-walk.sh
+<b>scripts/dev/</b>swarm-walk.sh</pre>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="new">
+    <div class="head">
+      <p class="tag">New in omaseed</p>
+      <h2 class="two">Changelog. <span>Every release, dated.</span></h2>
+    </div>
+    <div class="rel">
+      <article>
+        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.2.0"><b>v0.2.0</b></a><span class="lbl">13 Oct 2026</span></div>
+        <div>
+          <h3>Errors explained, the mouse everywhere, one-line install</h3>
+          <ul>
+            <li><b>An errored torrent says why.</b> qBittorrent's API never gives the reason, so omaseed reads qBittorrent's log: "Can't write to its save folder", "The disk is full", and the actions that fix it. The table reads the short cause, "no access" or "disk full".</li>
+            <li><b>A notice when a torrent stops with an error,</b> with the reason; a click shows it.</li>
+            <li><b>Everything works with the mouse.</b> One set of click rules for every list, right-click menus, clickable key hints, double-click for details, drop to add.</li>
+            <li><b>Installs with one line.</b> Each release ships a prebuilt package: no build, pacman pulls the rest.</li>
+          </ul>
+        </div>
+      </article>
+      <article>
+        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.1.0"><b>v0.1.0</b></a><span class="lbl">10 Oct 2026</span></div>
+        <div>
+          <h3>First release</h3>
+          <ul>
+            <li><b>The library.</b> A dense, keyboard-first table with 29 columns to choose from, a rail of filters, palettes, and a details pane with files, trackers and peers.</li>
+            <li><b>Adding torrents.</b> Magnets, <code>.torrent</code> files, the clipboard or a drag; it spots duplicates and files already on disk it can seed from.</li>
+            <li><b>The seed console.</b> Upload over time, ratios, a year of seeding days, the torrents you keep alive.</li>
+            <li><b>Omarchy.</b> Follows the theme live, a bar widget, the tray, notifications.</li>
+            <li><b>Servers.</b> First run finds qBittorrent; several servers; secrets in the keyring; backups of its own.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+    <a class="more" href="https://github.com/diogochaves/omaseed/blob/v0.2.0/CHANGELOG.md">The whole changelog</a>
+  </section>
+
+  <section class="wrap sec" id="next">
+    <div class="head">
+      <p class="tag">What's next</p>
+      <h2 class="two">Open on GitHub. <span>Work that's planned, as the issues name it. No dates.</span></h2>
+    </div>
+    <ul class="next">
+      <!-- next: written by build.mjs from omaseed's open issues; this list is the fallback -->
+      <li><span>#56</span><a href="https://github.com/diogochaves/omaseed/issues/56">qBittorrent's log in omaseed (like the Web UI's View → Log)</a></li>
+      <li><span>#55</span><a href="https://github.com/diogochaves/omaseed/issues/55">Show other per-torrent failures from qBittorrent's log (move, rename, web seed)</a></li>
+      <li><span>#52</span><a href="https://github.com/diogochaves/omaseed/issues/52">Table: resize columns by dragging a header's edge</a></li>
+      <li><span>#44</span><a href="https://github.com/diogochaves/omaseed/issues/44">Add sheet: choose a magnet's files before it starts</a></li>
+      <!-- /next -->
+    </ul>
+  </section>
+
+  <section class="wrap sec" id="open">
+    <div class="head">
+      <p class="tag">Open source</p>
+      <h2 class="two">MIT licensed, built in the open. <span>Read the code, report a bug, ask for a feature or send a pull request. Contributions are welcome.</span></h2>
+    </div>
+    <div class="oss">
+      <a href="https://github.com/diogochaves/omaseed"><span class="lbl">Code</span><b>diogochaves/omaseed</b><span>C++20 and Qt 6 Quick, a native Linux app</span></a>
+      <a href="https://github.com/diogochaves/omaseed/issues"><span class="lbl">Issues</span><b>Report a bug or ask for a feature</b><span>What's planned is there too</span></a>
+      <a href="https://github.com/diogochaves/omaseed/pulls"><span class="lbl">Pull requests</span><b>Send a change</b><span>Fixes, features, a theme that looks off</span></a>
+      <a href="https://github.com/diogochaves/omaseed/blob/main/LICENSE"><span class="lbl">License</span><b>MIT</b><span>Use it, change it, share it</span></a>
+    </div>
+  </section>
+
+  <section class="wrap get" id="install">
+    <p class="tag">Install</p>
+    <h2>Install omaseed.</h2>
+    <p class="lead">On Arch and Omarchy: one line downloads the latest release, already built, and installs it. You need qBittorrent 5.2 or newer with its Web UI on, on this machine or another.</p>
+    <div class="code wide"><pre><span class="p">$ </span>curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp;
+  sudo pacman -U omaseed-x86_64.pkg.tar.zst</pre><button class="copy" type="button" data-copy="curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst">Copy</button></div>
+    <p class="small">pacman pulls Qt and the rest of what omaseed needs from the Arch repos. omaseed isn't in a repo yet, so <code>pacman -Syu</code> doesn't update it: for a new release, run the same line again. First run finds your qBittorrent, or offers to install one.</p>
+    <details>
+      <summary>Build from source instead</summary>
+      <div class="code"><pre><span class="p">$ </span>git clone https://github.com/diogochaves/omaseed.git
+<span class="p">$ </span>cd omaseed/packaging/arch
+<span class="p">$ </span>makepkg -si</pre><button class="copy" type="button" data-copy="git clone https://github.com/diogochaves/omaseed.git
+cd omaseed/packaging/arch
+makepkg -si">Copy</button></div>
+      <p><code>makepkg -si</code> asks for your password: pacman installs the build dependencies, then omaseed.</p>
+    </details>
+    <div class="cta"><a class="btn2 gh" href="https://github.com/diogochaves/omaseed"><svg aria-hidden="true"><use href="#ghm"/></svg>diogochaves/omaseed</a></div>
+  </section>
+
+  <footer class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
+    <span>v<span class="ver">0.2.0</span> · MIT</span>
+    <nav aria-label="More"><a href="https://github.com/diogochaves/omaseed">GitHub</a><a href="#open">Contribute</a><a href="https://github.com/diogochaves/omaseed/blob/main/CHANGELOG.md">Changelog</a><a href="https://github.com/diogochaves/omaseed/issues">Issues</a><a href="https://omabox.app">omabox</a></nav>
+    <small>omaseed is an independent client for qBittorrent and is not part of the qBittorrent project. Every number on this page is demo data.</small>
+  </footer>
+</main>
+
+<script>
+(() => {
+/* themes: written by themes.mjs from /usr/share/omarchy/themes */
+const THEMES = {"catppuccin":{"label":"Catppuccin","mode":"dark","accent":"#89b4fa","selection":"#45475a","muted":"#585b70","background":"#1e1e2e","dark_background":"#161622","darker_background":"#101019","lighter_background":"#313244","foreground":"#cdd6f4","dark_foreground":"#6c7086","light_foreground":"#bac2de","bright_foreground":"#cdd6f4","red":"#f38ba8","yellow":"#f9e2af","orange":"#f6b6ab","green":"#a6e3a1","cyan":"#94e2d5","blue":"#89b4fa","magenta":"#f5c2e7"},"catppuccin-latte":{"label":"Catppuccin Latte","mode":"light","accent":"#1e66f5","selection":"#ccd0da","muted":"#acb0be","background":"#eff1f5","dark_background":"#e3e4e8","darker_background":"#d7d8dc","lighter_background":"#dce0e8","foreground":"#4c4f69","dark_foreground":"#9ca0b0","light_foreground":"#5c5f77","bright_foreground":"#4c4f69","red":"#d20f39","yellow":"#df8e1d","orange":"#d84e2b","green":"#40a02b","cyan":"#179299","blue":"#1e66f5","magenta":"#ea76cb"},"ethereal":{"label":"Ethereal","mode":"dark","accent":"#7d82d9","selection":"#252e56","muted":"#6d7db6","background":"#060b1e","dark_background":"#040816","darker_background":"#030610","lighter_background":"#131a3a","foreground":"#ffcead","dark_foreground":"#6d7db6","light_foreground":"#c9b8a6","bright_foreground":"#ffcead","red":"#ed5b5a","yellow":"#e9bb4f","orange":"#eb8b54","green":"#92a593","cyan":"#a3bfd1","blue":"#7d82d9","magenta":"#c89dc1"},"everforest":{"label":"Everforest","mode":"dark","accent":"#7fbbb3","selection":"#3d484d","muted":"#475258","background":"#2d353b","dark_background":"#21272c","darker_background":"#181d20","lighter_background":"#343f44","foreground":"#d3c6aa","dark_foreground":"#4f585e","light_foreground":"#9da9a0","bright_foreground":"#d3c6aa","red":"#e67e80","yellow":"#dbbc7f","orange":"#e09d7f","green":"#a7c080","cyan":"#83c092","blue":"#7fbbb3","magenta":"#d699b6"},"flexoki-light":{"label":"Flexoki Light","mode":"light","accent":"#205ea6","selection":"#cecdc3","muted":"#b7b5ac","background":"#fffcf0","dark_background":"#f2efe4","darker_background":"#e5e2d8","lighter_background":"#e6e4d9","foreground":"#100f0f","dark_foreground":"#878580","light_foreground":"#403e3c","bright_foreground":"#100f0f","red":"#d14d41","yellow":"#d0a215","orange":"#d0772b","green":"#879a39","cyan":"#3aa99f","blue":"#205ea6","magenta":"#ce5d97"},"gruvbox":{"label":"Gruvbox","mode":"dark","accent":"#7daea3","selection":"#504945","muted":"#665c54","background":"#282828","dark_background":"#1e1e1e","darker_background":"#161616","lighter_background":"#3c3836","foreground":"#d4be98","dark_foreground":"#7c6f64","light_foreground":"#bdae93","bright_foreground":"#d4be98","red":"#ea6962","yellow":"#d8a657","orange":"#e1875c","green":"#a9b665","cyan":"#89b482","blue":"#7daea3","magenta":"#d3869b"},"hackerman":{"label":"Hackerman","mode":"dark","accent":"#82fb9c","selection":"#1f253a","muted":"#2d3450","background":"#0b0c16","dark_background":"#080910","darker_background":"#06060c","lighter_background":"#151828","foreground":"#ddf7ff","dark_foreground":"#6a6e95","light_foreground":"#b5c5db","bright_foreground":"#ddf7ff","red":"#50f872","yellow":"#50f7d4","orange":"#50f7a3","green":"#4fe88f","cyan":"#7cf8f7","blue":"#829dd4","magenta":"#86a7df"},"kanagawa":{"label":"Kanagawa","mode":"dark","accent":"#dcd7ba","selection":"#363646","muted":"#54546d","background":"#1f1f28","dark_background":"#17171e","darker_background":"#111116","lighter_background":"#223249","foreground":"#dcd7ba","dark_foreground":"#727169","light_foreground":"#c8c093","bright_foreground":"#dcd7ba","red":"#c34043","yellow":"#c0a36e","orange":"#c17158","green":"#76946a","cyan":"#6a9589","blue":"#7e9cd8","magenta":"#957fb8"},"last-horizon":{"label":"Last Horizon","mode":"dark","accent":"#b59790","selection":"#584e51","muted":"#584e51","background":"#0c0b0c","dark_background":"#090809","darker_background":"#060606","lighter_background":"#0c0b0c","foreground":"#fafcfb","dark_foreground":"#584e51","light_foreground":"#cfd3cd","bright_foreground":"#e2dddc","red":"#c38b7b","yellow":"#6b5e73","orange":"#6b5e73","green":"#87a9b0","cyan":"#a5a0b6","blue":"#b59790","magenta":"#c4d8e2"},"lumon":{"label":"Lumon","mode":"dark","accent":"#8bc9eb","selection":"#243d56","muted":"#304860","background":"#16242d","dark_background":"#101b21","darker_background":"#0b1216","lighter_background":"#1b2d40","foreground":"#d6e2ee","dark_foreground":"#4d86b0","light_foreground":"#d6e2ee","bright_foreground":"#f2fcff","red":"#4d86b0","yellow":"#6fa4c9","orange":"#8bc9eb","green":"#5e95bc","cyan":"#b4e4f6","blue":"#6fb8e3","magenta":"#8bc9eb"},"lupine":{"label":"Lupine","mode":"light","accent":"#3264eb","selection":"#d0d0d0","muted":"#9e9e9e","background":"#fafafa","dark_background":"#ececec","darker_background":"#dedede","lighter_background":"#f5f5f5","foreground":"#212121","dark_foreground":"#757575","light_foreground":"#424242","bright_foreground":"#000000","red":"#c900c4","yellow":"#026fde","orange":"#026fde","green":"#4a2fd0","cyan":"#0c67de","blue":"#3264eb","magenta":"#8a4ad7"},"matte-black":{"label":"Matte Black","mode":"dark","accent":"#e68e0d","selection":"#2a2a2a","muted":"#333333","background":"#121212","dark_background":"#0d0d0d","darker_background":"#090909","lighter_background":"#1e1e1e","foreground":"#bebebe","dark_foreground":"#555555","light_foreground":"#8a8a8d","bright_foreground":"#bebebe","red":"#d35f5f","yellow":"#b91c1c","orange":"#c63d3d","green":"#ffc107","cyan":"#bebebe","blue":"#e68e0d","magenta":"#d35f5f"},"miasma":{"label":"Miasma","mode":"dark","accent":"#78824b","selection":"#383838","muted":"#666666","background":"#222222","dark_background":"#191919","darker_background":"#121212","lighter_background":"#2c2c2c","foreground":"#c2c2b0","dark_foreground":"#555555","light_foreground":"#8a8a7e","bright_foreground":"#c2c2b0","red":"#685742","yellow":"#b36d43","orange":"#8d6242","green":"#5f875f","cyan":"#c9a554","blue":"#78824b","magenta":"#bb7744"},"nord":{"label":"Nord","mode":"dark","accent":"#81a1c1","selection":"#434c5e","muted":"#4c566a","background":"#2e3440","dark_background":"#222730","darker_background":"#191c23","lighter_background":"#3b4252","foreground":"#d8dee9","dark_foreground":"#667080","light_foreground":"#adb5c4","bright_foreground":"#d8dee9","red":"#bf616a","yellow":"#ebcb8b","orange":"#d5967a","green":"#a3be8c","cyan":"#88c0d0","blue":"#81a1c1","magenta":"#b48ead"},"osaka-jade":{"label":"Osaka Jade","mode":"dark","accent":"#509475","selection":"#32473b","muted":"#53685b","background":"#111c18","dark_background":"#0c1512","darker_background":"#090f0d","lighter_background":"#23372b","foreground":"#c1c497","dark_foreground":"#81b8a8","light_foreground":"#d6d5bc","bright_foreground":"#f7e8b2","red":"#ff5345","yellow":"#459451","orange":"#a2734b","green":"#549e6a","cyan":"#2dd5b7","blue":"#509475","magenta":"#d2689c"},"retro-82":{"label":"Retro 82","mode":"dark","accent":"#faa968","selection":"#134e5a","muted":"#2a6b78","background":"#05182e","dark_background":"#031222","darker_background":"#020c17","lighter_background":"#0a2540","foreground":"#f6dcac","dark_foreground":"#3f8f8a","light_foreground":"#a7c9c6","bright_foreground":"#f6dcac","red":"#f85525","yellow":"#e97b3c","orange":"#faa968","green":"#028391","cyan":"#8cbfb8","blue":"#3f8f8a","magenta":"#3f8f8a"},"ristretto":{"label":"Ristretto","mode":"dark","accent":"#f38d70","selection":"#403e41","muted":"#72696a","background":"#2c2525","dark_background":"#211b1b","darker_background":"#181414","lighter_background":"#3d2f2a","foreground":"#e6d9db","dark_foreground":"#72696a","light_foreground":"#c3b7b8","bright_foreground":"#e6d9db","red":"#fd6883","yellow":"#f9cc6c","orange":"#fb9a77","green":"#adda78","cyan":"#85dacc","blue":"#f38d70","magenta":"#a8a9eb"},"rose-pine":{"label":"Rose Pine","mode":"light","accent":"#56949f","selection":"#dfdad9","muted":"#cecacd","background":"#faf4ed","dark_background":"#ede7e1","darker_background":"#e1dbd5","lighter_background":"#f2e9e1","foreground":"#575279","dark_foreground":"#9893a5","light_foreground":"#6e6a86","bright_foreground":"#575279","red":"#b4637a","yellow":"#ea9d34","orange":"#cf8057","green":"#286983","cyan":"#d7827e","blue":"#56949f","magenta":"#907aa9"},"solitude":{"label":"Solitude","mode":"dark","accent":"#798186","selection":"#343d41","muted":"#4b4e55","background":"#101315","dark_background":"#0c0e10","darker_background":"#080a0b","lighter_background":"#101315","foreground":"#cacccc","dark_foreground":"#4b4e55","light_foreground":"#cbc2be","bright_foreground":"#a5aeb4","red":"#565d60","yellow":"#d9dbdc","orange":"#d9dbdc","green":"#9fa5a9","cyan":"#707070","blue":"#798186","magenta":"#aeaeae"},"tokyo-night":{"label":"Tokyo Night","mode":"dark","accent":"#7aa2f7","selection":"#292e42","muted":"#414868","background":"#1a1b26","dark_background":"#13141c","darker_background":"#0e0e14","lighter_background":"#24283b","foreground":"#a9b1d6","dark_foreground":"#565f89","light_foreground":"#b4bee6","bright_foreground":"#c0caf5","red":"#f7768e","yellow":"#e0af68","orange":"#eb927b","green":"#9ece6a","cyan":"#449dab","blue":"#7aa2f7","magenta":"#ad8ee6"},"vantablack":{"label":"Vantablack","mode":"dark","accent":"#8d8d8d","selection":"#1a1a1a","muted":"#7a7a7a","background":"#000000","dark_background":"#090909","darker_background":"#070707","lighter_background":"#1a1a1a","foreground":"#ffffff","dark_foreground":"#505050","light_foreground":"#ececec","bright_foreground":"#ffffff","red":"#a4a4a4","yellow":"#cecece","orange":"#b9b9b9","green":"#b6b6b6","cyan":"#b0b0b0","blue":"#8d8d8d","magenta":"#9b9b9b"},"white":{"label":"White","mode":"light","accent":"#6e6e6e","selection":"#c0c0c0","muted":"#808080","background":"#ffffff","dark_background":"#f5f5f5","darker_background":"#e8e8e8","lighter_background":"#c0c0c0","foreground":"#000000","dark_foreground":"#c0c0c0","light_foreground":"#000000","bright_foreground":"#000000","red":"#2a2a2a","yellow":"#4a4a4a","orange":"#4a4a4a","green":"#3a3a3a","cyan":"#3e3e3e","blue":"#1a1a1a","magenta":"#2e2e2e"}};
+/* /themes */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ── theme: every Omarchy key becomes the page token of the same role ────────────
+const MAP = { accent: "--accent", selection: "--selection", muted: "--muted", background: "--bg", dark_background: "--bg-dark",
+  darker_background: "--bg-darker", lighter_background: "--bg-light", foreground: "--fg", dark_foreground: "--fg-dark",
+  light_foreground: "--fg-light", bright_foreground: "--fg-bright", red: "--red", yellow: "--yellow", orange: "--orange",
+  green: "--green", cyan: "--cyan", blue: "--blue", magenta: "--magenta" };
+const viewerDark = () => { const t = document.documentElement.dataset.theme; return t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; };
+let picked = store.get("omaseed-site-theme");
+if (!THEMES[picked]) picked = null;
+let mode = picked ? THEMES[picked].mode : (viewerDark() ? "dark" : "light");
+const current = () => picked || (mode === "dark" ? "tokyo-night" : "lupine");
+function applyTheme() {
+  const r = document.documentElement.style, t = picked && THEMES[picked];
+  for (const k in MAP) t ? r.setProperty(MAP[k], t[k]) : r.removeProperty(MAP[k]);
+  t ? r.setProperty("color-scheme", t.mode) : r.removeProperty("color-scheme");
+  $("modeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  const names = Object.keys(THEMES).filter(n => THEMES[n].mode === mode);
+  $("chips").innerHTML = names.map(n => `<button type="button" data-t="${n}" aria-pressed="${n === current()}"><i style="background:${THEMES[n].accent}"></i>${esc(THEMES[n].label)}</button>`).join("");
+}
+$("modeSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b || b.dataset.mode === mode) return;
+  mode = b.dataset.mode;
+  // a mode the viewer is already in needs no inline theme; the other mode starts on its default
+  picked = (mode === "dark") === viewerDark() ? null : (mode === "dark" ? "tokyo-night" : "lupine");
+  store.set("omaseed-site-theme", picked || ""); applyTheme();
+});
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  picked = b.dataset.t; mode = THEMES[picked].mode; store.set("omaseed-site-theme", picked); applyTheme();
+});
+const followViewer = () => { if (!picked) { mode = viewerDark() ? "dark" : "light"; applyTheme(); } };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", followViewer);
+new MutationObserver(followViewer).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+const nT = Object.keys(THEMES).length; if (nT) $("nThemes").textContent = nT;
+if (nT) applyTheme(); else document.querySelector(".themes").hidden = true;
+
+// ── demo data ───────────────────────────────────────────────────────────────────
+// name, category, tags, size GB, progress %, state, seeds/peers connected, swarm seeds, waiting, ↓ KB/s, ↑ KB/s, ratio, tracker
+const ROWS = [
+  ["archlinux-2026.09.01-x86_64.iso", "linux", [], 1.31, 48.9, "down", "21 / 42", 1204, 88, 1840, 112, .21, "example.net"],
+  ["Fedora-Workstation-Live-44-1.6.x86_64.iso", "linux", [], 2.34, 12.4, "down", "8 / 19", 312, 40, 1020, 0, .08, "example.net"],
+  ["Cosmos Laundromat 2K (CC-BY)", "movies", ["4k"], 3.12, 87.2, "down", "40 / 12", 44, 12, 940, 220, .31, "example.org"],
+  ["debian-13.1.0-amd64-DVD-1.iso", "linux", [], 3.98, 3.1, "down", "3 / 6", 7, 6, 410, 0, 0, "example.net"],
+  ["Wikipedia enwiki-20260901-pages-articles.xml.bz2", "none", ["keep"], 24.7, 61.0, "down", "14 / 9", 18, 9, 0, 0, .12, "trackerless"],
+  ["Blender 5.1 LTS linux-x64.tar.xz", "linux", [], .412, 100, "seed", "0 / 3", 4, 5, 0, 480, 3.42, "example.net"],
+  ["Sintel 1080p (CC-BY)", "movies", ["private"], 1.09, 100, "seed", "0 / 1", 2, 3, 0, 0, 2.10, "example.org"],
+  ["Big Buck Bunny 4K (CC-BY)", "movies", ["4k", "private"], 3.92, 100, "seed", "0 / 7", 4, 9, 0, 0, 5.60, "example.org"],
+  ["Tears of Steel 4K (CC-BY)", "movies", ["4k", "private"], 6.20, 100, "seed", "0 / 0", 1, 2, 0, 0, 1.12, "example.org"],
+  ["ubuntu-26.04.1-desktop-amd64.iso", "linux", ["keep"], 6.11, 100, "seed", "0 / 12", 4, 14, 0, 0, 4.75, "example.net"],
+  ["OpenStreetMap planet-260908.osm.pbf", "none", ["keep"], 81.4, 100, "stop", "0 / 0", 9, 0, 0, 0, .64, "trackerless"],
+  ["NixOS minimal 26.05 x86_64.iso", "linux", [], 1.02, 22.7, "stall", "0 / 2", 3, 2, 0, 0, .02, "example.net"],
+  ["LibreOffice 26.8.1 Linux x86_64 rpm.tar.gz", "linux", [], .33, 100, "check", "0 / 0", 4, 2, 0, 0, 2.95, "example.net"],
+  ["Elephants Dream 1080p (CC-BY)", "movies", ["private"], 2.03, 0, "err", "0 / 0", 0, 0, 0, 0, 0, "example.org"],
+  ["omarchy-4.0.4-x86_64.iso", "linux", [], 1.95, 0, "queue", "0 / 0", 4, 0, 0, 0, 0, "example.net"],
+  ["Spring (2019) 4K (CC-BY)", "movies", ["4k", "private"], 4.61, 100, "done", "0 / 4", 6, 4, 0, 0, 1.38, "example.org"],
+].map(([name, cat, tags, size, prog, st, sp, swarm, wait, dl, ul, ratio, trk], id) =>
+  ({ id, name, cat, tags, size, prog, st, sp, swarm, wait, dl, ul, ratio, trk, was: st, added: (id * 5 + 2), opts: { seq: false, flp: false, sup: false, auto: true } }));
+let nextId = ROWS.length;
+const byId = id => ROWS.find(r => r.id === id);
+const ST = { down: ["downloading", "--st-down", "↓"], seed: ["seeding", "--st-seed", "↑"], stop: ["stopped", "--st-stop", "■"], err: ["errored", "--st-err", "!"],
+  check: ["checking", "--st-check", "⟳"], queue: ["queued", "--st-queue", "≡"], stall: ["stalled", "--st-stall", "◌"], done: ["completed", "--st-seed", "✓"] };
+
+// a seeded random, so the demo is the same on every visit
+let seed = 20261010;
+const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+
+const gb = v => v >= 1000 ? `${(v / 1000).toFixed(2)} TB` : v >= 100 ? `${v.toFixed(0)} GB` : v >= 10 ? `${v.toFixed(1)} GB` : v >= 1 ? `${v.toFixed(2)} GB` : v >= .001 ? `${Math.round(v * 1000)} MB` : v > 0 ? `${Math.max(1, Math.round(v * 1e6))} KB` : "0";
+const spd = k => k <= 0 ? "0" : k >= 1000 ? `${(k / 1000).toFixed(2)} MB/s` : `${Math.round(k)} KB/s`;
+const eta = r => { if (r.prog >= 100) return "—"; if (r.st !== "down" || r.dl <= 0) return r.st === "down" || r.st === "stall" ? "∞" : "—";
+  const s = r.size * (1 - r.prog / 100) * 1e6 / r.dl; const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60);
+  return h ? `${h}h ${m}m` : m >= 10 ? `${m}m` : `${m}m ${String(Math.floor(s % 60)).padStart(2, "0")}s`; };
+const taken = r => r.size * r.prog / 100;
+const given = r => r.ratio * Math.max(taken(r), r.prog >= 100 ? r.size : 0);
+const hash = s => { let h = 2166136261; let out = ""; for (let i = 0; i < 40; i++) { h ^= s.charCodeAt(i % s.length) + i; h = Math.imul(h, 16777619) >>> 0; out += (h & 15).toString(16); } return out; };
+const day = n => new Date(today.getTime() - n * 86400000).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+// a year of seeding, a value in GB per day ending today; quiet days and a summer burst
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const YEAR = Array.from({ length: 371 }, (_, i) => {
+  const wk = (i % 7 === 5 || i % 7 === 6) ? 1.4 : 1, burst = i > 250 && i < 300 ? 1.8 : 1;
+  return rnd() < .03 ? 0 : +(Math.pow(rnd(), 1.6) * 3.2 * wk * burst + .05).toFixed(2);
+});
+
+// the newest .torrent files in Downloads, for the add sheet; a file tree is [depth, name, GB or null for a folder]
+const minsAgo = m => Date.now() - m * 60000;
+const when = t => { const d = new Date(t), d0 = new Date(t); d0.setHours(0, 0, 0, 0); const n = Math.round((today - d0) / 86400000), hm = d.toTimeString().slice(0, 5);
+  return n <= 0 ? `today ${hm}` : n === 1 ? `yesterday ${hm}` : `${d.toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ${hm}`; };
+const mkDL = () => [
+  { file: "Caminandes 3 Llamigos (CC-BY).torrent", title: "Caminandes 3 Llamigos (CC-BY)", at: minsAgo(38), cat: "movies", trk: "example.org",
+    files: [[0, "Caminandes 3 Llamigos (CC-BY)/", null], [1, "Caminandes_3_Llamigos-1080p.mp4", .198], [1, "Caminandes_3_Llamigos-720p.mp4", .0108], [1, "subtitles/", null],
+      [2, "en.srt", .00004], [2, "es.srt", .00004], [2, "pt-BR.srt", .00004], [1, "poster.jpg", .0011]] },
+  { file: "Big Buck Bunny 4K (CC-BY) [example.net].torrent", title: "Big Buck Bunny 4K (CC-BY)", at: minsAgo(312), cat: "movies", trk: "example.net",
+    match: "Big Buck Bunny 4K (CC-BY)", matchTrk: "example.org", matchPath: "/data/torrents/movies",
+    files: [[0, "Big Buck Bunny 4K (CC-BY)/", null], [1, "bbb_sunflower_2160p_60fps.mp4", 3.88], [1, "bbb.en.srt", .00005], [1, "poster.png", .04]] },
+  { file: "ubuntu-26.04.1-desktop-amd64.iso.torrent", title: "ubuntu-26.04.1-desktop-amd64.iso", at: minsAgo(60 * 26), cat: "linux", trk: "example.net", inLib: true, size: 6.11 },
+  { file: "linuxmint-23-cinnamon-64bit.iso.torrent", title: "linuxmint-23-cinnamon-64bit.iso", at: minsAgo(60 * 50), cat: "linux", trk: "example.net", size: 2.98 },
+  { file: "Wikimedia Commons Pictures of the Year 2025.torrent", title: "Wikimedia Commons Pictures of the Year 2025", at: minsAgo(60 * 24 * 11), cat: "none", trk: "trackerless",
+    files: [[0, "Pictures of the Year 2025/", null], [1, "01 Winner.jpg", .021], [1, "02 Second place.jpg", .018], [1, "03 Third place.jpg", .024], [1, "finalists/", null],
+      [2, "finalist-01.jpg", .016], [2, "finalist-02.jpg", .019], [2, "finalist-03.jpg", .022], [1, "README.txt", .000003]] },
+].map(d => ({ ...d, size: d.size ?? d.files.reduce((a, f) => a + (f[2] || 0), 0) }));
+const DL = mkDL();
+const FREE = 1800;                                                     // GB free on the demo drive
+
+// ── the window ──────────────────────────────────────────────────────────────────
+const S = { face: "lib", filter: { k: "status", v: "all" }, q: "", cur: 0, sel: new Set([0, 1]), tab: 0, range: 1, note: "" };
+const RANGES = [["1h", 3600, 60], ["24h", 86400, 144], ["7d", 604800, 168], ["30d", 2592000, 120], ["1y", 31536000, 365]];
+const app = $("app");
+let L = null, A = null;                                                // the open layer (menu, sheet), the add sheet's state
+const targets = () => S.sel.size ? [...S.sel].filter(byId) : [S.cur];
+let noteT;
+function note(t) { S.note = t; foot(); clearTimeout(noteT); noteT = setTimeout(() => { S.note = ""; foot(); }, 3200); }
+
+function matches(r, f) {
+  if (f.k === "status") return ({ all: true, downloading: r.st === "down", seeding: r.st === "seed", completed: r.prog >= 100, stopped: r.st === "stop",
+    active: r.dl > 0 || r.ul > 0, stalled: r.st === "stall", checking: r.st === "check", errored: r.st === "err" })[f.v];
+  if (f.v === "all") return true;
+  if (f.k === "cat") return r.cat === f.v;
+  if (f.k === "tag") return f.v === "untagged" ? !r.tags.length : r.tags.includes(f.v);
+  return r.trk === f.v;
+}
+const visible = () => ROWS.filter(r => matches(r, S.filter) && (!S.q || r.name.toLowerCase().includes(S.q.toLowerCase())));
+
+function rail() {
+  const grp = (title, k, items) => `<div class="grp"><span class="l">${title}</span>${items.map(([v, g]) =>
+    `<button type="button" data-k="${k}" data-v="${esc(v)}" aria-pressed="${S.filter.k === k && S.filter.v === v}"><span class="g">${g}</span><span>${esc(v)}</span><span class="n">${ROWS.filter(r => matches(r, { k, v })).length}</span></button>`).join("")}</div>`;
+  $("rail").innerHTML = grp("status", "status", [["all", "◆"], ["downloading", "↓"], ["seeding", "↑"], ["completed", "✓"], ["stopped", "■"], ["active", "●"], ["stalled", "◌"], ["checking", "⟳"], ["errored", "!"]])
+    + grp("categories", "cat", [["all", ""], ["linux", "▭"], ["movies", "▭"], ["none", "·"]])
+    + grp("tags", "tag", [["all", ""], ["4k", "#"], ["keep", "#"], ["private", "#"], ["untagged", "·"]])
+    + grp("trackers", "trk", [["all", ""], ["example.net", "◦"], ["example.org", "◦"], ["trackerless", "·"]]);
+}
+
+function table() {
+  const rows = visible();
+  $("qn").textContent = rows.length;
+  if (!rows.some(r => r.id === S.cur) && rows.length) S.cur = rows[0].id;
+  const H = `<div class="h c-nm">Name</div><div class="h num c-sz">Size</div><div class="h c-pg">Progress</div><div class="h c-st">Status</div><div class="h num c-sp">S / P</div><div class="h num sort c-dl">↓ ▾</div><div class="h num c-ul">↑</div><div class="h num c-eta">ETA</div><div class="h num c-rt">Ratio</div>`;
+  $("tbl").innerHTML = H + (rows.length ? rows.map(r => {
+    const s = ST[r.st], tag = `<em>${r.cat === "none" ? "" : r.cat}</em>${r.tags.includes("private") ? `<em class="pv">private</em>` : ""}`;
+    const cls = [S.sel.has(r.id) && "sel", r.id === S.cur && "cur"].filter(Boolean).join(" ");
+    return `<div class="r ${cls}" data-id="${r.id}"><div class="c-nm" title="${esc(r.name)}"><span>${esc(r.name)}</span>${tag}</div><div class="num c-sz">${gb(r.size)}</div><div class="c-pg" style="--st:var(${s[1]})"><div class="bar"><b style="width:${r.prog}%"></b></div><span>${r.prog >= 100 ? "100" : r.prog.toFixed(1)}%</span></div><div class="c-st"><i style="color:var(${s[1]})">${s[2]}</i><span>${s[0]}</span></div><div class="num c-sp">${r.sp}</div><div class="num c-dl${r.dl ? "" : " dim0"}">${spd(r.dl)}</div><div class="num c-ul${r.ul ? "" : " dim0"}">${spd(r.ul)}</div><div class="num c-eta">${eta(r)}</div><div class="num c-rt">${r.ratio.toFixed(2)}</div></div>`;
+  }).join("") : `<div class="empty">Nothing matches. <b>esc</b> clears the filter.</div>`);
+}
+
+function details() {
+  const r = byId(S.cur);
+  if (!r) { $("det").innerHTML = ""; return; }
+  const s = ST[r.st], tabs = ["General", "Files", "Trackers", "Peers"];
+  let pane;
+  if (S.tab === 0) {
+    let bits = ""; seed = r.id * 7919 + 1;
+    for (let i = 0; i < 60; i++) { const have = r.prog >= 100 || rnd() * 100 < r.prog; bits += `<rect x="${i * 5}" y="0" width="4.4" height="10" class="${have ? "h" : ""}"/>`; }
+    pane = `<div class="pieces" style="--st:var(${s[1]})"><div class="t"><span class="l">pieces</span><span class="l">${r.prog >= 100 ? "100" : r.prog.toFixed(1)} %</span></div><svg viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">${bits}</svg></div>
+      <div class="kv"><span class="sec">transfer</span>
+      <span class="k">status</span><span class="v" style="color:var(${s[1]})">${s[0]}</span>
+      <span class="k">downloaded</span><span class="v">${gb(taken(r))} of ${gb(r.size)}</span>
+      <span class="k">uploaded</span><span class="v">${gb(given(r))}</span>
+      <span class="k">seeds</span><span class="v">${r.sp.split(" / ")[0]} connected · ${r.swarm} in swarm</span>
+      <span class="k">peers</span><span class="v">${r.sp.split(" / ")[1]} connected · ${r.wait} waiting</span>
+      <span class="k">avg speed</span><span class="v">↓ ${spd(r.dl * .9)} · ↑ ${spd(r.ul * .8)}</span>
+      <span class="sec">information</span>
+      <span class="k">save path</span><span class="v">/data/torrents/${r.cat === "none" ? "" : r.cat + "/"}</span>
+      <span class="k">hash v1</span><span class="v">${hash(r.name)}</span>
+      <span class="k">tracker</span><span class="v">${r.trk === "trackerless" ? "none, DHT only" : "tracker." + r.trk}</span>
+      <span class="k">private</span><span class="v">${r.tags.includes("private") ? "yes" : "no"}</span>
+      <span class="sec">options</span>
+      <span class="k">sequential</span><span class="v">${r.opts.seq ? "on" : "off"}</span>
+      <span class="k">auto manage</span><span class="v">${r.opts.auto ? "on" : "off"}</span></div>`;
+  } else if (S.tab === 1) {
+    const base = r.name.replace(/\.(iso|tar\.xz|tar\.gz|bz2|pbf)$/, "");
+    const files = r.files || (/CC-BY/.test(r.name) ? [[`${base}.mkv`, r.size * .97], [`${base}.en.srt`, .00008], ["poster.jpg", .0021]] : [[r.name, r.size], [`${base}.sha256`, .0000001]]);
+    pane = `<div class="list"><div class="gh2">file</div><div class="gh2">size</div>${files.map(([n, z]) => `<div title="${esc(n)}">${esc(n)}</div><div>${gb(z)}</div>`).join("")}</div>`;
+  } else if (S.tab === 2) {
+    const extra = (r.extraTrk || []).map(t => `<div>${t}</div><div>new</div>`).join("");
+    pane = `<div class="list"><div class="gh2">tracker</div><div class="gh2">status</div>${r.trk === "trackerless" ? `<div>DHT</div><div>working</div><div>PeX</div><div>working</div>` : `<div>udp://tracker.${r.trk}:6969</div><div>working</div><div>https://tracker.${r.trk}/announce</div><div>working</div>${extra}<div>DHT</div><div>working</div>`}</div>`;
+  } else {
+    seed = r.id * 104729 + 3;
+    const n = Math.min(6, (parseInt(r.sp) || 0) + parseInt(r.sp.split(" / ")[1]));
+    const cl = ["qBittorrent 5.1.2", "Transmission 4.0.6", "Deluge 2.1.1", "libtorrent 2.0.11"];
+    pane = n ? `<div class="list"><div class="gh2">peer</div><div class="gh2">client</div>${Array.from({ length: n }, () => `<div>${rnd() < .5 ? "203.0.113" : "198.51.100"}.${Math.floor(rnd() * 250) + 2}</div><div>${cl[Math.floor(rnd() * cl.length)]}</div>`).join("")}</div>` : `<p class="l" style="padding-top:8px">no peers connected</p>`;
+  }
+  $("det").innerHTML = `<div class="hd"><b title="${esc(r.name)}">${esc(r.name)}</b><span>${[r.cat === "none" ? "no category" : r.cat, ...r.tags, r.added ? "added " + day(r.added) : "added today"].join(" · ")}</span></div>
+    <div class="strip"><div><span class="l">size</span><span class="v">${gb(r.size)}</span></div><div><span class="l">done</span><span class="v">${r.prog >= 100 ? "100" : r.prog.toFixed(1)} %</span></div><div><span class="l">ratio</span><span class="v">${r.ratio.toFixed(2)}</span></div><div><span class="l">eta</span><span class="v">${eta(r)}</span></div></div>
+    <div class="tabs" role="tablist">${tabs.map((t, i) => `<button type="button" role="tab" data-tab="${i}" aria-selected="${S.tab === i}">${t}<i>${i + 1}</i></button>`).join("")}</div>
+    <div class="pane">${pane}</div>`;
+}
+
+function selbar() {
+  const sel = ROWS.filter(r => S.sel.has(r.id));
+  $("selbar").hidden = !sel.length || S.face !== "lib";
+  if (!sel.length) return;
+  const g = sel.reduce((a, r) => a + given(r), 0), t = sel.reduce((a, r) => a + taken(r), 0);
+  const ico = (d, fill) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="${fill ? "currentColor" : "none"}" stroke="${fill ? "none" : "currentColor"}" stroke-width="1.3" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
+  $("selbar").innerHTML = `<b>${sel.length}</b><span>selected</span><button type="button" class="x" data-act="clear" title="clear selection · esc">✕</button><span class="sum"><span>${gb(sel.reduce((a, r) => a + r.size, 0))}</span><span>given <b>${gb(g)}</b></span><span>ratio <b style="${g >= t ? "color:var(--green)" : ""}">${t ? (g / t).toFixed(2) : "—"}</b></span></span>
+    <div class="ic"><button type="button" data-act="start" title="start · p">${ico("M8 5 L19 12 L8 19 Z")}</button><button type="button" data-act="stop" title="stop · p">${ico("M6.5 6.5 H17.5 V17.5 H6.5 Z")}</button><i></i><button type="button" data-act="menu" title="all actions · enter">${ico("M4.6 10.6 H7.4 V13.4 H4.6 Z M10.6 10.6 H13.4 V13.4 H10.6 Z M16.6 10.6 H19.4 V13.4 H16.6 Z", 1)}</button><button type="button" data-act="del" title="delete · d" style="color:var(--red)">${ico("M4 7 H20 M9 7 V4.5 H15 V7 M6.5 7 L7.5 20 H16.5 L17.5 7 M10 11 V16 M14 11 V16")}</button></div>`;
+}
+
+function foot() {
+  const down = ROWS.filter(r => r.st === "down").length;
+  const facts = S.note ? `<span><b>${esc(S.note)}</b></span>` : `<span><b>${ROWS.length}</b> torrents</span><span>·</span><span><b>${down}</b> downloading</span><span>·</span><span><b>1.80 TB</b> free</span><span>·</span><span>${S.sel.size} selected</span>`;
+  const hints = S.face === "lib"
+    ? `<span><b>j k</b> move</span><span><b>space</b> select</span><span><b>enter</b> actions</span><span><b>a</b> add</span><span><b>p</b> stop/start</span><span><b>d</b> delete</span><span><b>\`</b> seed</span><span><b>?</b> help</span>`
+    : `<span><b>\`</b> library</span><span><b>[ ]</b> range</span><span><b>/</b> filter</span><span><b>?</b> help</span>`;
+  $("foot").innerHTML = `<div class="facts">${facts}</div><div class="hints">${hints}</div>`;
+}
+
+function hero() {
+  $("sDown").textContent = spd(ROWS.reduce((a, r) => a + r.dl, 0));
+  $("sUp").textContent = spd(ROWS.reduce((a, r) => a + r.ul, 0));
+  $("sToday").textContent = gb(YEAR[YEAR.length - 1]);
+}
+
+// ── the seed console's parts, drawn to scale from the demo data ─────────────────
+function tideSeries(ri) {
+  const [, span, n] = RANGES[ri], bucket = span / n;
+  if (ri === 4) return YEAR.slice(-365);
+  seed = 4242 + ri;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const tEnd = Date.now() - (n - 1 - i) * bucket * 1000, d = new Date(tEnd), back = Math.floor((today.getTime() + 86400000 - tEnd) / 86400000);
+    const dayGB = YEAR[Math.max(0, YEAR.length - 1 - back)], hr = d.getHours() + d.getMinutes() / 60;
+    const shape = .35 + Math.pow(Math.sin(Math.PI * ((hr + 4) % 24) / 24), 2) * 1.3 + rnd() * .5;
+    out.push(dayGB * shape * bucket / 86400);
+  }
+  return out;
+}
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+function tideSVG(ri) {
+  const [name, span, n] = RANGES[ri], bucket = span / n, s = tideSeries(ri);
+  const rate = s.map(v => v * 1e6 / bucket);                       // KB/s
+  const W = 1000, H = 210, L0 = 0, R = 930, T = 14, B = 176;
+  const max = Math.max(...rate) || 1, top = niceMax(max), x = i => L0 + (R - L0) * i / (n - 1), y = v => B - (B - T) * v / top;
+  const pts = rate.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const pk = rate.indexOf(max);
+  const lab = i => { const d = new Date(Date.now() - (n - 1 - i) * bucket * 1000);
+    return ri <= 1 ? d.toTimeString().slice(0, 5) : ri <= 3 ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d.toLocaleDateString("en-GB", { month: "short" }); };
+  const xs = [0, 1, 2, 3, 4, 5].map(k => Math.round((n - 1) * k / 5));
+  const svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Upload over the last ${name}, peak ${spd(max)} (demo data)">
+    ${[0, .5, 1].map(f => `<line class="grid" x1="${L0}" x2="${R}" y1="${y(top * f)}" y2="${y(top * f)}"/><text x="${R + 10}" y="${y(top * f) + 3.5}">${f ? spd(top * f).replace("/s", "") : 0}</text>`).join("")}
+    <polygon class="area" points="${L0},${B} ${pts} ${R},${B}"/><polyline class="line" points="${pts}"/>
+    <line class="pk" x1="${x(pk)}" x2="${x(pk)}" y1="${y(max)}" y2="${B}"/><text class="pkt" x="${Math.min(x(pk) + 6, R - 90)}" y="${y(max) + 4}">peak ${spd(max)}</text>
+    <circle class="end" cx="${R}" cy="${y(rate[n - 1])}" r="3.5"/>
+    ${xs.map((i, k) => `<text x="${x(i)}" y="${H - 6}" text-anchor="${k === 0 ? "start" : k === 5 ? "end" : "middle"}">${k === 5 ? "now" : lab(i)}</text>`).join("")}</svg>`;
+  return { svg, meta: `↑ ${gb(s.reduce((a, v) => a + v, 0))} given in the last ${name}` };
+}
+
+function yearSVG() {
+  const days = YEAR.slice(-365), n = days.length;
+  const dow = (today.getDay() + 6) % 7;                           // Monday is row 0
+  const cols = Math.ceil((n + (6 - dow)) / 7), step = 14, L0 = 30, T = 16, W = L0 + cols * step, H = T + 7 * step + 2;
+  const q = [...days].filter(v => v > 0).sort((a, b) => a - b), cut = f => q[Math.floor(q.length * f)];
+  const lvl = v => v <= 0 ? "" : v < cut(.25) ? "l1" : v < cut(.5) ? "l2" : v < cut(.8) ? "l3" : "l4";
+  let cells = "", months = "", lastM = -1;
+  for (let i = 0; i < n; i++) {
+    const back = n - 1 - i, d = new Date(today.getTime() - back * 86400000);
+    const slot = (cols * 7 - 1) - (6 - dow) - back, c = Math.floor(slot / 7), r = slot % 7;
+    if (c < 0) continue;
+    cells += `<rect class="cell ${lvl(days[i])}" x="${L0 + c * step}" y="${T + r * step}" width="11" height="11"><title>${day(back)}: ${gb(days[i])}</title></rect>`;
+    if (r === 0 && d.getMonth() !== lastM && c < cols - 1) { lastM = d.getMonth(); months += `<text x="${L0 + c * step}" y="10">${d.toLocaleDateString("en-GB", { month: "short" })}</text>`; }
+  }
+  cells += `<rect class="today" x="${L0 + (cols - 1) * step - .75}" y="${T + dow * step - .75}" width="12.5" height="12.5"/>`;
+  const days3 = [["Mon", 0], ["Wed", 2], ["Fri", 4]].map(([t, r]) => `<text x="0" y="${T + r * step + 9}">${t}</text>`).join("");
+  let streak = 0; for (let i = n - 1; i >= 0 && days[i] > 0; i--) streak++;
+  let longest = 0, run = 0; for (const v of days) { run = v > 0 ? run + 1 : 0; longest = Math.max(longest, run); }
+  const best = Math.max(...days), bi = days.indexOf(best);
+  return `<div style="overflow-x:auto"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:560px" role="img" aria-label="A cell per day for the last year (demo data)">${months}${days3}${cells}</svg></div>
+    <div class="yearfoot"><span>this year <b>${gb(days.reduce((a, v) => a + v, 0))}</b></span><span>best day <b>${gb(best)}</b> ${day(n - 1 - bi)}</span><span>streak <b>${streak} days</b></span><span>longest <b>${longest}</b></span><span>quiet days <b>${days.filter(v => !v).length}</b></span></div>`;
+}
+
+function aliveHTML() {
+  const done = ROWS.filter(r => r.prog >= 100);
+  const B = [["only you", r => r.swarm <= 1], ["2 seeds", r => r.swarm === 2], ["3–5", r => r.swarm >= 3 && r.swarm <= 5], ["6–20", r => r.swarm >= 6 && r.swarm <= 20], ["21+", r => r.swarm > 20], ["unknown", () => false]];
+  const counts = B.map(([, f]) => done.filter(f).length), col = ["var(--yellow)", "var(--orange)", "var(--green)", "color-mix(in srgb, var(--green) 60%, transparent)", "color-mix(in srgb, var(--green) 35%, transparent)", "var(--fg-dark)"];
+  const list = [...done].sort((a, b) => a.swarm - b.swarm || b.wait - a.wait).slice(0, 5);
+  return `<div class="buckets">${B.map(([t], i) => `<div><b>${counts[i]}</b><span>${t}</span></div>`).join("")}</div>
+    <div class="stack" aria-hidden="true">${counts.map((c, i) => c ? `<i style="width:${100 * c / done.length}%;background:${col[i]}"></i>` : "").join("")}</div>
+    <ol>${list.map(r => `<li class="${r.swarm <= 2 ? "rare" : ""}"><span title="${esc(r.name)}">${esc(r.name)}</span><span>${r.swarm <= 1 ? "only you" : r.swarm + " seeds"}</span><span>${r.wait} waiting</span></li>`).join("")}</ol>`;
+}
+
+function ladderSVG() {
+  const rows = ROWS.filter(r => r.prog > 0), W = 1000, H = 190, L0 = 10, R = 990, mid = 96;
+  const lo = Math.log10(.02), hi = Math.log10(10), x = v => L0 + (R - L0) * (Math.log10(Math.max(v, .02)) - lo) / (hi - lo);
+  const placed = [];
+  const dots = [...rows].sort((a, b) => b.size - a.size).map(r => {
+    const rad = 3 + Math.sqrt(r.size) * 2.2, cx = x(r.ratio);
+    let cy = mid;
+    for (let k = 0; k < 40; k++) { const tryY = mid + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 4; if (placed.every(p => Math.hypot(p.cx - cx, p.cy - tryY) > p.rad + rad + 1.5)) { cy = tryY; break; } }
+    placed.push({ cx, cy, rad });
+    return `<circle class="dt${r.ratio < 1 ? " lo" : ""}" cx="${cx.toFixed(1)}" cy="${cy}" r="${rad.toFixed(1)}"><title>${esc(r.name)}: ratio ${r.ratio.toFixed(2)}, ${gb(r.size)}</title></circle>`;
+  }).join("");
+  const below = rows.filter(r => r.ratio < 1).length, sorted = rows.map(r => r.ratio).sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)];
+  const ticks = [.02, .1, .5, 1, 2, 5, 10].map(v => `<text x="${x(v)}" y="${H - 4}" text-anchor="middle">${v}</text>`).join("");
+  return `<div class="panel-h"><span class="m">${below} below 1.0 · median ratio ${med.toFixed(2)} · dot size is torrent size</span></div>
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Ratio ladder (demo data)"><rect class="band" x="${L0}" y="8" width="${x(1) - L0}" height="${H - 34}"/>
+    <line class="pb" x1="${x(1)}" x2="${x(1)}" y1="8" y2="${H - 26}"/><text class="pkt" x="${x(1) + 6}" y="20">paid back</text>${dots}${ticks}</svg>`;
+}
+
+function trackersHTML() {
+  const by = {};
+  for (const r of ROWS) { const t = by[r.trk] ||= { n: 0, g: 0, t: 0 }; t.n++; t.g += given(r); t.t += taken(r); }
+  return `<div class="trk"><div class="h">tracker</div><div class="h">torrents</div><div class="h">given</div><div class="h">ratio</div>${Object.entries(by).sort((a, b) => b[1].g - a[1].g).map(([k, v]) =>
+    `<div class="v">${k === "trackerless" ? "trackerless (DHT)" : "tracker." + k}</div><div>${v.n}</div><div class="v">${gb(v.g)}</div><div>${v.t ? (v.g / v.t).toFixed(2) : "—"}</div>`).join("")}</div>`;
+}
+
+function seedTiles() {
+  const g = ROWS.reduce((a, r) => a + given(r), 0), t = ROWS.reduce((a, r) => a + taken(r), 0), offer = ROWS.filter(r => r.st === "seed");
+  let streak = 0; for (let i = YEAR.length - 1; i >= 0 && YEAR[i] > 0; i--) streak++;
+  const v = x => { const s = gb(Math.abs(x)).split(" "); return `${x < 0 ? "-" : ""}${s[0]}<small>${s[1] || ""}</small>`; };
+  return `<div class="tiles">
+    <div><span class="l">given</span><span class="v">${v(g)}</span><span class="s">+${gb(YEAR[YEAR.length - 1])} today</span></div>
+    <div><span class="l">taken</span><span class="v">${v(t)}</span><span class="s">by these torrents</span></div>
+    <div><span class="l">ratio</span><span class="v">${t ? (g / t).toFixed(2) : "—"}</span><span class="s">given ÷ taken</span></div>
+    <div><span class="l">buffer</span><span class="v${g - t < 0 ? " neg" : ""}">${v(g - t)}</span><span class="s">given − taken</span></div>
+    <div><span class="l">on offer</span><span class="v">${v(offer.reduce((a, r) => a + r.size, 0))}</span><span class="s">in ${offer.length} seeding</span></div>
+    <div><span class="l">streak</span><span class="v">${streak}<small>days</small></span><span class="s">with upload</span></div></div>`;
+}
+
+const rngButtons = () => RANGES.map(([n], i) => `<button type="button" data-r="${i}" aria-pressed="${S.range === i}">${n}</button>`).join("");
+function seedView() {
+  const tide = tideSVG(S.range);
+  $("seedView").innerHTML = `<div class="scope"><span class="l">scope</span><b>every torrent</b><span class="l">· ${ROWS.length} torrents</span><span class="l r">ledger since ${new Date(today.getTime() - 364 * 86400000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span></div>
+    ${seedTiles()}
+    <div><div class="panel-h"><span class="t">the tide</span><span class="m">${tide.meta}</span><div class="rng">${rngButtons()}</div></div>${tide.svg}</div>
+    <div class="seed-2"><div><div class="panel-h"><span class="t">the year</span><span class="m">a cell per day, the last 53 weeks</span></div>${yearSVG()}</div>
+    <div class="alive"><div class="panel-h"><span class="t">keeping alive</span><span class="m">rarest first</span></div>${aliveHTML()}</div></div>
+    <div><div class="panel-h"><span class="t">ratio ladder</span></div>${ladderSVG()}</div>`;
+}
+function bigSeed() {
+  const tide = tideSVG(S.range);
+  $("bigTide").innerHTML = tide.svg; $("bigTideM").textContent = tide.meta; $("bigRng").innerHTML = rngButtons();
+  $("bigYear").innerHTML = yearSVG(); $("bigAlive").innerHTML = aliveHTML(); $("bigLadder").innerHTML = ladderSVG(); $("bigTrk").innerHTML = trackersHTML();
+}
+
+// ── the add sheet, in parts the sections below reuse ─────────────────────────────
+const meter = (part) => `<span class="meter"><i style="width:62%"></i><u style="left:62%;width:${Math.max(.6, Math.min(38, part)).toFixed(1)}%"></u></span>`;
+function freeHTML(kind, need = 0) {
+  if (kind === "good") return `<div class="k-free good"><span>needs nothing new · the files are already there · <b>${gb(FREE)}</b> free</span></div>`;
+  if (kind === "magnet") return `<div class="k-free"><span>size known once the metadata arrives · <b>${gb(FREE)}</b> free on this drive</span></div>`;
+  if (kind === "warn") return `<div class="k-free warn"><span>needs <b>48.2 GB</b></span>${meter(30)}<span><b>49.9 GB</b> free on /mnt/media · leaves 1.7 GB</span></div>`;
+  if (kind === "bad") return `<div class="k-free bad"><span>needs <b>48.2 GB</b></span>${meter(38)}<span>only <b>31.0 GB</b> free on /mnt/media · untick files or pick another folder</span></div>`;
+  if (kind === "part") return `<div class="k-free"><span>needs <b>${gb(need[0])}</b> of ${gb(need[1])}</span>${meter(need[0] / 48)}<span><b>${gb(FREE)}</b> free on this drive</span></div>`;
+  return `<div class="k-free"><span>needs <b>${gb(need)}</b></span>${meter(need / 48)}<span><b>${gb(FREE)}</b> free on this drive</span></div>`;
+}
+function dlListHTML(list, ticks) {
+  const n = ticks.size, lib = [...ticks].filter(i => list[i].inLib).length;
+  return `<div class="k-grp"><span class="k-lab"><span>in downloads</span><span>${n ? `${n} ticked · ${lib ? `${lib} already in the library · add takes ${n - lib}` : "add takes them together"}` : ""}</span></span>
+    <div class="k-list k-dl">${list.map((d, i) => `<div class="${ticks.has(i) ? "on" : ""}${d.inLib ? " lib-row" : ""}" data-dl="${i}" title="${esc(d.file)}"><span class="t">${ticks.has(i) ? "✓" : ""}</span><span>${esc(d.title)}</span><span class="lib">${d.inLib ? "in library" : ""}</span><span class="r">${gb(d.size)}</span><span class="a">${when(d.at)}</span></div>`).join("")}</div></div>`;
+}
+function matchHTML(d, saved) {
+  const n = d.files ? d.files.filter(f => f[2] != null).length : 1;
+  return `<div class="k-ban acc"><i></i><span class="g">${saved ? "✓" : "◆"}</span><span class="tx">${saved
+    ? `Saving beside <b>${esc(d.match)}</b>. qBittorrent will check the ${n} files and start seeding.<span class="sub">undo puts Save to back as it was</span>`
+    : `<b>These files are already on disk.</b> Same ${n} files and sizes as <b>${esc(d.match)}</b>, seeding from tracker.${d.matchTrk}.<span class="sub">${d.matchPath} · nothing to download if it's saved there</span>`}</span><button type="button" class="act" data-a="save">${saved ? "undo" : "save there"}</button></div>`;
+}
+function dupHTML(d) {
+  const r = ROWS.find(x => x.name === d.title);
+  return `<div class="k-sheet narrow"><div class="k-hd"><span class="k-ic">!</span><div><b>Already on home</b><span class="s">${esc(d.title)}</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
+    <div class="k-ban"><i></i><span class="g">!</span><span class="tx">This infohash is already in your list, seeding since ${r ? day(r.added) : "12 Sep"}.</span></div>
+    <div class="k-ban acc"><i></i><span class="g">+</span><span class="tx"><b>This source lists 2 trackers it doesn't have.</b><span class="k-trk"><span class="n">+ new</span><span>tracker.example.org:1337</span><span class="n">+ new</span><span>udp://tracker.example.com:6969</span><span class="o">has</span><span class="o">tracker.example.net (and 1 more)</span></span></span></div>
+    <div class="k-btns"><button type="button" data-a="close">close</button><button type="button" data-a="show">show it</button><button type="button" class="pri cur" data-a="merge">merge 2 trackers</button></div></div>`;
+}
+// The file tree: a folder's tick and size follow the files under it.
+function treeKids(files, i) { const out = []; for (let j = i + 1; j < files.length && files[j][0] > files[i][0]; j++) if (files[j][2] != null) out.push(j); return out; }
+function filesHTML(files, off, prio) {
+  const leaves = files.map((f, i) => i).filter(i => files[i][2] != null), on = leaves.filter(i => !off.has(i));
+  const total = leaves.reduce((a, i) => a + files[i][2], 0), want = on.reduce((a, i) => a + files[i][2], 0);
+  const tick = ids => ids.every(i => !off.has(i)) ? "✓" : ids.some(i => !off.has(i)) ? "–" : "·";
+  const P = ["normal", "high", "maximal"];
+  return `<div class="k-grp"><span class="k-lab"><span>files</span><span>${on.length === leaves.length ? `${leaves.length} files · ${gb(total)}` : `${on.length} of ${leaves.length} files · ${gb(want)}`}</span></span>
+    <div class="k-list k-files"><div class="hdr"><span>${tick(leaves)}</span><span>Name</span><span class="r">Size</span><span>Priority</span></div>${files.map((f, i) => {
+      const dir = f[2] == null, kids = dir ? treeKids(files, i) : [i], skip = kids.every(k => off.has(k)), p = prio[i] || 0;
+      return `<div><span class="t" data-tick="${i}">${tick(kids)}</span><span class="${skip ? "off" : dir ? "f" : ""}" style="padding-left:${f[0] * 14}px">${dir ? "▾ " : ""}${esc(f[1])}</span><span class="r">${gb(kids.reduce((a, k) => a + files[k][2], 0))}</span>${dir ? "<span></span>" : `<span class="p${skip ? " skip" : p ? " hi" : ""}" data-prio="${i}">${skip ? "skip" : P[p]}</span>`}</div>`;
+    }).join("")}</div></div>`;
+}
+function addHTML() {
+  if (A.dup) return dupHTML(A.dup);
+  const d = A.src, mag = !d && /^magnet:/i.test(A.text.trim()), n = A.dlTicks.size;
+  const dn = mag ? decodeURIComponent(((A.text.match(/[?&]dn=([^&]+)/) || [])[1] || "").replace(/\+/g, " ")) : "";
+  const sub = d ? `${d.title} · ${gb(d.size)} · from ${d.from || "file"}` : mag ? `${dn || "magnet link"} · from magnet link` : "paste a magnet link, a URL or pick a file";
+  const files = d?.files && d.files.length > 2 ? d.files : null;
+  const leaves = files ? files.map((f, i) => i).filter(i => files[i][2] != null) : [];
+  const want = files ? leaves.filter(i => !A.off.has(i)).reduce((a, i) => a + files[i][2], 0) : d?.size || 0;
+  const none = files && leaves.every(i => A.off.has(i));
+  const free = A.saved ? freeHTML("good") : mag ? freeHTML("magnet") : d ? (files && want < d.size ? freeHTML("part", [want, d.size]) : freeHTML("need", want))
+    : n ? freeHTML("need", [...A.dlTicks].filter(i => !DL[i].inLib).reduce((a, i) => a + DL[i].size, 0)) : `<div class="k-free"><span><b>${gb(FREE)}</b> free on this drive</span></div>`;
+  const save = A.saved ? `<div class="k-fld hl"><span>${d.matchPath}/</span><span class="tr">from the files match · browse</span></div>`
+    : A.cat && A.cat !== "none" ? `<div class="k-fld"><span>/data/torrents/${A.cat}/</span><span class="tr">from category · browse</span></div>`
+    : `<div class="k-fld ph"><span>the server's default</span><span class="tr">browse</span></div>`;
+  const chip = (v, on, k) => `<button type="button" class="k-chip${on ? " on" : ""}" data-${k}="${v}">${v}</button>`;
+  const many = n > 1 ? ` ${n - [...A.dlTicks].filter(i => DL[i].inLib).length}` : "";
+  return `<div class="k-sheet" role="dialog" aria-label="Add torrent">
+    <div class="k-hd"><span class="k-ic">+</span><div><b>${n > 1 ? `Add ${n} torrents` : "Add torrent"}</b><span class="s">${esc(sub)}</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
+    <div class="k-grp"><span class="k-lab"><span>magnet, url or file</span></span><label class="k-fld"><input id="addSrc" type="text" value="${esc(A.text)}" placeholder="magnet:?xt=urn:btih:…" autocomplete="off" spellcheck="false" aria-label="Magnet, URL or file"><button type="button" class="tr" data-a="browse">browse<span class="k-kc">ctrl+o</span></button></label></div>
+    ${d?.match ? matchHTML(d, A.saved) : ""}
+    ${!d && !mag ? dlListHTML(DL, A.dlTicks) : ""}
+    <div class="k-grp"><span class="k-lab"><span>name</span></span><div class="k-fld ph"><span>${esc(d?.title || dn || "the torrent's own name")}</span></div></div>
+    <div class="k-two"><div class="k-grp"><span class="k-lab"><span>category</span></span><div class="k-chips">${["linux", "movies"].map(c => chip(c, A.cat === c, "cat")).join("")}<button type="button" class="k-chip" data-a="more">…</button></div></div>
+      <div class="k-grp"><span class="k-lab"><span>tags</span></span><div class="k-chips">${["4k", "keep", "private"].map(t => chip(t, A.tags.has(t), "tag")).join("")}<button type="button" class="k-chip" data-a="more">…</button></div></div></div>
+    <div class="k-grp"><span class="k-lab"><span>save to</span></span>${save}${free}</div>
+    <div class="k-three"><div class="k-grp"><span class="k-lab"><span>layout</span></span><div class="k-chips">${["Original", "Subfolder", "No subfolder"].map((t, i) => `<button type="button" class="k-chip${A.layout === i ? " on" : ""}" data-layout="${i}">${t}</button>`).join("")}</div></div>
+      <div class="k-grp"><span class="k-lab"><span>download limit</span></span><div class="k-fld ph"><span>∞</span><span class="tr">KB/s</span></div></div>
+      <div class="k-grp"><span class="k-lab"><span>upload limit</span></span><div class="k-fld ph"><span>∞</span><span class="tr">KB/s</span></div></div></div>
+    <div class="k-togs">${[["seq", "sequential download"], ["flp", "first and last pieces first"], ["skip", "skip hash check"]].map(([k, t]) => `<button type="button" class="k-tog${A.togs[k] ? " on" : ""}" data-tog="${k}"><i></i>${t}</button>`).join("")}</div>
+    ${files ? filesHTML(files, A.off, A.prio) : ""}
+    ${none ? `<div class="k-btns two"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="addstop">add stopped</button></div><span class="k-free">nothing ticked: added stopped · choose its files later in the Files tab</span>`
+      : `<div class="k-btns"><button type="button" data-a="close">cancel</button><button type="button" data-a="addstop">add${many} stopped</button><button type="button" class="pri cur" data-a="add">add${many}</button></div>`}
+    <div class="k-hints"><span><b>tab</b> fields</span><span><b>enter</b> add</span><span><b>shift+enter</b> add stopped</span>${d?.match && !A.saved ? "<span><b>alt+s</b> save there</span>" : ""}<span class="sp"></span><span>server: home</span></div></div>`;
+}
+function openAdd(src) {
+  A = { src: null, dup: null, text: "", dlTicks: new Set(), off: new Set(), prio: {}, cat: null, tags: new Set(), layout: 0, togs: {}, saved: false };
+  if (src) useSource(src);
+  tried("add"); layer("add");
+}
+function useSource(d) {
+  if (d.inLib) { A.dup = d; return; }
+  A.src = d; A.text = d.from === "drop" ? d.file : `~/Downloads/${d.file}`; A.cat = d.cat !== "none" ? d.cat : null; A.off = new Set(); A.prio = {}; A.saved = false; A.dlTicks.clear();
+}
+function addNow(stopped) {
+  const d = A.src, mag = !d && /^magnet:/i.test(A.text.trim());
+  let list = d ? [d] : [...A.dlTicks].map(i => DL[i]).filter(x => !x.inLib);
+  if (mag) list = [{ title: decodeURIComponent(((A.text.match(/[?&]dn=([^&]+)/) || [])[1] || "magnet link").replace(/\+/g, " ")), size: 0, magnet: true, trk: "example.net" }];
+  if (!list.length) { layer(null); note("nothing to add"); return; }
+  const files = d?.files && d.files.length > 2 ? d.files : null, none = files && files.every((f, i) => f[2] == null || A.off.has(i));
+  let last;
+  for (const x of list) {
+    const r = { id: nextId++, name: x.title, cat: A.cat || (x.cat && x.cat !== "none" ? x.cat : "none"), tags: [...A.tags], size: x.size || 1.2, prog: 0, st: "down", sp: "0 / 0",
+      swarm: 14, wait: 3, dl: 0, ul: 0, ratio: 0, trk: x.trk || "example.net", was: "down", added: 0, opts: { seq: !!A.togs.seq, flp: !!A.togs.flp, sup: false, auto: true },
+      files: x.files ? x.files.filter(f => f[2] != null).map(f => [f[1], f[2]]) : null };
+    if (A.saved && x === d) { r.st = "check"; r.prog = 0; setTimeout(() => { r.prog = 100; r.st = "seed"; r.ul = 64; r.sp = "0 / 2"; render(); note(`seeding ${r.name}: nothing was downloaded`); }, 2600); }
+    else if (stopped || none) { r.st = "stop"; r.was = "down"; }
+    else { r.dl = 700 + Math.round(Math.random() * 900); r.sp = "6 / 11"; }
+    ROWS.unshift(r); x.inLib = true; last = r;
+  }
+  S.cur = last.id; S.sel = new Set([last.id]); S.face = "lib"; S.filter = { k: "status", v: "all" }; S.q = ""; $("q").value = "";
+  layer(null); render(); note(list.length > 1 ? `added ${list.length} torrents` : `added ${last.name}${stopped || none ? ", stopped" : ""}`);
+}
+
+// ── the actions menu (enter or a right-click), as shipped ──────────────────────────
+const MENU = [["toggle", "p"], ["force start", "P"], 0, ["recheck", "c"], ["reannounce", "R"], 0, ["category", "C"], ["tags", "t"], ["set location", "m"], ["limits", "L"], ["rename", "r"], 0,
+  ["sequential download", "s", "seq"], ["first / last pieces first", "f", "flp"], ["super seeding", "S", "sup"], ["automatic management", "a", "auto"], 0,
+  ["queue up", "["], ["queue down", "]"], ["copy magnet", "y"], ["copy hash", "Y"], ["copy name", "n"], ["open folder", "o"], 0, ["delete", "d"]];
+const ITEMS = MENU.filter(Boolean);
+function menuHTML() {
+  const r = byId(S.cur), ids = targets(); let i = -1;
+  return `<div class="k-menu" id="menu" role="menu" aria-label="Actions">${ids.length > 1 ? `<div class="mh">${ids.length} selected</div>` : ""}${MENU.map(m => {
+    if (!m) return `<div class="sep"></div>`; i++;
+    const label = m[0] === "toggle" ? (r.st === "stop" || r.st === "err" ? "start" : "stop") : m[0];
+    return `<button type="button" role="menuitem" class="it${i === L.i ? " cur" : ""}${m[0] === "delete" ? " danger" : ""}" data-i="${i}">${m[2] ? `<span class="g">${r.opts[m[2]] ? "✓" : ""}</span>` : ""}<span>${label}</span><span class="kk">${m[1]}</span></button>`;
+  }).join("")}</div>`;
+}
+function openMenu(x, y, up) { tried("menu"); layer("menu", { i: 0, x, y, up }); }
+function menuAtCursor() {
+  const row = app.querySelector(".tbl .r.cur > div"), w = app.getBoundingClientRect();
+  if (!row || S.face !== "lib") return;
+  const c = row.getBoundingClientRect();
+  openMenu(c.left - w.left + 24, c.bottom - w.top);
+}
+function placeMenu() {
+  const m = $("menu"), W = app.clientWidth, H = app.clientHeight;
+  m.style.left = Math.max(8, Math.min(L.x, W - m.offsetWidth - 8)) + "px";
+  const y = L.up ? L.y - m.offsetHeight - 4 : L.y;
+  m.style.top = Math.max(8, Math.min(y, H - m.offsetHeight - 8)) + "px";
+}
+function copy(text, what) {
+  const done = () => note(`copied the ${what}`);
+  navigator.clipboard?.writeText(text).then(done, () => note(`${what}: your browser kept the clipboard closed`)) ?? note(`${what}: your browser kept the clipboard closed`);
+}
+function runItem(i) {
+  const m = ITEMS[i], ids = targets(), rs = ids.map(byId).filter(Boolean), one = rs.length === 1;
+  layer(null);
+  switch (m[0]) {
+    case "toggle": toggle(ids); break;
+    case "force start": rs.forEach(r => { r.st = r.prog >= 100 ? "seed" : "down"; if (r.st === "down" && !r.dl) r.dl = 500; }); render(); note("force started, past the queue"); break;
+    case "recheck": rs.forEach(r => { const before = r.st; r.st = "check"; setTimeout(() => { r.st = before === "check" ? (r.prog >= 100 ? "seed" : "down") : before; render(); }, 2400); }); render(); note(`checking the data of ${one ? rs[0].name : rs.length + " torrents"}`); break;
+    case "reannounce": note(`reannounced ${one ? "it" : rs.length + " torrents"} to every tracker`); break;
+    case "sequential download": case "first / last pieces first": case "super seeding": case "automatic management": {
+      const v = !byId(S.cur).opts[m[2]]; rs.forEach(r => r.opts[m[2]] = v); render(); note(`${m[0]} ${v ? "on" : "off"}`); break; }
+    case "copy magnet": copy(rs.map(r => `magnet:?xt=urn:btih:${hash(r.name)}&dn=${encodeURIComponent(r.name)}`).join("\n"), one ? "magnet" : "magnets"); break;
+    case "copy hash": copy(rs.map(r => hash(r.name)).join("\n"), one ? "hash" : "hashes"); break;
+    case "copy name": copy(rs.map(r => r.name).join("\n"), one ? "name" : "names"); break;
+    case "open folder": note(`opens /data/torrents/${byId(S.cur).cat === "none" ? "" : byId(S.cur).cat + "/"} in your file manager`); break;
+    case "delete": openDel(ids); break;
+    default: note(`${m[0]} opens its own palette in omaseed; this demo stops here`);
+  }
+}
+
+// ── delete, with the last-seed guard ─────────────────────────────────────────────
+function openDel(ids, files = false) { layer("del", { ids: ids.filter(byId), files, b: 0 }); }
+function delHTML() {
+  const rs = L.ids.map(byId), one = rs.length === 1, disk = rs.reduce((a, r) => a + taken(r), 0);
+  const names = rs.slice(0, 3).map(r => `<span>${esc(r.name)}</span>`).join("") + `<span>${rs.length > 3 ? `and ${rs.length - 3} more · ` : ""}${gb(disk)} on disk</span>`;
+  const last = rs.find(r => r.prog >= 100 && r.swarm <= 1 && r.st !== "stop");
+  return `<div class="k-sheet conf k-conf" role="dialog" aria-label="Delete"><div class="msg">${one ? "Delete this torrent?" : `Delete ${rs.length} torrents?`}</div><div class="sub">${names}</div>
+    <button type="button" class="k-tog${L.files ? " on" : ""}" data-a="files"><i></i>also delete files from disk</button>
+    ${last ? `<div class="k-warnb"><span>You are its only seed.<span class="l"> ${last.wait} waiting for it. Deleting it takes it out of the swarm.</span></span><button type="button" class="stop" data-a="stopinstead">stop instead</button></div>` : ""}
+    <div class="bts"><button type="button" class="${L.b === 0 ? "cur" : ""}" data-a="cancel">cancel</button><button type="button" class="dng${L.b === 1 ? " cur" : ""}" data-a="delete">delete</button></div></div>`;
+}
+function doDelete() {
+  const rs = L.ids.map(byId), files = L.files;
+  for (const r of rs) { ROWS.splice(ROWS.indexOf(r), 1); S.sel.delete(r.id); const d = DL.find(x => x.title === r.name); if (d) d.inLib = false; }
+  layer(null); S.cur = visible()[0]?.id ?? 0; render();
+  note(`deleted ${rs.length === 1 ? rs[0].name : rs.length + " torrents"}${files ? ", with the files" : ", files kept"}`);
+}
+
+const HELP = `<div class="k-sheet narrow" role="dialog" aria-label="Keys"><div class="k-hd"><span class="k-ic">?</span><div><b>Keys in this demo</b><span class="s">omaseed has a key for every action; ? in the app lists them all</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
+  <div class="k-help" style="grid-template-columns:minmax(0,1fr)">${[["j k  ↑ ↓", "Move the cursor"], ["space", "Select or unselect the cursor row"], ["enter", "Open the actions menu (or right-click a torrent)"], ["a", "Add a torrent"], ["p", "Stop or start"], ["d", "Delete"], ["`", "Flip between the library and the seed console"], ["[ ]", "Seed console: a shorter or longer range"], ["1–4", "Details tab"], ["/", "Filter the table by name"], ["esc", "Close, then clear the filter, then the selection"]].map(([k, t]) => `<div class="r"><b>${k}</b><span>${t}</span></div>`).join("")}</div></div>`;
+
+// ── layers over the window ───────────────────────────────────────────────────────
+function layer(kind, opts) { L = kind ? { kind, ...opts } : null; drawLayer(); }
+function drawLayer(focusSrc) {
+  const el = $("layer");
+  el.hidden = !L;
+  if (!L) { el.innerHTML = ""; app.focus({ preventScroll: true }); return; }
+  el.className = "k layer" + (L.kind === "menu" ? " menu" : "");
+  el.innerHTML = L.kind === "menu" ? menuHTML() : L.kind === "add" ? addHTML() : L.kind === "del" ? delHTML() : HELP;
+  if (L.kind === "menu") placeMenu();
+  const src = $("addSrc");
+  if (src && focusSrc) { src.focus({ preventScroll: true }); src.setSelectionRange(src.value.length, src.value.length); }
+  else if (!el.contains(document.activeElement)) app.focus({ preventScroll: true });
+}
+
+function render() {
+  const lib = S.face === "lib";
+  $("fLib").setAttribute("aria-selected", String(lib)); $("fSeed").setAttribute("aria-selected", String(!lib));
+  $("tbl").hidden = !lib; $("seedView").hidden = lib;
+  rail(); hero(); foot(); selbar(); details();
+  lib ? table() : seedView();
+}
+
+// ── pointers to try things; each goes once it has been done ─────────────────────
+const TRIED = new Set();
+function tried(k) {
+  if (TRIED.has(k)) return; TRIED.add(k);
+  document.querySelector(`#try [data-try="${k}"]`)?.classList.add("done");
+  if (k === "seed") $("fSeed").classList.remove("beacon");
+  if (k === "add") $("addBtn").classList.remove("beacon");
+}
+$("try").addEventListener("click", e => {
+  const b = e.target.closest("[data-try]"); if (!b) return;
+  const k = b.dataset.try;
+  if (k === "menu") { S.face = "lib"; render(); menuAtCursor(); }
+  if (k === "seed") { S.face = "seed"; tried("seed"); render(); }
+  if (k === "add") openAdd();
+  if (k === "help") { tried("help"); layer("help"); }
+  app.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+});
+
+// ── input ───────────────────────────────────────────────────────────────────────
+const move = d => { const v = visible(); if (!v.length) return; const i = v.findIndex(r => r.id === S.cur); S.cur = v[Math.max(0, Math.min(v.length - 1, i + d))].id; render();
+  app.querySelector(".r.cur")?.scrollIntoView({ block: "nearest" }); };
+const toggle = ids => { for (const id of ids) { const r = byId(id); if (!r) continue;
+  if (r.st === "stop" || r.st === "err") { r.st = r.was === "stop" || r.was === "err" ? (r.prog >= 100 ? "seed" : "down") : r.was; if (r.st === "down" && !r.dl) r.dl = 300; }
+  else { r.was = r.st; r.st = "stop"; r.dl = 0; r.ul = 0; } } render(); };
+const setRange = i => { S.range = Math.max(0, Math.min(RANGES.length - 1, i)); render(); bigSeed(); };
+const pick = (e, id) => {
+  if (e.ctrlKey || e.metaKey) S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id);
+  else if (e.shiftKey) { const v = visible().map(r => r.id), a = v.indexOf(S.cur), b = v.indexOf(id); v.slice(Math.min(a, b), Math.max(a, b) + 1).forEach(x => S.sel.add(x)); }
+  else S.sel = new Set([id]);
+  S.cur = id;
+};
+
+$("tbl").addEventListener("click", e => { const row = e.target.closest(".r"); if (!row) return; pick(e, +row.dataset.id); render(); });
+$("tbl").addEventListener("dblclick", e => { const row = e.target.closest(".r"); if (row) { S.tab = 0; details(); } });
+$("tbl").addEventListener("contextmenu", e => {
+  const row = e.target.closest(".r"); if (!row) return;
+  e.preventDefault();
+  const id = +row.dataset.id;
+  if (!S.sel.has(id)) S.sel = new Set([id]);
+  S.cur = id; render();
+  const w = app.getBoundingClientRect();
+  openMenu(e.clientX - w.left, e.clientY - w.top);
+});
+$("rail").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.filter = { k: b.dataset.k, v: b.dataset.v }; S.face = "lib"; render(); });
+$("det").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) { S.tab = +b.dataset.tab; details(); } });
+$("selbar").addEventListener("click", e => { const b = e.target.closest("[data-act]"); if (!b) return; const a = b.dataset.act;
+  if (a === "menu") { const w = app.getBoundingClientRect(), c = b.getBoundingClientRect(); openMenu(c.right - w.left - 250, c.top - w.top, true); return; }
+  if (a === "del") { openDel(targets()); return; }
+  if (a === "clear") { S.sel.clear(); render(); return; }
+  toggle([...S.sel].filter(id => (a === "stop") === (byId(id)?.st !== "stop"))); });
+$("fLib").addEventListener("click", () => { S.face = "lib"; render(); });
+$("fSeed").addEventListener("click", () => { S.face = "seed"; tried("seed"); render(); });
+$("addBtn").addEventListener("click", () => openAdd());
+$("seedView").addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b) setRange(+b.dataset.r); });
+$("bigRng").addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b) setRange(+b.dataset.r); });
+$("q").addEventListener("input", e => { S.q = e.target.value; S.face = "lib"; render(); });
+$("helpBtn").addEventListener("click", () => { tried("help"); layer("help"); });
+
+const layerEl = $("layer");
+layerEl.addEventListener("mousedown", e => { if (e.target === layerEl && L && L.kind !== "add") { e.preventDefault(); layer(null); } });
+layerEl.addEventListener("contextmenu", e => { if (L?.kind === "menu") { e.preventDefault(); layer(null); const el = document.elementFromPoint(e.clientX, e.clientY)?.closest(".r");
+  if (el) el.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY })); } });
+layerEl.addEventListener("mouseover", e => { const it = e.target.closest(".k-menu .it"); if (it && L?.kind === "menu" && +it.dataset.i !== L.i) { L.i = +it.dataset.i; layerEl.querySelectorAll(".k-menu .it").forEach(x => x.classList.toggle("cur", +x.dataset.i === L.i)); } });
+layerEl.addEventListener("input", e => {
+  if (e.target.id !== "addSrc") return;
+  A.text = e.target.value;
+  const hit = DL.find(d => A.text.trim().endsWith(d.file));
+  A.src = hit && !hit.inLib ? hit : null; if (!hit) A.saved = false;
+  drawLayer(true);
+});
+layerEl.addEventListener("click", e => {
+  if (!L) return;
+  const t = e.target;
+  if (L.kind === "menu") { const it = t.closest(".it"); if (it) runItem(+it.dataset.i); return; }
+  if (L.kind === "help") { if (t.closest("[data-a=close]")) layer(null); return; }
+  if (L.kind === "del") {
+    const a = t.closest("[data-a]")?.dataset.a;
+    if (a === "files") { L.files = !L.files; drawLayer(); }
+    if (a === "cancel") layer(null);
+    if (a === "delete") doDelete();
+    if (a === "stopinstead") { const r = L.ids.map(byId).find(r => r.swarm <= 1); layer(null); toggle([r.id]); note(`stopped ${r.name}; still on disk, still yours to seed later`); }
+    return;
+  }
+  // the add sheet
+  const dl = t.closest("[data-dl]"), a = t.closest("[data-a]")?.dataset.a;
+  if (dl) { const i = +dl.dataset.dl;
+    if (e.ctrlKey || e.metaKey || t.closest(".t")) { A.dlTicks.has(i) ? A.dlTicks.delete(i) : A.dlTicks.add(i); }
+    else useSource(DL[i]);
+    drawLayer(); return; }
+  const tk = t.closest("[data-tick]");
+  if (tk) { const i = +tk.dataset.tick, f = A.src.files, kids = f[i][2] == null ? treeKids(f, i) : [i], allOn = kids.every(k => !A.off.has(k));
+    kids.forEach(k => allOn ? A.off.add(k) : A.off.delete(k)); drawLayer(); return; }
+  const pr = t.closest("[data-prio]");
+  if (pr) { const i = +pr.dataset.prio; if (!A.off.has(i)) { A.prio[i] = ((A.prio[i] || 0) + 1) % 3; drawLayer(); } return; }
+  if (t.closest("[data-cat]")) { const c = t.closest("[data-cat]").dataset.cat; A.cat = A.cat === c ? null : c; drawLayer(); return; }
+  if (t.closest("[data-tag]")) { const g = t.closest("[data-tag]").dataset.tag; A.tags.has(g) ? A.tags.delete(g) : A.tags.add(g); drawLayer(); return; }
+  if (t.closest("[data-layout]")) { A.layout = +t.closest("[data-layout]").dataset.layout; drawLayer(); return; }
+  if (t.closest("[data-tog]")) { const k = t.closest("[data-tog]").dataset.tog; A.togs[k] = !A.togs[k]; drawLayer(); return; }
+  if (a === "close") { layer(null); return; }
+  if (a === "save") { A.saved = !A.saved; drawLayer(); return; }
+  if (a === "add") addNow(false);
+  if (a === "addstop") addNow(true);
+  if (a === "browse") note("browse opens your file picker in omaseed");
+  if (a === "more") note("… opens the full category or tag palette in omaseed");
+  if (a === "merge") { const r = ROWS.find(x => x.name === A.dup.title); r.extraTrk = ["tracker.example.org:1337", "udp://tracker.example.com:6969"]; layer(null); S.cur = r.id; S.sel = new Set([r.id]); S.tab = 2; S.face = "lib"; render(); note(`+ 2 trackers added to ${r.name} · its Trackers tab is open`); }
+  if (a === "show") { const r = ROWS.find(x => x.name === A.dup.title); layer(null); S.cur = r.id; S.sel = new Set([r.id]); S.face = "lib"; S.filter = { k: "status", v: "all" }; render(); app.querySelector(".r.cur")?.scrollIntoView({ block: "nearest" }); }
+});
+
+app.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.metaKey) return;
+  const k = e.key;
+  if (L) {
+    if (k === "Escape") { e.preventDefault(); layer(null); return; }
+    if (L.kind === "menu") {
+      const n = ITEMS.length;
+      if (k === "j" || k === "ArrowDown") { e.preventDefault(); L.i = (L.i + 1) % n; drawLayer(); }
+      else if (k === "k" || k === "ArrowUp") { e.preventDefault(); L.i = (L.i - 1 + n) % n; drawLayer(); }
+      else if (k === "Enter") { e.preventDefault(); runItem(L.i); }
+      else { const i = ITEMS.findIndex(m => m[1] === k); if (i >= 0) { e.preventDefault(); runItem(i); } }
+      return;
+    }
+    if (L.kind === "del") {
+      if (["h", "l", "ArrowLeft", "ArrowRight", "Tab"].includes(k)) { e.preventDefault(); L.b = 1 - L.b; drawLayer(); }
+      else if (k === "Enter") { e.preventDefault(); L.b ? doDelete() : layer(null); }
+      return;
+    }
+    if (L.kind === "add") {
+      if (k === "Enter") { e.preventDefault(); A.dup ? layer(null) : addNow(e.shiftKey); }
+      else if (e.altKey && k.toLowerCase() === "s" && A.src?.match) { e.preventDefault(); A.saved = !A.saved; drawLayer(); }
+      return;
+    }
+    if (k === "?") { e.preventDefault(); layer(null); }
+    return;
+  }
+  if (e.altKey) return;
+  const inField = e.target === $("q");
+  if (k === "Escape") { e.preventDefault();
+    if (inField || S.q) { S.q = ""; $("q").value = ""; app.focus({ preventScroll: true }); render(); }
+    else if (S.filter.v !== "all" || S.filter.k !== "status") { S.filter = { k: "status", v: "all" }; render(); }
+    else { S.sel.clear(); render(); }
+    return; }
+  if (inField) { if (k === "Enter" || k === "ArrowDown") { e.preventDefault(); app.focus({ preventScroll: true }); } return; }
+  const act = {
+    j: () => move(1), ArrowDown: () => move(1), k: () => move(-1), ArrowUp: () => move(-1),
+    " ": () => { S.sel.has(S.cur) ? S.sel.delete(S.cur) : S.sel.add(S.cur); render(); },
+    Enter: () => menuAtCursor(), a: () => openAdd(), p: () => toggle(targets()), d: () => openDel(targets()), D: () => openDel(targets(), true),
+    "`": () => { S.face = S.face === "lib" ? "seed" : "lib"; tried("seed"); render(); },
+    "[": () => setRange(S.range - 1), "]": () => setRange(S.range + 1),
+    "/": () => { S.face = "lib"; render(); $("q").focus(); },
+    "?": () => { tried("help"); layer("help"); },
+    1: () => { S.tab = 0; details(); }, 2: () => { S.tab = 1; details(); }, 3: () => { S.tab = 2; details(); }, 4: () => { S.tab = 3; details(); },
+  }[k];
+  if (act) { e.preventDefault(); act(); }
+});
+
+// ── drop a .torrent file on the window: it is read here, in the page, and never sent anywhere ──
+function bdecode(buf) {
+  let i = 0; const td = new TextDecoder();
+  const next = () => {
+    const c = buf[i];
+    if (c === 0x69) { const e = buf.indexOf(0x65, i); const n = +td.decode(buf.subarray(i + 1, e)); i = e + 1; return n; }
+    if (c === 0x6c) { i++; const out = []; while (buf[i] !== 0x65) out.push(next()); i++; return out; }
+    if (c === 0x64) { i++; const out = {}; while (buf[i] !== 0x65) { const k = td.decode(next()); out[k] = next(); } i++; return out; }
+    const colon = buf.indexOf(0x3a, i), len = +td.decode(buf.subarray(i, colon)); i = colon + 1 + len; return buf.subarray(colon + 1, i);
+  };
+  return next();
+}
+function readTorrent(file) {
+  return file.arrayBuffer().then(ab => {
+    const t = bdecode(new Uint8Array(ab)), info = t.info, td = new TextDecoder();
+    if (!info || !info.name) throw new Error("no info");
+    const name = td.decode(info["name.utf-8"] || info.name);
+    if (!info.files) return { file: file.name, title: name, size: info.length / 1e9, from: "drop", cat: "none" };
+    const files = [[0, name + "/", null]], seen = new Set();
+    for (const f of info.files.slice(0, 300)) {
+      const path = (f["path.utf-8"] || f.path).map(p => td.decode(p));
+      for (let d = 0; d < path.length - 1; d++) { const key = path.slice(0, d + 1).join("/"); if (!seen.has(key)) { seen.add(key); files.push([d + 1, path[d] + "/", null]); } }
+      files.push([path.length, path[path.length - 1], f.length / 1e9]);
+    }
+    return { file: file.name, title: name, files, size: info.files.reduce((a, f) => a + f.length, 0) / 1e9, from: "drop", cat: "none" };
+  });
+}
+let dragDepth = 0;
+app.addEventListener("dragenter", e => { if (![...e.dataTransfer.types].includes("Files")) return; e.preventDefault(); dragDepth++; $("drop").hidden = false; });
+app.addEventListener("dragover", e => { if ([...e.dataTransfer.types].includes("Files")) e.preventDefault(); });
+app.addEventListener("dragleave", () => { if (--dragDepth <= 0) { dragDepth = 0; $("drop").hidden = true; } });
+app.addEventListener("drop", e => {
+  e.preventDefault(); dragDepth = 0; $("drop").hidden = true;
+  const f = [...e.dataTransfer.files].find(f => /\.torrent$/i.test(f.name));
+  if (!f) { note("nothing to add"); return; }
+  readTorrent(f).then(d => openAdd(d), () => note(`${f.name} isn't a torrent omaseed can read`));
+});
+
+document.addEventListener("click", e => { const b = e.target.closest(".copy"); if (!b) return;
+  const done = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1600); };
+  navigator.clipboard?.writeText(b.dataset.copy).then(done, () => { const s = getSelection(), r = document.createRange(); r.selectNodeContents(b.previousElementSibling); s.removeAllRanges(); s.addRange(r); });
+});
+
+// ── live: downloads move on while the window is on screen ─────────────────────────
+// While the pointer is over the window nothing is redrawn, so a click lands on what it aimed at
+// (omaseed holds its rows still under the pointer the same way).
+let onScreen = true, over = false;
+new IntersectionObserver(([en]) => onScreen = en.isIntersecting).observe(app);
+app.addEventListener("pointerenter", () => over = true);
+app.addEventListener("pointerleave", () => over = false);
+if (!reduced) setInterval(() => {
+  if (!onScreen || over || L || document.hidden) return;
+  seed = (Date.now() / 1000) | 0;
+  for (const r of ROWS) {
+    if (r.st === "down" && r.dl > 0) { r.dl = Math.max(80, r.dl * (.88 + rnd() * .24)); r.prog = Math.min(100, r.prog + r.dl / (r.size * 1e4));
+      if (r.prog >= 100) { r.st = "seed"; r.dl = 0; r.ul = 150; r.sp = "0 / 3"; } }
+    if (r.ul > 0) r.ul = Math.max(20, r.ul * (.85 + rnd() * .3));
+  }
+  hero(); if (S.face === "lib") { table(); selbar(); if (S.tab === 0) details(); }
+}, 1000);
+
+// ── the sections' replicas ───────────────────────────────────────────────────────
+// Adding: the Downloads list and the files match answer clicks, the rest is drawn once.
+const repDl = { list: mkDL(), ticks: new Set([0, 2]) };
+const drawRepDl = () => $("repDl").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add ${repDl.ticks.size > 1 ? repDl.ticks.size + " torrents" : "torrent"}</b><span class="s">paste a magnet link, a URL or pick a file</span></div><span class="k-esc">esc</span></div>
+  <div class="k-grp"><span class="k-lab"><span>magnet, url or file</span></span><div class="k-fld ph"><span>magnet:?xt=urn:btih:…</span><span class="tr">browse<span class="k-kc">ctrl+o</span></span></div></div>
+  ${dlListHTML(repDl.list, repDl.ticks)}<div class="k-hints"><span><b>j k</b> move</span><span><b>space</b> tick</span><span><b>enter</b> use this file</span><span><b>tab</b> fields</span></div></div>`;
+$("repDl").addEventListener("click", e => { const r = e.target.closest("[data-dl]"); if (!r) return; const i = +r.dataset.dl; repDl.ticks.has(i) ? repDl.ticks.delete(i) : repDl.ticks.add(i); drawRepDl(); });
+const bbb = DL[1]; let repSaved = false;
+const drawRepMatch = () => $("repMatch").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add torrent</b><span class="s">${bbb.title} · ${gb(bbb.size)} · from file</span></div><span class="k-esc">esc</span></div>
+  <div class="k-grp"><span class="k-lab"><span>magnet, url or file</span></span><div class="k-fld on"><span>~/Downloads/${esc(bbb.file)}</span><span class="tr">browse<span class="k-kc">ctrl+o</span></span></div></div>
+  ${matchHTML(bbb, repSaved)}
+  <div class="k-grp"><span class="k-lab"><span>save to</span></span>${repSaved ? `<div class="k-fld hl"><span>${bbb.matchPath}/</span><span class="tr">from the files match · browse</span></div>${freeHTML("good")}` : `<div class="k-fld ph"><span>the server's default</span><span class="tr">browse</span></div>${freeHTML("need", bbb.size)}`}</div></div>`;
+$("repMatch").addEventListener("click", e => { if (e.target.closest("[data-a=save]")) { repSaved = !repSaved; drawRepMatch(); } });
+$("repDup").innerHTML = dupHTML(DL[2]);
+$("repFree").innerHTML = `<div class="k-sheet" style="max-width:540px;border-color:var(--hairline)">${[["fits", freeHTML("need", 4.61)], ["leaves little", freeHTML("warn")], ["won't fit", freeHTML("bad")], ["already there", freeHTML("good")], ["magnet", freeHTML("magnet")]]
+  .map(([t, h]) => `<div class="k-grp"><span class="k-lab"><span>save to · ${t}</span></span>${h}</div>`).join("")}</div>`;
+
+// Servers
+$("repSrv").innerHTML = `<div class="k-set"><nav aria-label="Settings sections (picture)"><span class="l">settings</span>${[["⚙", "General"], ["⛁", "Servers", 1], ["◔", "Notifications"], ["⌨", "Keybindings"], ["◐", "Appearance"], ["↺", "Backup"], ["i", "About"]].map(([g, t, on]) => `<span class="it${on ? " on" : ""}"><i>${g}</i>${t}</span>`).join("")}
+  <span class="l q">qbittorrent</span><span class="v">home 5.2.3</span>${[["⇅", "Speed"], ["◎", "Discovery and privacy"], ["⇌", "Connection"], ["⇢", "Proxy"], ["↑", "Seeding"], ["≡", "Queue"], ["▤", "Downloads and files"]].map(([g, t]) => `<span class="it"><i>${g}</i>${t}</span>`).join("")}</nav>
+  <div class="pane"><div class="t">Servers<span>esc</span></div><div class="k-srv">
+    <div><span class="d"></span><div class="t"><b>home</b><span>http://127.0.0.1:8080 · API key · 5.2.3 · 16 torrents</span></div><span class="s">default</span></div>
+    <div><span class="d"></span><div class="t"><b>nas</b><span>http://192.168.1.20:8080 · cookie · 5.2.3 · 412 torrents</span></div><span class="s"></span></div>
+    <div><span class="d err"></span><div class="t"><b>seedbox</b><span>https://sb.example.net · API key · unreachable since 09:12</span></div><span class="s err">retrying</span></div>
+    <div class="add"><span>+</span><div class="t"><span style="color:var(--fg-dark);font-size:12px">add a server</span></div><span class="s">a</span></div></div></div></div>`;
+const fp = hash("sb.example.net") + hash("seedbox") ; const pairs = fp.slice(0, 64).toUpperCase().match(/../g);
+$("repCert").innerHTML = `<div class="k-sheet narrow"><div class="k-hd"><span class="k-ic">⛁</span><div><b>seedbox</b><span class="s">https://sb.example.net</span></div><span class="k-esc">esc</span></div>
+  <div class="k-ban"><i></i><span class="g">!</span><span class="tx">untrusted certificate</span></div>
+  <p style="font-size:11px;color:var(--fg-dark)">The system does not trust this server's certificate, as with a self-signed one. If the fingerprint matches the server's, trust it: omaseed then accepts this certificate only.</p>
+  <div class="k-fp"><span class="k-lab"><span>sha-256</span></span><span>${pairs.slice(0, 16).join(":")}</span><span>${pairs.slice(16).join(":")}</span></div>
+  <div class="k-btns" style="grid-template-columns:minmax(0,1fr)"><span class="pri cur">trust this certificate</span></div></div>`;
+
+// Omarchy: the bar widget and its popup, a playable copy
+const BAR = { st: "both", open: true, alt: false, fold: { add: false, share: true, alive: true, flight: false, lately: true } };
+const BSTATES = [["idle", "idle"], ["seed", "seeding"], ["down", "downloading"], ["both", "both moving"], ["err", "an error"], ["off", "unreachable"]];
+function mark3(st, alt, size) {
+  const off = st === "off", dn = !off && ["down", "both", "err"].includes(st), up = !off && ["seed", "both", "err"].includes(st);
+  const ring = "M9 9 H15 V15 H9 Z M10.6 10.6 H13.4 V13.4 H10.6 Z";
+  const q = off ? `<path class="q err" fill-rule="evenodd" d="${ring}"/>` : alt ? `<path class="q alt" fill-rule="evenodd" d="${ring}"/>` : `<path class="q${st === "err" ? " err" : ""}" d="M9 9 H15 V15 H9 Z"/>`;
+  return `<svg class="mk3" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><path class="a${dn ? " dn" : ""}" d="M1 8 H6 V18 H16 V23 H1 Z"/><path class="a${up ? " up" : ""}" d="M8 1 H23 V16 H18 V6 H8 Z"/>${q}</svg>`;
+}
+function drawBar() {
+  const st = BAR.st, off = st === "off", dnOn = ["down", "both", "err"].includes(st), upOn = ["seed", "both", "err"].includes(st);
+  const d = dnOn ? (BAR.alt ? 1000 : 3760) : 0, u = upOn ? (BAR.alt ? 200 : 778) : 0;
+  const short = k => k <= 0 ? "0" : k >= 1000 ? (k / 1000).toFixed(1) + "M" : Math.round(k) + "K";
+  const sec = (key, cap, sum, body) => `<div class="sec2${BAR.fold[key] ? " folded" : ""}"><button type="button" class="sh" data-b="fold:${key}"><span class="c">${cap}</span><span class="sum">${sum}</span><span class="ch">▾</span></button><div class="sb">${body}</div></div>`;
+  const flying = ROWS.filter(r => r.st === "down").slice(0, 3);
+  const raw = tideSeries(0), k = u > 0 ? u / (raw[raw.length - 1] * 1e6 / 60) : 1, spark = raw.map(v => v * k), mx = Math.max(...spark), pts = spark.map((v, i) => `${(i / (spark.length - 1) * 100).toFixed(2)},${(38 - v / mx * 34).toFixed(1)}`).join(" ");
+  const week = YEAR.slice(-7), wmax = Math.max(...week), dnames = Array.from({ length: 7 }, (_, i) => new Date(today.getTime() - (6 - i) * 86400000).toLocaleDateString("en-GB", { weekday: "short" }));
+  const g = ROWS.reduce((a, r) => a + given(r), 0), t = ROWS.reduce((a, r) => a + taken(r), 0);
+  const hdr = `<div class="hd">${mark3(st, BAR.alt, 30)}<div class="t"><b>omaseed</b><span><i style="${off ? "background:var(--red)" : ""}"></i>home · qBittorrent 5.2.3</span></div>
+    <div class="ib"><button type="button" class="alt${BAR.alt ? " on" : ""}" data-b="alt" title="Alternative speed limits (A)">◔</button><span title="Open omaseed (o)">${mark3("idle", false, 13)}</span><span title="Widget settings (,)">⚙</span></div></div>`;
+  const body = off ? `<div class="blk"><div style="border-left:2px solid var(--red);padding:6px 10px;background:color-mix(in srgb,var(--red) 6%,transparent);font-size:11.5px"><b style="color:var(--fg-bright);font-weight:500">unreachable · connection refused · retrying in 10 s</b><br><span style="color:var(--fg-dark)">Showing the last known state. Press r to retry now.</span></div></div>`
+    : `<div class="blk"><div class="speeds"><div class="stat"><b class="${BAR.alt ? "alt" : ""}"><i style="color:var(--blue)">↓</i>${d ? spd(d) : "0 B/s"}</b><span>download</span></div><div class="stat"><b class="${BAR.alt ? "alt" : ""}"><i style="color:var(--green)">↑</i>${u ? spd(u) : "0 B/s"}</b><span>upload</span></div></div>
+      ${BAR.alt ? `<div class="altl">◔ alternative limits · ↓ 1 MB/s · ↑ 200 KB/s</div>` : ""}
+      <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><polygon class="ar" points="0,40 ${pts} 100,40"/><polyline class="ln" points="${pts}"/></svg>
+      <div class="scap"><span>upload · last hour</span><span>now ${spd(u)} · peak ${spd(mx * 1e6 / 60)}</span></div></div>`;
+  $("repBar").innerHTML = `<div class="barw k">
+    <div class="obar" aria-label="An Omarchy bar (picture)"><span class="ws"><b>1</b><span>2</span><span>3</span><span>4</span></span><span class="clk">${new Date().toTimeString().slice(0, 5)}</span>
+      <button type="button" class="me${BAR.open ? " open" : ""}" data-b="open" title="L: panel  M: alt-speed  R: open omaseed">${mark3(st, BAR.alt, 15)}${off ? "" : `<span class="sp${BAR.alt ? " alt" : ""}">↓${short(d)} ↑${short(u)}</span>`}</button></div>
+    <div class="states"><span class="lbl" style="align-self:center;margin-right:4px">show</span>${BSTATES.map(([k, t]) => `<button type="button" class="k-chip${BAR.st === k ? " on" : ""}" data-b="st:${k}">${t}</button>`).join("")}</div>
+    ${BAR.open ? `<div class="pop">${hdr}<div class="sepl"></div>${body}
+      ${sec("add", "add", "2 ready: pasted and Downloads", `<div class="src"><span class="ck on"></span><span>debian-13.1.0-amd64-netinst.iso</span><span class="o">pasted · magnet</span></div>
+        <div class="src"><span class="ck on"></span><span>Caminandes 3 Llamigos (CC-BY).torrent</span><span class="o">Downloads · 38 min ago</span></div>
+        <div class="src"><span class="ck"></span><span>ubuntu-26.04.1-desktop-amd64.iso.torrent</span><span class="o dup">already on home</span></div>
+        <div class="k-chips"><span class="k-chip">none</span><span class="k-chip on">linux</span><span class="k-chip">movies</span></div><span class="note">→ /data/torrents/linux · automatic management</span>
+        <div style="display:flex;gap:8px;align-items:center"><span class="k-btns" style="display:flex;gap:6px"><span class="pri" style="padding:0 12px">Add 2</span><span style="padding:0 12px">Browse…</span></span><span class="note">ctrl+v pastes a link here</span></div>`)}
+      ${sec("share", "your share", `${gb(YEAR[YEAR.length - 1])} given today · ratio ${(g / t).toFixed(2)}`, `<div class="speeds"><div class="stat"><b>${gb(g)}</b><span>given</span></div><div class="stat"><b>${gb(t)}</b><span>taken</span></div><div class="stat"><b>${(g / t).toFixed(2)}</b><span>ratio</span></div></div>
+        <div class="week">${week.map((v, i) => `<i class="${i === 6 ? "today" : ""}" style="height:${Math.max(4, v / wmax * 100)}%"></i>`).join("")}</div><div class="days">${dnames.map(n => `<span>${n}</span>`).join("")}</div>
+        <span class="note">${gb(week.reduce((a, v) => a + v, 0))} seeded this week · ${ROWS.filter(r => r.st === "seed").length} seeding</span>`)}
+      ${sec("alive", "keeping alive", "2 with 2 or fewer seeds · 1 only you", `<div><b style="color:var(--accent);font-size:17px;font-weight:500">2</b> <span class="note">torrents you hold with 2 or fewer seeds</span></div>
+        <div class="row2"><div class="tp"><span>Tears of Steel 4K (CC-BY)</span><span style="color:var(--accent)">only you · 2 waiting</span></div></div><div class="row2"><div class="tp"><span>Sintel 1080p (CC-BY)</span><span>you + 1 · 3 waiting</span></div></div>`)}
+      ${sec("flight", "in flight", flying.length ? `${flying.length} · ${flying.map(r => r.name.split(/[-_ ]/)[0] + " " + r.prog.toFixed(1) + " %").join(" · ")}` : "nothing downloading",
+        flying.length ? flying.map(r => `<div class="row2${BAR.alt ? " alt" : ""}"><div class="tp"><span>${esc(r.name)}</span><span>${r.prog.toFixed(1)} % · ${eta(r)}</span></div><div class="pg"><i style="width:${r.prog}%"></i></div></div>`).join("") : `<span class="note">nothing in flight</span>`)}
+      ${sec("lately", "lately", "Spring (2019) 4K finished 2 h ago", `<div class="feed"><span class="g">✓</span><span>Spring (2019) 4K (CC-BY)</span><span class="m">finished · 4.61 GB · movies · 2 h ago</span></div>
+        <div class="feed"><span class="g" style="color:var(--accent)">◆</span><span>Big Buck Bunny 4K (CC-BY)<span class="bd">ratio 5.0</span></span><span class="m">reached ratio 5.0 · 1 h ago</span></div>
+        <div class="feed"><span class="g" style="color:var(--accent)">◆</span><span>Tears of Steel 4K (CC-BY)<span class="bd">paid back</span></span><span class="m">reached ratio 1.0 · yesterday</span></div>`)}
+      <div class="ft"><b>a</b> add · <b>o</b> omaseed · <b>A</b> alt-speed · <b>j k</b> move · <b>space</b> fold · <b>esc</b> close</div></div>` : ""}</div>`;
+}
+$("repBar").addEventListener("click", e => {
+  const b = e.target.closest("[data-b]"); if (!b) return; const v = b.dataset.b;
+  if (v === "open") BAR.open = !BAR.open;
+  else if (v === "alt") BAR.alt = !BAR.alt;
+  else if (v.startsWith("st:")) BAR.st = v.slice(3);
+  else if (v.startsWith("fold:")) BAR.fold[v.slice(5)] = !BAR.fold[v.slice(5)];
+  drawBar();
+});
+$("repBar").addEventListener("auxclick", e => { if (e.button === 1 && e.target.closest("[data-b=open]")) { e.preventDefault(); BAR.alt = !BAR.alt; drawBar(); } });
+
+$("repNotes").innerHTML = `<div class="notes">
+  <div class="k-notif"><div class="t"><span class="g">✓</span>Download complete<span class="app">omaseed</span></div><div class="b">archlinux-2026.09.01-x86_64.iso · 1.31 GB · linux</div><div class="a"><span>open folder</span><span>show</span></div><div class="cd"></div></div>
+  <div class="k-notif warn"><div class="t"><span class="g">◌</span>home is unreachable<span class="app">omaseed</span></div><div class="b">127.0.0.1:8080 · connection refused · retrying every 10 s</div><div class="a"><span>settings</span></div><div class="cd" style="width:34%"></div></div>
+  <div class="k-notif"><div class="t">home is back<span class="app">omaseed</span></div><div class="b">connected again</div><div class="cd" style="width:80%"></div></div></div>`;
+
+const HELPROWS = [
+  ["move", "Get around the window without the mouse.", [["j k", "Move the cursor down and up"], ["g G", "Jump to the first or the last torrent"], ["h l", "Move focus between the rail, the table and the details"], ["/", "Filter the table by name, category, tag or hash"], ["0–8", "Filter by status: 0 all, 1 downloading, 2 seeding…"], ["ctrl+k", "Jump to any torrent, category or tag by name"]]],
+  ["select", "Most actions apply to the selection, or to the cursor row when nothing is selected.", [["space", "Add or remove the cursor row"], ["v", "Select a range from the last row you marked"], ["esc", "Clear the selection, then the filter, then close"]]],
+  ["view", "What the window shows.", [["`", "Flip between the library and the seed console; with a selection, the console counts only it"], ["i", "Show or hide the details panel"], ["|", "Pick and order the table's columns"]]],
+  ["act on torrents", "On the selection, or the cursor row. Open folder and rename take the cursor row.", [["a", "Add a torrent: magnet, file or URL"], ["enter", "Open the actions menu for the selection"], ["p P", "Stop or start · force start, skipping the queue"], ["d D", "Delete · delete with its files"], ["c R", "Recheck the data · reannounce to every tracker"], ["C t m L r", "Set category · tags · location · limits; rename the cursor row"], ["[ ]", "Move up or down in the queue"], ["y Y n", "Copy the magnet · hash · name, one line per selected torrent"]]],
+  ["app", "", [["A", "Toggle the alternative speed limits"], [", ctrl+,", "Settings"], ["q", "Hide to the tray"], ["ctrl+q", "Quit"]]],
+];
+const helpCol = list => list.map(([h, p, rows]) => `<div class="hg"><h4>${h}</h4>${p ? `<p>${p}</p>` : ""}${rows.map(([k, t]) => `<div class="r"><b>${esc(k)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("");
+$("repHelp").innerHTML = `<div class="k-sheet" style="max-width:820px"><div class="k-hd"><span class="k-ic">?</span><div><b>Shortcuts</b><span class="s">single letters act on the table · capitals are the stronger variant · ctrl is app-level</span></div><span class="k-esc">esc</span></div>
+  <label class="k-fld"><span style="color:var(--fg-dark);flex:none">/</span><input id="helpQ" type="text" placeholder="filter shortcuts" autocomplete="off" spellcheck="false" aria-label="Filter shortcuts"><span class="tr" id="helpN"></span></label>
+  <div class="k-help"><div>${helpCol(HELPROWS.slice(0, 3))}</div><div>${helpCol(HELPROWS.slice(3))}</div></div>
+  <div class="k-hints"><span><b>↑↓</b> move</span><span><b>enter</b> run</span><span><b>esc</b> clear, then close</span></div></div>`;
+$("helpQ").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase(), rows = $("repHelp").querySelectorAll(".k-help .r"); let n = 0;
+  rows.forEach(r => { const hit = !q || r.textContent.toLowerCase().includes(q); r.hidden = !hit; n += hit; });
+  $("repHelp").querySelectorAll(".hg").forEach(g => g.hidden = ![...g.querySelectorAll(".r")].some(r => !r.hidden));
+  $("helpN").textContent = q ? `${n} of ${rows.length}` : "";
+});
+
+// Careful: the shared-files question answers its two choices
+let sharedPick = 0;
+const drawShared = () => $("repShared").innerHTML = `<div class="k-sheet conf wide k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Big Buck Bunny 4K (CC-BY)</span><span>3.92 GB on disk</span></div>
+  <span class="k-tog on"><i></i>also delete files from disk</span>
+  <div class="k-warnb"><span>Its files are also seeded by 1 torrent you're not deleting.</span><span class="l"><b>Big Buck Bunny 4K (CC-BY)</b><span> · tracker.example.net · seeding · ratio 0.42</span></span></div>
+  <div class="k-pick"><div class="${sharedPick === 0 ? "cur" : ""}" data-p="0" style="cursor:pointer"><span class="r">${sharedPick === 0 ? "●" : "○"}</span><b>keep the files</b><span>delete only this torrent; the other one keeps seeding</span></div>
+    <div class="${sharedPick === 1 ? "cur" : ""}" data-p="1" style="cursor:pointer"><span class="r">${sharedPick === 1 ? "●" : "○"}</span><b>delete the files and that torrent too</b><span>2 torrents, 3.92 GB</span></div></div>
+  <div class="bts"><span class="cur">cancel</span><span class="dng" style="width:auto;padding:0 10px">${sharedPick ? "delete 2 with files" : "delete, keep files"}</span></div></div>`;
+$("repShared").addEventListener("click", e => { const p = e.target.closest("[data-p]"); if (p) { sharedPick = +p.dataset.p; drawShared(); } });
+$("repLast").innerHTML = `<div class="k-sheet conf k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Tears of Steel 4K (CC-BY)</span><span>6.20 GB on disk</span></div>
+  <span class="k-tog"><i></i>also delete files from disk</span>
+  <div class="k-warnb"><span>You are its only seed.<span class="l"> 2 waiting for it. Deleting it takes it out of the swarm.</span></span><span class="stop">stop instead</span></div>
+  <div class="bts"><span class="cur">cancel</span><span class="dng">delete</span></div></div>`;
+$("repErr").innerHTML = `<div class="k-sheet" style="max-width:620px;border-color:var(--muted)">
+  <div class="k-list" style="background:none"><div style="grid-template-columns:minmax(0,1fr) auto"><span style="color:var(--fg-bright)">Elephants Dream 1080p (CC-BY)</span><span><span style="color:var(--red)">!</span> no access</span></div></div>
+  <div class="kv" style="font-size:11px"><span class="k">status</span><span class="v"><span style="color:var(--red)">error</span><span style="color:var(--fg-dark)"> · no access</span></span></div>
+  <div class="k-eb"><span class="g">✕</span><span class="h">Can't write to its save folder</span><span class="l">Permission denied, opening Elephants Dream 1080p (CC-BY)/ed_1080p.mkv</span><span class="l d">/data/torrents/movies</span><span class="l d">qBittorrent's log · today 19:00 · 2 times</span>
+    <div class="eacts"><span><b>m</b>set location</span><span><b>p</b>try again</span><span>copy the line</span></div></div></div>`;
+
+drawRepDl(); drawRepMatch(); drawBar(); drawShared();
+render(); bigSeed();
+})();
+</script>

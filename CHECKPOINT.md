@@ -1,31 +1,50 @@
-# Checkpoint (2026-10-14)
+# Checkpoint (2026-10-13)
 
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
 ## Done
-- Repo created, local only: no GitHub remote, nothing pushed or published.
-- `DIRECTION.md` written with the references, the page order and what is not claimed yet.
-- Research done (see `reference/RESEARCH-2026-10-14.md`): Raycast, Linear and herdr.dev read top to
-  bottom; the design-skill ecosystem surveyed from X replies.
+- The four open questions answered (DIRECTION.md, "Decided"): promise line "Torrents, finally at
+  home on Omarchy.", home plus /install and /changelog, "What's next" from issues, omabox credit
+  as its own section.
+- Home page draft 1 (`site/omaseed.html`), published privately:
+  <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>. A working copy of the main window with
+  demo data (click, j k, space, p, `, [ ], 1-4, /, ?), live speeds, the seed console in the window
+  and big in its own section, the page repainted by any of the 22 bundled Omarchy themes.
+- `build.mjs` (version and "What's next" from GitHub), `themes.mjs`, favicon. Checked in an
+  omabox box at 1920x1080 and 412x915.
+
+- Draft 2 (same URL, version 3), from Diogo's notes on draft 1: the window has a "Try" row and
+  pulsing pointers; the right-click and `enter` actions menu as shipped (ActionsMenu.qml order); the
+  add sheet (`a` or +) with "In Downloads", the files-on-disk match, the duplicate sheet, the file
+  tree and free-space line; delete with the last-seed guard; drop a real .torrent on the window and
+  it's read in the page (bdecode, never sent anywhere). New sections "Adding torrents" and "Careful
+  with your data"; Servers and Omarchy got replicas (settings › Servers, the certificate prompt, the
+  bar widget and popup, playable; notifications; the shortcuts sheet with a working filter). Copy
+  and looks from the spec agents' reports on docs 05, 14, 17, 18, 19, 25, 26, 28 and the QML.
+  "Why it errored" is labelled "next release" (unreleased on main).
+
+- Version 4 (same URL): omaseed v0.2.0 (13 Oct 2026) ships a prebuilt package. The hero and
+  Install show its one line (`curl -fLO …/latest/download/omaseed-x86_64.pkg.tar.zst && sudo
+  pacman -U …`, as in omaseed's README), building from source folded under it. The changelog's
+  "Next" entry became v0.2.0; "Why it errored" says "new in 0.2.0" (its key hints were broken by
+  the window's `.acts` rules, now `.eacts`). The omabox section has omabox's mark and "No desktops
+  were harmed in the making of omaseed. And no mouse was captured." New "Open source" section
+  (MIT, code, issues, pull requests); omaseed has no CONTRIBUTING.md, so none is linked.
+- The hero's "NEW" pill text (`v0.2.0: errors explained, one-line install`) is hand-written: the
+  build updates only the version number in it, so change the words at each release.
 
 ## Next (in this order)
-1. Ask Diogo the four open questions at the end of `DIRECTION.md` (promise line, one page or
-   several, roadmap yes/no, how prominent the omabox credit is). Defaults are written there; he
-   may just say "defaults".
-2. Copy the build and base styles from `~/code/omarchy/omabox-site` (`build.mjs`, `site/base.css`,
-   the artifact-source layout in its AGENTS.md) and adapt. Each Omarchy theme gives the accent.
-3. Draft the home page with the playable mock (library table with labelled demo data, click a
-   torrent for details, `` ` `` flips to the seed console, theme switch). Look from
-   `~/code/omarchy/omaseed/docs/05-ui-spec-v2.html` (read only) and `omaseed/docs/screenshots/`.
-   Publish as a **private** artifact for Diogo to review.
-4. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
+1. Diogo reviews version 4. Open with him: label `next` on omaseed issues to choose "What's next"
+   (today it shows the newest four enhancements). Known glitch: opening the page at a `#section`
+   address lands past that section (in-page nav clicks are fine).
+2. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
    numbers and the method on the page. Until then the page makes no such claim.
-5. Only after the home page is approved: `/install`, `/changelog` (read from the omaseed repo's
-   latest tag, like omabox-site), then the other pages.
+3. After the home page is approved: `/install`, `/changelog` (read from the omaseed repo's latest
+   tag, like omabox-site), a link card image, then hosting (Diogo's call).
 
 ## Standing rules
-- Nothing published, pushed or put on a domain until Diogo asks. Creating a GitHub repo for this is
-  his call.
+- Nothing hosted or put on a domain until Diogo asks. The repo is private on GitHub
+  (diogochaves/omaseed-site, created 2026-10-13 at his request); pushing to it is fine.
 - Windows, screenshots, running omaseed: through omabox (load the omabox skill).
 - omaseed's design is approved and its spec files are never edited. The site shows it, it does not
   redesign it.
