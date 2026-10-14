@@ -45,8 +45,10 @@ What each replica on the page is drawn from, and the exact words it copies, is i
 
 Public, <https://github.com/diogochaves/omaseed-site> (public since 2026-10-14). Before it went
 public its history was rewritten to drop notes about other projects, and the old private repo was
-renamed `diogochaves/omaseed-site-old` (deploy disabled, no token; safe to delete). Nothing private
-belongs in this repo: no notes on other projects or people, no secrets.
+renamed `diogochaves/omaseed-site-old` (deploy disabled, no token; safe to delete). The old
+history is also kept on this machine as `.local/omaseed-site-before-rewrite.bundle` (`.local/` is
+git-ignored; `git clone` the bundle to look at it). Nothing private belongs in this repo: no notes
+on other projects or people, no secrets.
 
 ## Hosting (as omabox.app)
 
