@@ -5,7 +5,7 @@ qBittorrent. Its own folder on purpose, like omabox-site: omaseed's contributors
 code. Built the same way as omabox-site (artifact drafts, then `build.mjs` into `dist/`); the build
 is copied across and adapted once the first page exists.
 
-Nothing here is published. Diogo reviews every draft as a private artifact first.
+Live at omaseed.app since 2026-10-13. Diogo reviews every change as a private artifact first.
 
 ## Decisions (2026-10-14)
 

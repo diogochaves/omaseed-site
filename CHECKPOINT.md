@@ -1,8 +1,10 @@
-# Checkpoint (2026-10-13)
+# Checkpoint (2026-10-14)
 
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
 ## Done
+- Repo public on GitHub, diogochaves/omaseed-site (2026-10-14, Diogo asked). Its history was
+  rewritten first; the old private repo is diogochaves/omaseed-site-old (safe to delete).
 - The four open questions answered (DIRECTION.md, "Decided"): promise line "Torrents, finally at
   home on Omarchy.", home plus /install and /changelog, "What's next" from issues, omabox credit
   as its own section.
@@ -52,8 +54,9 @@ Where the work stopped and what comes next. Replace this file as the work moves 
    tag, like omabox-site).
 
 ## Standing rules
-- The repo is private on GitHub (diogochaves/omaseed-site); pushing to main deploys omaseed.app
-  (Cloudflare Pages, as omabox.app; AGENTS.md, "Hosting"). Push only what Diogo has seen.
+- The repo is public on GitHub (diogochaves/omaseed-site); pushing to main deploys omaseed.app
+  (Cloudflare Pages, as omabox.app; AGENTS.md, "Hosting"). Push only what Diogo has seen, and
+  nothing private: no notes on other projects or people, no secrets.
 - Windows, screenshots, running omaseed: through omabox (load the omabox skill).
 - omaseed's design is approved and its spec files are never edited. The site shows it, it does not
   redesign it.

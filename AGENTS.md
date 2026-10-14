@@ -3,7 +3,8 @@
 The site for omaseed (omaseed.app). Read `DIRECTION.md` first: what the page says, the references,
 what is not claimed yet. Diogo is the owner; he says what changes.
 
-- Nothing is published, pushed or put on a domain without Diogo asking. Drafts are private artifacts.
+- omaseed.app is live and every push to main deploys it: push only what Diogo has seen. Drafts
+  go to the private artifact first. No new domain, host or publication without him asking.
 - The look of the app comes from `~/code/omarchy/omaseed/docs/05-ui-spec-v2.html` and the real
   screenshots in `omaseed/docs/screenshots/`. Read them; never edit omaseed's spec files.
 - Any number on the page (memory, CPU, counts) is measured and its method written down, or it is not
@@ -42,7 +43,10 @@ What each replica on the page is drawn from, and the exact words it copies, is i
 
 ## Repository
 
-Private, <https://github.com/diogochaves/omaseed-site> (created 2026-10-13 at Diogo's request).
+Public, <https://github.com/diogochaves/omaseed-site> (public since 2026-10-14). Before it went
+public its history was rewritten to drop notes about other projects, and the old private repo was
+renamed `diogochaves/omaseed-site-old` (deploy disabled, no token; safe to delete). Nothing private
+belongs in this repo: no notes on other projects or people, no secrets.
 
 ## Hosting (as omabox.app)
 
