@@ -33,11 +33,12 @@ Where the work stopped and what comes next. Replace this file as the work moves 
 - The hero's "NEW" pill text (`v0.2.0: errors explained, one-line install`) is hand-written: the
   build updates only the version number in it, so change the words at each release.
 
-- Hosting set up 2026-10-13 (Diogo asked): deploy workflow, www redirect, `SITE_URL` variable.
-  It goes live once the `CLOUDFLARE_API_TOKEN` secret is in the repo and the workflow runs.
+- Live at <https://omaseed.app> since 2026-10-13 (Cloudflare Pages project `omaseed`, first deploy
+  run 38502344180); www.omaseed.app redirects to it. The deploy token is omabox-site's, extended
+  to omaseed.app and rolled the same day; both repos hold the new value.
 
 ## Next (in this order)
-1. Diogo reviews version 4. Open with him: label `next` on omaseed issues to choose "What's next"
+1. Diogo reviews the live page (and the artifact, version 5). Open with him: label `next` on omaseed issues to choose "What's next"
    (today it shows the newest four enhancements). Known glitch: opening the page at a `#section`
    address lands past that section (in-page nav clicks are fine).
 2. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
