@@ -89,6 +89,11 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .news { display: inline-flex; align-items: center; gap: 10px; font: 500 12.5px var(--mono); color: var(--fg); text-decoration: none; border: 1px solid var(--hairline); padding: 5px 12px 5px 6px; background: var(--fill); }
 .news b { background: var(--accent); color: var(--bg-dark); font-weight: 600; padding: 1px 6px; letter-spacing: .06em; }
 .news:hover { border-color: var(--border); color: var(--fg-bright); }
+.hero { position: relative; }
+.hero .news { justify-self: end; margin-top: -40px; }
+/* lined up with the top bar's Install button: 8px inside the bar, which is 20px wider than the column once there's room */
+@media (min-width: 700px) { .hero .news { position: absolute; margin: 0; top: 12px; right: calc(var(--g) + 8px); } }
+@media (min-width: 1224px) { .hero .news { right: calc(var(--g) - 12px); } }
 .hero h1 { font-size: clamp(42px, 7.2vw, 88px); line-height: .98; letter-spacing: -.045em; max-width: 11.5em; }
 .hero .lead { font-size: clamp(18px, 1.8vw, 22px); line-height: 1.5; max-width: 34em; }
 .cta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -384,11 +389,6 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .road li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dark); }
 .road li b { color: var(--fg-bright); font-weight: 500; }
 .road .more { font-size: 14px; justify-self: start; margin-top: 4px; }
-.next { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 40px; }
-.next li { border-top: 1px solid var(--hairline); padding-block: 14px; display: flex; gap: 14px; align-items: baseline; }
-.next a { color: var(--fg-bright); text-decoration: none; font-size: 15.5px; }
-.next a:hover { color: var(--accent); }
-.next span { font: 12px var(--mono); color: var(--fg-dark); flex: none; width: 3.2em; }
 
 .get { padding-block: clamp(96px, 12vw, 160px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; justify-items: start; }
 .get h2 { font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: -.04em; }
@@ -433,7 +433,7 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .k-tog.on i { background: color-mix(in srgb, var(--accent) 30%, transparent); border-color: var(--accent); }
 .k-tog.on i::after { left: auto; right: 2px; background: var(--fg-bright); }
 .k-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.k-btns.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.k-btns.b2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .k-btns > * { border: 1px solid var(--hairline) !important; min-height: 28px; display: grid !important; place-items: center; font-size: 11px; color: var(--fg); background: var(--fill) !important; }
 .k-btns > *:hover { background: var(--fill-hover) !important; }
 .k-btns .pri { border-color: var(--accent) !important; color: var(--accent); background: transparent !important; }
@@ -540,7 +540,6 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .cap2 { font-size: 13px; color: var(--dim); margin-top: 10px; }
 .cap2 b { color: var(--fg); font-weight: 500; }
 .reps { display: grid; gap: 14px; width: 100%; }
-.next-tag { font: 500 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 1px 6px; margin-left: 8px; vertical-align: 2px; }
 
 /* text in the replicas reads 4.5:1 on the window, as omaseed lifts it (docs/38): the page sets the
    --aa-* colours from the theme (liftContrast), and fills keep the theme's own */
@@ -1038,7 +1037,7 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
   <section class="wrap sec" id="roadmap">
     <div class="head">
       <p class="tag">Roadmap</p>
-      <h2 class="two">Where it goes from here. <span>The next release and the work after it, as omaseed's milestones on GitHub group them. No dates.</span></h2>
+      <h2 class="two">Where it goes from here. <span>The next release and the work after it, as omaseed's milestones on GitHub group them. No dates. Every issue is <a href="https://github.com/diogochaves/omaseed/issues">open on GitHub</a>.</span></h2>
     </div>
     <!-- roadmap: hand-written from omaseed's open milestones; change it when one is released -->
     <div class="road">
@@ -1062,21 +1061,6 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
       </article>
     </div>
     <!-- /roadmap -->
-  </section>
-
-  <section class="wrap sec" id="next">
-    <div class="head">
-      <p class="tag">What's next</p>
-      <h2 class="two">Open on GitHub. <span>The issues being worked on, as they are named there.</span></h2>
-    </div>
-    <ul class="next">
-      <!-- next: written by build.mjs from omaseed's open issues; this list is the fallback -->
-      <li><span>#130</span><a href="https://github.com/diogochaves/omaseed/issues/130">After a move, where it says so (strip, places opener, mouse multi-select, move back after close)</a></li>
-      <li><span>#125</span><a href="https://github.com/diogochaves/omaseed/issues/125">Search: ignore . _ - between words (Big.Buck.Bunny matches "big buck bunny")</a></li>
-      <li><span>#118</span><a href="https://github.com/diogochaves/omaseed/issues/118">Skipped files that still take space: on-disk column, band, free the space</a></li>
-      <li><span>#91</span><a href="https://github.com/diogochaves/omaseed/issues/91">Screen readers: the last gaps (an unnamed field, selection state, a modal's background, reading order)</a></li>
-      <!-- /next -->
-    </ul>
   </section>
 
   <section class="wrap sec" id="open">
@@ -1601,7 +1585,7 @@ function addHTML() {
       <div class="k-grp"><span class="k-lab"><span>upload limit</span></span><div class="k-fld ph"><span>∞</span><span class="tr">KB/s</span></div></div></div>
     <div class="k-togs">${[["seq", "sequential download"], ["flp", "first and last pieces first"], ["skip", "skip hash check"]].map(([k, t]) => `<button type="button" class="k-tog${A.togs[k] ? " on" : ""}" data-tog="${k}"><i></i>${t}</button>`).join("")}</div>
     ${files ? filesHTML(files, A.off, A.prio) : ""}
-    ${none ? `<div class="k-btns two"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="addstop">add stopped</button></div><span class="k-free">nothing ticked: added stopped · choose its files later in the Files tab</span>`
+    ${none ? `<div class="k-btns b2"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="addstop">add stopped</button></div><span class="k-free">nothing ticked: added stopped · choose its files later in the Files tab</span>`
       : `<div class="k-btns"><button type="button" data-a="close">cancel</button><button type="button" data-a="addstop">add${many} stopped</button><button type="button" class="pri cur" data-a="add">add${many}</button></div>`}
     <div class="k-hints"><span><b>tab</b> fields</span><span><b>enter</b> add</span><span><b>shift+enter</b> add stopped</span>${d?.match && !A.saved ? "<span><b>alt+s</b> save there</span>" : ""}<span class="sp"></span><span>server: home</span></div></div>`;
 }
@@ -1882,7 +1866,7 @@ function mvHTML(M = L) {
       ${!folder && M.open ? placesHTML(M) : ""}${why ? `<span class="why">${why}</span>` : ""}</div>
     ${choice}${prows}${P.block ? `<span class="blk">${esc(P.block)}</span>` : ""}
     ${checksHTML(M, P)}${folder ? looseHTML(M) : ""}
-    <div class="k-btns${show ? "" : " two"}"><button type="button" data-a="close">cancel</button>${show}<button type="button" class="pri cur" data-a="go"${P.block ? ' style="opacity:.45"' : ""}>${go}</button></div>
+    <div class="k-btns${show ? "" : " b2"}"><button type="button" data-a="close">cancel</button>${show}<button type="button" class="pri cur" data-a="go"${P.block ? ' style="opacity:.45"' : ""}>${go}</button></div>
     <div class="k-hints"><span><b>enter</b> move</span><span><b>${folder ? "tab" : "↓"}</b> ${folder ? "next" : "places"}</span><span><b>esc</b> cancel</span></div></div>`;
 }
 function mvGo() {
@@ -1984,7 +1968,7 @@ function backHTML() {
   return `<div class="k-sheet k-mv" role="dialog" aria-label="${title}" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>${title}</b><span class="s">each to where it was before ${hm(mv.at)} · ${gb(disk)} on disk · on home</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
     <div class="rows">${paths.map(k => { const [t, f] = k.split("\u0000"); return `<div><span>${esc(cutL(t, 30))}</span><span class="ar">→</span><span class="to">${esc(cutL(f, 30))}</span><span class="n">${go.filter(x => x.to === t && x.from === f).length}</span></div>`; }).join("")}</div>
     <div class="k-chk">${lines.join("")}</div>
-    <div class="k-btns two"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="go"${go.length ? "" : ' style="opacity:.45"'}>move ${go.length} back${stay ? ` · ${stay} ${stay === 1 ? "stays" : "stay"}` : ""}</button></div>
+    <div class="k-btns b2"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="go"${go.length ? "" : ' style="opacity:.45"'}>move ${go.length} back${stay ? ` · ${stay} ${stay === 1 ? "stays" : "stay"}` : ""}</button></div>
     <div class="k-hints"><span><b>enter</b> move</span><span><b>esc</b> cancel</span></div></div>`;
 }
 function backGo() {
@@ -2551,7 +2535,7 @@ $("repMvBack").innerHTML = `<div class="k-sheet k-mv" style="max-width:560px"><d
   <div class="rows"><div><span>/mnt/fast/films</span><span class="ar">→</span><span class="to">/srv/media/films</span><span class="n">46</span></div></div>
   <div class="k-chk"><div class="warn"><span class="g">!</span><span class="t">3 were moved again since, by the move to /mnt/usb (16:40): they stay where they are now.</span><span class="lk">move that one back first</span><span class="nt">Moving that one back first puts them where this move left them.</span></div>
     <div class="warn"><span class="g">!</span><span class="t">Automatic management stays off for the 3 that had it. Turning it on again is up to you (the torrent's menu).</span><span></span></div></div>
-  <div class="k-btns two"><span>cancel</span><span class="pri cur">move 46 back · 3 stay</span></div>
+  <div class="k-btns b2"><span>cancel</span><span class="pri cur">move 46 back · 3 stay</span></div>
   <div class="k-hints"><span><b>enter</b> move</span><span><b>esc</b> cancel</span></div></div>`;
 
 // Careful: a move qBittorrent accepted and then couldn't do; a qBittorrent's backups

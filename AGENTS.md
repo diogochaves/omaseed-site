@@ -25,9 +25,9 @@ what is not claimed yet. Diogo is the owner; he says what changes.
   Omarchy, so the build doesn't).
 - `build.mjs`: builds `dist/` (git-ignored): the page wrapped into a whole document (meta,
   canonical, JSON-LD, favicon), robots and sitemap. Reads omaseed's latest release into every
-  `<span class="ver">` and its open issues into "What's next" (between `<!-- next -->` markers:
-  issues labelled `next`, or with none labelled, the newest open enhancements). Without GitHub it
-  keeps what the source has. `node build.mjs` (Node 18+, no dependencies; `GITHUB_TOKEN` optional).
+  `<span class="ver">`. Without GitHub it keeps what the source has. The Roadmap section is
+  hand-written from omaseed's milestones (between `<!-- roadmap -->` markers): update it at each
+  release, with the hero's NEW pill. `node build.mjs` (Node 18+, no dependencies; `GITHUB_TOKEN` optional).
 - `site/media/`: the favicon (provenance in `site/media/README.md`).
 - `promo/`: the launch video and stills, made in an omabox box on a demo library (3,500 made-up
   torrents, a filled-in seeding year); `promo/README.md` says how to make them again. Not part of
@@ -36,7 +36,7 @@ what is not claimed yet. Diogo is the owner; he says what changes.
 
 ## Publishing the draft
 
-The draft lives at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC> (private; version 6 on
+The draft lives at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC> (private; version 7 on
 2026-10-22). `site/omaseed.html` in this repo is its source, so the repo holds the draft too. From
 a new session, read it first (Artifact `action: "read"` with its `url`), then publish with the same
 `url` and `file_path: site/omaseed.html`.

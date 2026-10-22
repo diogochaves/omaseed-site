@@ -1,15 +1,14 @@
 // Builds the public site from site/: each page (an artifact source, no <html>/<head>) wrapped into a
-// whole document, with what changes as omaseed moves read from its GitHub repo: the version (its
-// latest release) and "What's next" (its open issues). No dependencies; Node 18+. Adapted from
-// omabox-site's build.mjs.
+// whole document, with the version read from omaseed's GitHub repo (its latest release). No
+// dependencies; Node 18+. Adapted from omabox-site's build.mjs.
 //
 //   node build.mjs              into dist/, for omaseed.app; GITHUB_TOKEN, if set, is used for the API
 //   SITE_URL=https://x.pages.dev node build.mjs
 //                               for another address, and keeps search engines out: anything but
 //                               omaseed.app gets noindex
 //
-// If GitHub can't be reached, each page keeps what its source has (the version, the issue list
-// between the <!-- next --> markers) and the build says so.
+// If GitHub can't be reached, each page keeps the version its source has, and the build says so.
+// The Roadmap section is hand-written from omaseed's milestones: update it at each release.
 //
 // The theme colours in the home page come from Omarchy itself, which CI doesn't have: run
 // `node themes.mjs` on an Omarchy machine to refresh them.
@@ -23,12 +22,6 @@ const REPO = "diogochaves/omaseed";
 const HOME = "https://omaseed.app";
 const SITE = (process.env.SITE_URL || HOME).replace(/\/+$/, "");
 const OUT = "dist";
-// "What's next": open issues with this label, newest first; with none labelled, the newest open
-// enhancements. Titles lose their spec references ("(docs/24)", "Board 45: ", "(board 44 D11)"),
-// nothing else.
-const NEXT_LABEL = "next", NEXT_COUNT = 4;
-const plainTitle = t => t.replace(/\s*\((?:docs\/\d+|board \d+[^)]*)\)/gi, "").replace(/^Board \d+:\s*/i, "").trim().replace(/^./, c => c.toUpperCase());
-
 const PAGES = [
   { src: "omaseed.html", out: "index.html", path: "/", home: true,
     title: "omaseed: a native torrent client for Omarchy",
@@ -49,14 +42,6 @@ async function latestVersion() {
   const v = String((await api(`/repos/${REPO}/releases/latest`)).tag_name || "").replace(/^v/, "");
   if (!/^\d+\.\d+\.\d+$/.test(v)) throw new Error(`unexpected tag ${JSON.stringify(v)}`);
   return v;
-}
-
-async function nextItems() {
-  const open = (await api(`/repos/${REPO}/issues?state=open&per_page=100&sort=created&direction=desc`)).filter(i => !i.pull_request);
-  const has = name => i => i.labels.some(l => l.name === name);
-  const picked = (open.some(has(NEXT_LABEL)) ? open.filter(has(NEXT_LABEL)) : open.filter(has("enhancement"))).slice(0, NEXT_COUNT);
-  if (!picked.length) throw new Error("no open issues to show");
-  return picked.map(i => `      <li><span>#${i.number}</span><a href="${esc(i.html_url)}">${esc(plainTitle(i.title))}</a></li>`);
 }
 
 const head = page => `<!doctype html>
@@ -91,9 +76,6 @@ let version = home.match(/<span class="ver">([^<]+)<\/span>/)?.[1];
 if (!version) throw new Error('site/omaseed.html: no <span class="ver"> with the version');
 try { version = await latestVersion(); console.log(`version: ${version}`); }
 catch (e) { console.warn(`version: kept ${version} from site/omaseed.html (${e.message})`); }
-let next = null;
-try { next = await nextItems(); console.log(`what's next: ${next.length} issues`); }
-catch (e) { console.warn(`what's next: kept the list in site/omaseed.html (${e.message})`); }
 
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
@@ -101,7 +83,6 @@ await mkdir(OUT, { recursive: true });
 for (const page of PAGES) {
   let src = await readFile(`site/${page.src}`, "utf8");
   src = src.replaceAll(/(<span class="ver">)[^<]+/g, `$1${version}`);
-  if (next) src = src.replace(/<!-- next[^>]*-->[^]*?<!-- \/next -->/, () => `<!-- next -->\n${next.join("\n")}\n      <!-- /next -->`);
   const cut = src.indexOf("<!-- body -->");   // the <title>, fonts and <style> go in <head>; the rest is the body
   if (cut < 0) throw new Error(`site/${page.src}: no <!-- body --> marker`);
   const doc = `${head(page)}${src.slice(0, cut).replace(/<title>[^<]*<\/title>\n?/, "")}</head>\n<body>\n${src.slice(cut + 13).trimStart()}\n</body>\n</html>\n`;
