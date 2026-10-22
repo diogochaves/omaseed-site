@@ -36,13 +36,14 @@ what is not claimed yet. Diogo is the owner; he says what changes.
 
 ## Publishing the draft
 
-The draft lives at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC> (private; version 5 on
-2026-10-13). `site/omaseed.html` in this repo is its source, so the repo holds the draft too. From
+The draft lives at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC> (private; version 6 on
+2026-10-22). `site/omaseed.html` in this repo is its source, so the repo holds the draft too. From
 a new session, read it first (Artifact `action: "read"` with its `url`), then publish with the same
 `url` and `file_path: site/omaseed.html`.
 
 What each replica on the page is drawn from, and the exact words it copies, is in
-`reference/SPEC-NOTES-2026-10-13.md`.
+`reference/SPEC-NOTES-2026-10-13.md`; for the v0.3.0 parts (moving, the log, the palette, servers),
+in `reference/SPEC-NOTES-2026-10-22-moving.md` and `-window.md`.
 
 ## Repository
 

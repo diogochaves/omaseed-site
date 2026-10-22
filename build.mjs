@@ -24,8 +24,10 @@ const HOME = "https://omaseed.app";
 const SITE = (process.env.SITE_URL || HOME).replace(/\/+$/, "");
 const OUT = "dist";
 // "What's next": open issues with this label, newest first; with none labelled, the newest open
-// enhancements. Titles lose their spec references ("(docs/24)"), nothing else.
+// enhancements. Titles lose their spec references ("(docs/24)", "Board 45: ", "(board 44 D11)"),
+// nothing else.
 const NEXT_LABEL = "next", NEXT_COUNT = 4;
+const plainTitle = t => t.replace(/\s*\((?:docs\/\d+|board \d+[^)]*)\)/gi, "").replace(/^Board \d+:\s*/i, "").trim().replace(/^./, c => c.toUpperCase());
 
 const PAGES = [
   { src: "omaseed.html", out: "index.html", path: "/", home: true,
@@ -54,7 +56,7 @@ async function nextItems() {
   const has = name => i => i.labels.some(l => l.name === name);
   const picked = (open.some(has(NEXT_LABEL)) ? open.filter(has(NEXT_LABEL)) : open.filter(has("enhancement"))).slice(0, NEXT_COUNT);
   if (!picked.length) throw new Error("no open issues to show");
-  return picked.map(i => `      <li><span>#${i.number}</span><a href="${esc(i.html_url)}">${esc(i.title.replace(/\s*\(docs\/\d+\)/g, "").trim())}</a></li>`);
+  return picked.map(i => `      <li><span>#${i.number}</span><a href="${esc(i.html_url)}">${esc(plainTitle(i.title))}</a></li>`);
 }
 
 const head = page => `<!doctype html>

@@ -76,7 +76,8 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .topbar nav a:hover, .topbar .gh:hover { color: var(--fg-bright); background: var(--fill-hover); }
 .topbar .gh { display: inline-flex; align-items: center; gap: 7px; }
 .gh svg { width: 16px; height: 16px; fill: currentColor; }
-@media (min-width: 860px) { .topbar nav { display: flex; } }
+@media (min-width: 1040px) { .topbar nav { display: flex; } }
+.topbar nav a { white-space: nowrap; }
 @media (max-width: 480px) { .topbar .gh span { display: none; } }
 .pill { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; background: var(--fg-bright); color: var(--bg-dark); font: 600 14px var(--sans); text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; }
 .pill:hover { background: color-mix(in srgb, var(--fg-bright) 86%, var(--bg-dark)); }
@@ -193,7 +194,7 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .tbl .c-pg span { text-align: right; color: var(--fg-dark); font-size: 11px; }
 .tbl .c-st { gap: 6px; } .tbl .c-st i { font-style: normal; width: 12px; text-align: center; }
 .tbl .dim0 { color: var(--fg-dark); }
-.empty { padding: 40px 16px; color: var(--fg-dark); grid-column: 1 / -1; height: auto !important; white-space: normal !important; }
+.empty { display: block !important; padding: 40px 16px; color: var(--fg-dark); grid-column: 1 / -1; height: auto !important; white-space: normal !important; }
 
 .det { border-left: 1px solid var(--hairline); display: grid; grid-template-rows: auto auto auto minmax(0, 1fr); min-height: 0; overflow: hidden; }
 .det .hd { padding: 12px 16px 6px; display: grid; gap: 2px; }
@@ -370,6 +371,19 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .rel li b { color: var(--fg-bright); font-weight: 500; }
 .rel + .more, .rel .more { font-size: 14px; justify-self: start; }
 
+.road { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.road article { background: var(--bg); border: 1px solid var(--hairline); padding: clamp(18px, 2.4vw, 28px); display: grid; gap: 12px; align-content: start; }
+.road .when { display: flex; gap: 12px; align-items: baseline; }
+.road .when b { font: 600 20px var(--mono); color: var(--fg-bright); }
+.road .st { font: 500 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 1px 6px; }
+.road .planned .st { color: var(--fg-dark); border-color: var(--hairline); }
+.road h3 { font-size: 19px; letter-spacing: -.015em; }
+.road p, .road ul { color: var(--dim); font-size: 15.5px; }
+.road ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.road li { padding-left: 18px; position: relative; }
+.road li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dark); }
+.road li b { color: var(--fg-bright); font-weight: 500; }
+.road .more { font-size: 14px; justify-self: start; margin-top: 4px; }
 .next { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 40px; }
 .next li { border-top: 1px solid var(--hairline); padding-block: 14px; display: flex; gap: 14px; align-items: baseline; }
 .next a { color: var(--fg-bright); text-decoration: none; font-size: 15.5px; }
@@ -528,6 +542,111 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .reps { display: grid; gap: 14px; width: 100%; }
 .next-tag { font: 500 10.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 1px 6px; margin-left: 8px; vertical-align: 2px; }
 
+/* text in the replicas reads 4.5:1 on the window, as omaseed lifts it (docs/38): the page sets the
+   --aa-* colours from the theme (liftContrast), and fills keep the theme's own */
+.win, .rep { --fg-dark: var(--aa-fg-dark); --accent: var(--aa-accent); --red: var(--aa-red); --yellow: var(--aa-yellow); --orange: var(--aa-orange);
+  --green: var(--aa-green); --cyan: var(--aa-cyan); --blue: var(--aa-blue); --magenta: var(--aa-magenta);
+  --st-down: var(--blue); --st-seed: var(--green); --st-stop: var(--fg-dark); --st-err: var(--red); --st-check: var(--yellow); --st-queue: var(--magenta); --st-stall: var(--orange); }
+
+/* v0.3.0 in the window: the rail's servers, the log face, the command palette (docs/30, 32, 33) */
+.rail { padding: 0; display: flex; flex-direction: column; gap: 0; overflow: hidden; }
+.rail .rs { flex: 1; min-height: 0; overflow: hidden auto; scrollbar-width: none; padding: 10px 0; display: grid; align-content: start; gap: 12px; }
+.rail .srvb { flex: none; background: var(--fill); border-top: 1px solid var(--hairline); padding: 6px 0 8px; }
+.rail .srvb .l { display: flex; padding: 0 16px 4px; }
+.rail .srvb .l span { margin-left: auto; }
+.rail .srvb .g { font-size: 9px !important; }
+.rail .srvb .g.on { color: var(--green) !important; } .rail .srvb .g.bad { color: var(--red) !important; } .rail .srvb .g.idle { opacity: .4; }
+.rail .srvb .n.bad { color: var(--red); }
+@container (max-width: 760px) { .rail { display: none; } }
+@container (max-width: 560px) { .top .faces button { padding: 0 7px; } .top .faces sup { display: none; } }
+.body.full { grid-template-columns: minmax(0, 1fr); }
+.body.full .rail, .body.full .det { display: none; }
+.logv { display: grid; grid-template-rows: auto auto minmax(0, 1fr); height: 100%; min-height: 0; }
+.lbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 16px; border-bottom: 1px solid var(--hairline); }
+.lchip { display: inline-flex; gap: 6px; align-items: center; height: 24px; padding: 0 8px !important; border: 1px solid var(--hairline) !important; color: var(--c) !important; font-size: 11px; }
+.lchip.on { background: var(--fill-sel) !important; border-color: transparent !important; }
+.lchip:not(.on) { opacity: .55; }
+.lchip b { font-weight: 400; color: var(--fg-dark); } .lchip kbd { border: 0; padding: 0; font-size: 9.5px; color: var(--fg-dark); }
+.lchip.tor { color: var(--accent) !important; opacity: 1; }
+.lbar .flt { width: 200px; height: 24px; }
+.lbar .since { margin-left: auto; font-size: 10.5px; color: var(--fg-dark); white-space: nowrap; }
+.lhead, .lr { display: grid; grid-template-columns: 118px 84px minmax(0, 1fr); padding: 0 16px; }
+.lhead { height: 26px; align-items: center; font-size: 10px; color: var(--fg-dark); letter-spacing: .04em; border-bottom: 1px solid var(--hairline); }
+.lrows { align-content: start; display: grid; padding-bottom: 8px; overflow: hidden auto; scrollbar-width: thin; min-height: 0; }
+.lr { padding-block: 3px; font-size: 11px; line-height: 1.45; border-bottom: 1px solid var(--faint); cursor: default; }
+.lr:hover { background: var(--fill); }
+.lr.cur { background: var(--fill-hover); box-shadow: inset 0 1px 0 var(--border-hover), inset 0 -1px 0 var(--border-hover); }
+.lr.mk { background: var(--fill-sel); }
+.lr .lt { color: var(--fg-dark); white-space: nowrap; } .lr .lm { color: var(--fg); overflow-wrap: anywhere; } .lr .lm b { color: var(--fg-bright); font-weight: 400; }
+.lr .lm .mb { color: var(--accent); margin-left: 8px; }
+.lempty { padding: 30px 16px; color: var(--fg-dark); }
+@container (max-width: 760px) { .lhead, .lr { grid-template-columns: 64px 64px minmax(0, 1fr); } .lr .lt span { display: none; } .lbar .since { display: none; } }
+.foot .fol { color: var(--green); } .foot .fol.off { color: var(--fg-dark); }
+.k-pal { width: min(480px, 100%); background: var(--bg); border: 1px solid var(--accent); display: grid; align-self: start; margin-top: 8%; max-height: calc(100% - 24px); grid-template-rows: auto minmax(0, 1fr) auto; }
+.k-pal .pq { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 14px; border-bottom: 1px solid var(--hairline); }
+.k-pal .pq .g { color: var(--fg-dark); }
+.k-pal .pq input { flex: 1; min-width: 0; border: 0; outline: none; background: none; color: var(--fg-bright); font: inherit; caret-color: var(--accent); }
+.k-pal .pq input::placeholder { color: var(--fg-dark); }
+.k-pal .pq .cn { color: var(--fg-dark); font-size: 10.5px; white-space: nowrap; }
+.k-pal .pl { overflow: hidden auto; scrollbar-width: thin; max-height: 360px; }
+.k-pal .pr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 12px; padding: 6px 14px; border-bottom: 1px solid var(--faint); cursor: pointer; }
+.k-pal .pr b { color: var(--fg-bright); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-pal .pr .kk { color: var(--fg-dark); font-size: 10.5px; white-space: nowrap; }
+.k-pal .pr .d { grid-column: 1 / -1; color: var(--fg-dark); font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-pal .pr.cur { background: var(--fill-hover); box-shadow: inset 0 0 0 1px var(--border-hover); }
+.k-pal .pr.no { cursor: default; } .k-pal .pr.no b { color: var(--fg-dark); font-weight: 400; } .k-pal .pr.no .kk, .k-pal .pr.no .d { opacity: .55; }
+.k-pal .pm { padding: 10px 14px 4px; color: var(--fg); font-size: 11.5px; }
+.k-pal .pf span { white-space: nowrap; }
+.k-pal .pf { display: flex; flex-wrap: wrap; gap: 2px 14px; padding: 6px 14px; border-top: 1px solid var(--hairline); font-size: 10.5px; color: var(--fg-dark); }
+.k-pal .pf b { color: var(--fg); font-weight: 500; } .k-pal .pf .r { margin-left: auto; }
+/* moving (docs/42, 43; Views/MoveSheet, MoveBand, ScopeLine, DetailsMoveBlock) */
+.win { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.win > .top { grid-row: 1; } .win > .mband { grid-row: 2; } .win > .body { grid-row: 3; } .win > .foot { grid-row: 4; }
+.mband { --kc: var(--accent); position: relative; background: var(--fill); border-bottom: 1px solid var(--hairline); box-shadow: inset 2px 0 0 var(--kc); padding: 9px 16px 10px 18px; display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 2px 8px; align-items: baseline; }
+.mband.y { --kc: var(--yellow); } .mband.r { --kc: var(--red); } .mband.g { --kc: var(--green); }
+.mband > .g { color: var(--kc); font-weight: 600; } .mband > .h { color: var(--fg-bright); font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mband > .a { display: flex; gap: 14px; font-size: 11px; white-space: nowrap; }
+.mband > .a button { color: var(--accent); } .mband > .a button:hover { color: var(--fg-bright); } .mband > .a .dt { color: var(--fg-dark); }
+.mband > .ln { grid-column: 2 / -1; font-size: 11px; color: var(--fg); }
+.mband > .ln .bad { color: var(--red); }
+.mband > .pg { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--kc); }
+.mband > .dl { grid-column: 2 / -1; margin-top: 6px; background: var(--fill); padding: 8px; font-size: 10.5px; color: var(--fg-dark); display: grid; gap: 2px; max-height: 120px; overflow: hidden auto; }
+@container (max-width: 760px) { .mband { grid-template-columns: 12px minmax(0, 1fr); } .mband > .a { grid-column: 2; grid-row: 3; flex-wrap: wrap; } }
+.scope { margin: 12px 16px 4px; background: var(--fill); box-shadow: inset 1px 0 0 var(--accent); padding: 7px 12px; display: flex; gap: 8px; align-items: baseline; font-size: 11px; white-space: nowrap; }
+.scope > i { font-style: normal; color: var(--accent); width: 10px; flex: none; }
+.scope > span { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.scope button { color: var(--accent); flex: none; } .scope button kbd { border: 0; padding: 0; color: var(--fg-dark); margin-right: 6px; font-size: 10.5px; }
+.rail button.fh { color: var(--fg-dark); cursor: default; } .rail button.fh:hover { background: none; }
+.rail button .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.foot .ok { color: var(--green); font-size: 10px; } .foot .okt { color: var(--accent); } .foot .wt { color: var(--yellow); }
+.k-mv .why { font-size: 11px; color: var(--fg-dark); }
+.k-mv .rows { display: grid; gap: 2px; font-size: 11px; }
+.k-mv .rows > div { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) 40px; gap: 8px; }
+.k-mv .rows span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-mv .rows .ar { color: var(--fg-dark); } .k-mv .rows .to { color: var(--fg-bright); } .k-mv .rows .n { color: var(--fg-dark); text-align: right; }
+.k-mv .blk { font-size: 11px; color: var(--red); }
+.k-chk { display: grid; gap: 8px; }
+.k-chk > div { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 1px 8px; font-size: 11px; line-height: 1.45; }
+.k-chk .g { color: var(--fg-dark); } .k-chk .ok .g { color: var(--green); } .k-chk .warn .g { color: var(--yellow); } .k-chk .bad .g { color: var(--red); } .k-chk .loose .g { color: var(--accent); }
+.k-chk .t { color: var(--fg); } .k-chk .nt { grid-column: 2; color: var(--fg-dark); font-size: 10.5px; } .k-chk .lk { color: var(--accent); white-space: nowrap; }
+.k-places { border: 1px solid var(--hairline); background: var(--fill); padding: 4px 0; display: grid; }
+.k-places .sc { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dark); padding: 6px 10px 2px; }
+.k-places .pr2 { display: flex; justify-content: space-between; gap: 10px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
+.k-places .pr2 span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-places .pr2 span + span { color: var(--fg-dark); flex: none; }
+.k-places .pr2.cur, .k-places .pr2:hover { background: var(--fill-hover); } .k-places .pr2.cur span:first-child { color: var(--fg-bright); }
+.k-places .ph { border-top: 1px solid var(--hairline); margin-top: 4px; padding: 5px 10px 1px; font-size: 10.5px; color: var(--fg-dark); }
+.k-places .ph b { color: var(--fg); font-weight: 500; }
+.k-fld .pl2 { color: var(--accent); font-size: 11px; white-space: nowrap; } .k-fld .pl2:hover { color: var(--fg-bright); }
+.k-mvb { background: var(--fill); box-shadow: inset 1px 0 0 var(--accent); padding: 12px; display: grid; gap: 3px; margin: 2px 0 10px; font-size: 11px; }
+.k-mvb .h { color: var(--fg-bright); font-weight: 500; font-size: 12px; } .k-mvb .m { color: var(--fg-dark); }
+.k-mvb .acts2 { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 4px; }
+.k-mvb .acts2 button { color: var(--accent); } .k-mvb .acts2 button:hover { color: var(--fg-bright); }
+.k-eb.y { border-left-color: var(--yellow); } .k-eb.y > .g { color: var(--yellow); }
+.k-eb > .eacts [data-key] { cursor: pointer; } .k-eb > .eacts [data-key]:hover { color: var(--fg-bright); }
+.det .k-eb { margin: 2px 0 10px; }
+.win .k-eb > .l { font-size: 11px; letter-spacing: 0; text-transform: none; color: var(--fg); } .win .k-eb > .l.d { color: var(--fg-dark); }
+
 /* the settings modal's servers pane */
 .k-set { display: grid; grid-template-columns: 170px minmax(0, 1fr); background: var(--bg); border: 1px solid var(--accent); width: 100%; max-width: 680px; }
 .k-set nav { border-right: 1px solid var(--hairline); padding: 12px 0; display: grid; align-content: start; }
@@ -645,14 +764,14 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
 
 <div class="topbar"><div class="in">
   <a class="brand" href="#top" aria-label="omaseed, top of the page"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
-  <nav aria-label="Sections"><a href="#seed">Seed console</a><a href="#adding">Adding</a><a href="#servers">Servers</a><a href="#omarchy">Omarchy</a><a href="#new">Changelog</a></nav>
+  <nav aria-label="Sections"><a href="#seed">Seed console</a><a href="#moving">Moving</a><a href="#adding">Adding</a><a href="#servers">Servers</a><a href="#omarchy">Omarchy</a><a href="#new">Changelog</a><a href="#roadmap">Roadmap</a></nav>
   <a class="gh" href="https://github.com/diogochaves/omaseed"><svg aria-hidden="true"><use href="#ghm"/></svg><span>GitHub</span></a>
   <a class="pill" href="#install">Install</a>
 </div></div>
 
 <main id="top">
   <section class="wrap hero">
-    <a class="news" href="#new"><b>NEW</b>v<span class="ver">0.2.0</span>: errors explained, one-line install</a>
+    <a class="news" href="#new"><b>NEW</b><span>v<span class="ver">0.3.0</span>: move whole folders, and move them back</span></a>
     <h1>Torrents, finally at home on Omarchy.</h1>
     <p class="lead">A native client for one server or many. Your theme, your keys, your seeding history. Powered by qBittorrent.</p>
     <div class="cta">
@@ -664,21 +783,24 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
   <section class="stage" aria-label="A working copy of omaseed's main window, with demo data">
     <div class="desk">
       <span class="demo-tag">Demo data</span>
-      <div class="win" id="app" tabindex="0" aria-label="omaseed demo window. Demo data. Keys: j and k move, space selects, p stops or starts, backtick flips to the seed console, question mark shows the keys.">
+      <div class="win" id="app" tabindex="0" aria-label="omaseed demo window. Demo data. Keys: j and k move, space selects, p stops or starts, m moves, colon finds any command, backtick flips to the seed console, tilde shows qBittorrent's log, question mark shows the keys.">
         <div class="top">
           <svg class="mk" aria-hidden="true"><use href="#mark"/></svg>
           <div class="nm"><b>omaseed</b><span class="l"><span class="dot"></span>home · qBittorrent 5.2.3</span></div>
           <div class="stat d"><span class="v"><i>↓</i><span id="sDown">0</span></span><span class="l">download</span></div>
           <div class="stat u"><span class="v"><i>↑</i><span id="sUp">0</span></span><span class="l">upload · <span id="sToday">0</span> today</span></div>
-          <div class="faces" role="tablist" aria-label="Faces"><button type="button" role="tab" id="fLib" aria-selected="true">library</button><button type="button" role="tab" id="fSeed" class="beacon" aria-selected="false">seed<sup>`</sup></button></div>
+          <div class="faces" role="tablist" aria-label="Faces"><button type="button" role="tab" id="fLib" aria-selected="true">library</button><button type="button" role="tab" id="fSeed" class="beacon" aria-selected="false">seed<sup>`</sup></button><button type="button" role="tab" id="fLog" class="beacon" aria-selected="false">log<sup>~</sup></button></div>
           <div class="grow"></div>
           <label class="flt"><span>/</span><input id="q" type="text" placeholder="filter torrents" autocomplete="off" spellcheck="false" aria-label="Filter torrents"><em id="qn">16</em></label>
           <div class="acts"><button type="button" class="on beacon" id="addBtn" title="Add a torrent (a)">+</button><button type="button" id="helpBtn" title="Every key in this demo (?)">?</button></div>
         </div>
-        <div class="body">
+        <div class="mband" id="band" hidden></div>
+        <div class="body" id="body">
           <aside class="rail" id="rail" aria-label="Filters"></aside>
           <div class="content" id="content">
+            <div class="scope" id="scope" hidden></div>
             <div class="tbl" id="tbl" aria-label="Torrents (demo data)"></div>
+            <div class="logv" id="logView" hidden></div>
             <div class="seed" id="seedView" hidden></div>
             <div class="selbar" id="selbar" hidden></div>
           </div>
@@ -692,7 +814,10 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
     <div class="stage-foot">
       <div class="try" id="try"><span class="lbl">Try</span>
         <button type="button" data-try="menu">Right-click a torrent</button>
+        <button type="button" data-try="move">Move a folder</button>
         <button type="button" data-try="seed">The seed console <kbd>`</kbd></button>
+        <button type="button" data-try="pal">Any command <kbd>:</kbd></button>
+        <button type="button" data-try="log">qBittorrent's log <kbd>~</kbd></button>
         <button type="button" data-try="add">Add a torrent <kbd>a</kbd></button>
         <button type="button" data-try="help">Every key <kbd>?</kbd></button>
         <span class="how">or drop a .torrent file on the window.</span>
@@ -735,6 +860,24 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
     <p class="where">Everything above is demo data on this page. omaseed writes the real history to <code>~/.local/share/omaseed/ledger/</code> on your machine, so it stays when a server is replaced, and backs it up with the rest of its settings.</p>
   </section>
 
+  <section class="wrap sec" id="moving">
+    <div class="head">
+      <p class="tag">Moving</p>
+      <h2 class="two">Move a whole folder, and move it back. <span>Its torrents, then the files no torrent owns, onto another drive. Checked before anything is sent, and followed until the last one lands.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice"><header><h3>Checked before anything moves</h3><p>Room on each drive, permission to write, files already at the destination and automatic management, before a single torrent is sent.</p></header><div class="rep k" id="repMvSheet"></div></article>
+      <article class="slice"><header><h3>Smallest first, followed to the end</h3><p>A band under the top says how far the move has got, with pause and resume, until the last torrent lands, even on a server whose disks omaseed can't see. A summary ends it.</p></header><div class="rep plain k" id="repMvBand"></div></article>
+      <article class="slice half"><header><h3>Move…, for any selection</h3><p><kbd>m</kbd> moves what you picked, to places you moved things lately or the library's folders. Torrents from several folders go into one, or keep their places under a new one.</p></header><div class="rep k" id="repMvPlaces"></div></article>
+      <article class="slice half"><header><h3>Move back, later</h3><p>The last 20 moves, or 30 days of them, from a torrent's details, the log or the palette. A torrent goes back only if it is still where that move put it, and the button says what will happen.</p></header><div class="rep k" id="repMvBack"></div></article>
+    </div>
+    <div class="blocks">
+      <div><h3>Quitting asks first</h3><p>Quitting while a move runs asks first, and a paused move picks up at the next start.</p></div>
+      <div><h3>One after another</h3><p>A move started while another runs waits its turn. One that takes a few seconds just says so in the footer.</p></div>
+      <div><h3>Then a summary</h3><p>A summary ends it, with "recheck" and "move back…". Recheck starts again only the torrents that were running before the move.</p></div>
+    </div>
+  </section>
+
   <section class="wrap sec" id="adding">
     <div class="head">
       <p class="tag">Adding torrents</p>
@@ -757,12 +900,14 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
       <div class="blocks">
         <div><h3>Finds the one on this PC</h3><p>First run looks for a qBittorrent on this machine and signs in, or offers to install one.</p></div>
         <div><h3>Or any on the network</h3><p>A NAS, a seedbox, the machine under the desk: qBittorrent 5.2 or newer with its Web UI on.</p></div>
-        <div><h3>Several at once</h3><p>Add as many servers as you run, and switch between them from the rail, the top of the window or the tray.</p></div>
+        <div><h3>Several within reach</h3><p>The others wait at the bottom of the rail, with what omaseed last saw on each. <kbd>ctrl+s</kbd>, the palette, the tray and the bar widget switch between them.</p></div>
+        <div><h3>Add when it's back</h3><p>The add sheet says which server a torrent goes to. While that one is down, "add when back" sends it as soon as it answers.</p></div>
+        <div><h3>Says what went wrong</h3><p>A server that stops answering gets a band in plain words: what happened, what omaseed does next, and "retry now", "edit login" or "switch server".</p></div>
         <div><h3>Signs in your way</h3><p>An API key, a username and password, or nothing for a server that lets localhost in. Secrets go to the system keyring.</p></div>
         <div><h3>Self-signed HTTPS</h3><p>omaseed shows the certificate's fingerprint and trusts that one certificate once you say so.</p></div>
         <div><h3>Opens what you click</h3><p>Magnet links and <code>.torrent</code> files open in omaseed, from the browser, the clipboard, a drag or your Downloads folder.</p></div>
       </div>
-      <div class="reps"><div class="rep k" id="repSrv"></div><div class="rep plain k" id="repCert"></div></div>
+      <div class="reps"><div class="rep plain k" id="repDown"></div><div class="rep k" id="repSrv"></div><div class="rep plain k" id="repCert"></div></div>
     </div>
   </section>
 
@@ -778,11 +923,17 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
         <div class="rep k" id="repNotes"></div></article>
       <article class="slice"><header><h3>Keyboard first</h3><p>Every action has a key, and <kbd>?</kbd> lists them all, with a filter. The mouse works everywhere too: right-click menus, drag and drop, double-click for details.</p></header>
         <div class="rep k" id="repHelp"></div></article>
+      <article class="slice narrow"><header><h3>Every command by name</h3><p><kbd>:</kbd> runs any command by name and shows its key, so the palette teaches the keys. One that can't run says why. The last five you ran come first.</p></header>
+        <div class="rep k" id="repPal"></div></article>
+      <article class="slice wide"><header><h3>qBittorrent's log, in the window</h3><p>A third face beside the library and the seed console (<kbd>~</kbd>), followed live: levels, a filter, the next warning, and <kbd>enter</kbd> goes to the line's torrent.</p></header>
+        <div class="rep k" id="repLog"></div></article>
     </div>
     <div class="blocks">
       <div><h3>Every theme, live</h3><p>All <span id="nThemes">22</span> bundled themes, the light ones too, with your font, base size, transparency and window rounding.</p></div>
       <div><h3>In the Omarchy menu</h3><p>A Torrents row for the menu, and a window rule so its translucent window looks right.</p></div>
       <div><h3>Any Linux, too</h3><p>Built for Omarchy, and runs on any Linux with a bundled theme when Omarchy isn't there.</p></div>
+      <div><h3>Screen readers</h3><p>Every row, control and piece of text can be found, and controls are named by what they do, not by a glyph or a key. The bar widget too, once the shell runs on Quickshell 0.3.2 or later.</p></div>
+      <div><h3>Readable in every theme</h3><p>Text reads at 4.5:1 against the window in every theme. A colour that falls short is shifted just enough, and the rest are kept exactly. The copy on this page does the same.</p></div>
     </div>
   </section>
 
@@ -794,7 +945,9 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
     <div class="slices">
       <article class="slice half"><header><h3>Shared files</h3><p>Two torrents seeding the same files: deleting one asks whether the other keeps them.</p></header><div class="rep k" id="repShared"></div></article>
       <article class="slice half"><header><h3>The last seed</h3><p>If you are the only one still seeding it, omaseed says so, and offers to stop it instead.</p></header><div class="rep k" id="repLast"></div></article>
-      <article class="slice"><header><h3>Why it errored<span class="next-tag">new in 0.2.0</span></h3><p>qBittorrent's API never says why a torrent stopped. omaseed reads qBittorrent's log and says it in plain words, with the keys that fix it.</p></header><div class="rep plain k" id="repErr"></div></article>
+      <article class="slice"><header><h3>Why it errored</h3><p>qBittorrent's API never says why a torrent stopped. omaseed reads qBittorrent's log and says it in plain words, with the keys that fix it. <kbd>p</kbd> stops an errored torrent, so a retry that only fails again comes to an end; <kbd>e</kbd> retries.</p></header><div class="rep plain k" id="repErr"></div></article>
+      <article class="slice half"><header><h3>What only the log says</h3><p>When qBittorrent accepts a move or a rename and then can't do it, it says so only in its log. omaseed puts it on the torrent: what didn't happen, why, where the files are and how to fix it.</p></header><div class="rep plain k" id="repFail"></div></article>
+      <article class="slice half"><header><h3>Back up a qBittorrent</h3><p>Its torrents to one private file, each with its save path, category, tags, limits and file priorities. Its settings to a readable file with no password in it; importing them shows only what differs, and changes nothing until you apply.</p></header><div class="rep k" id="repBak"></div></article>
     </div>
   </section>
 
@@ -815,13 +968,18 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
       </div>
       <pre class="walks"><span class="p"># the walks in omaseed's repo, each run in a box</span>
 <b>scripts/dev/</b>actions-walk.sh
+<b>scripts/dev/</b>backup-walk.sh
 <b>scripts/dev/</b>error-walk.sh
 <b>scripts/dev/</b>magnet-walk.sh
+<b>scripts/dev/</b>menu-walk.sh
+<b>scripts/dev/</b>move-walk.sh
 <b>scripts/dev/</b>notify-walk.sh
 <b>scripts/dev/</b>servers-walk.sh
 <b>scripts/dev/</b>settings-walk.sh
 <b>scripts/dev/</b>strict-walk.sh
-<b>scripts/dev/</b>swarm-walk.sh</pre>
+<b>scripts/dev/</b>swarm-walk.sh
+<span class="p"># and their screens, against a baseline</span>
+<b>scripts/dev/</b>visual-check.sh</pre>
     </div>
   </section>
 
@@ -831,6 +989,23 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
       <h2 class="two">Changelog. <span>Every release, dated.</span></h2>
     </div>
     <div class="rel">
+      <article>
+        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.3.0"><b>v0.3.0</b></a><span class="lbl">22 Oct 2026</span></div>
+        <div>
+          <h3>Moving, with a way back. Several servers, qBittorrent's log, a command palette</h3>
+          <ul>
+            <li><b>Move a whole folder.</b> Its torrents, then the files no torrent owns, across drives. Room on each drive, permission to write and files already there are checked before anything is sent; the smallest go first, and a band follows the move to the last one, with pause and resume.</li>
+            <li><b>Move…</b> (<code>m</code>) moves a selection the same way, to places you used lately, the library's folders or the categories' folders.</li>
+            <li><b>Move back, later.</b> The last 20 moves, or 30 days of them, can be undone. A torrent goes back only if it is still where that move put it.</li>
+            <li><b>Several servers within reach.</b> The others wait at the bottom of the rail; <code>ctrl+s</code>, the palette, the tray and the bar widget switch. "Add when back" sends a torrent once a server that was down answers.</li>
+            <li><b>Back up a qBittorrent.</b> Its torrents to one private file, each with its save path, category, tags and file priorities; its settings to a readable one, with no password in it. On import, every torrent is checked against the disk and only the complete ones start.</li>
+            <li><b>qBittorrent's log,</b> as a third face beside the library and the seed console (<code>~</code>), and the failures qBittorrent only logs, shown on the torrent with how to fix them.</li>
+            <li><b>A command palette:</b> <code>:</code> runs any command by name and shows its key.</li>
+            <li><b>An errored torrent can be stopped,</b> so a retry that only fails again comes to an end.</li>
+            <li><b>Screen readers can use omaseed,</b> the window and the bar widget, and text reads at 4.5:1 in every theme.</li>
+          </ul>
+        </div>
+      </article>
       <article>
         <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.2.0"><b>v0.2.0</b></a><span class="lbl">13 Oct 2026</span></div>
         <div>
@@ -857,20 +1032,49 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
         </div>
       </article>
     </div>
-    <a class="more" href="https://github.com/diogochaves/omaseed/blob/v0.2.0/CHANGELOG.md">The whole changelog</a>
+    <a class="more" href="https://github.com/diogochaves/omaseed/blob/v0.3.0/CHANGELOG.md">The whole changelog</a>
+  </section>
+
+  <section class="wrap sec" id="roadmap">
+    <div class="head">
+      <p class="tag">Roadmap</p>
+      <h2 class="two">Where it goes from here. <span>The next release and the work after it, as omaseed's milestones on GitHub group them. No dates.</span></h2>
+    </div>
+    <!-- roadmap: hand-written from omaseed's open milestones; change it when one is released -->
+    <div class="road">
+      <article>
+        <div class="when"><b>v0.4.0</b><span class="st">next release</span></div>
+        <h3>Disks and daily use</h3>
+        <ul>
+          <li><b>Skipped files and the disk.</b> Files you skipped that still take space, and a way to free it; what a ticked file costs on ntfs3, exFAT and FAT drives.</li>
+          <li><b>A clearer place for what an action did,</b> after a move above all.</li>
+          <li><b>Selecting rows with the mouse,</b> several at once.</li>
+          <li><b>Search</b> that ignores the dots and dashes between words.</li>
+          <li><b>Screen readers:</b> the last gaps.</li>
+        </ul>
+        <a class="more" href="https://github.com/diogochaves/omaseed/milestone/4">The v0.4.0 milestone</a>
+      </article>
+      <article class="planned">
+        <div class="when"><b>Engines</b><span class="st">planned</span></div>
+        <h3>More engines than qBittorrent</h3>
+        <p>omaseed talking to other torrent engines, starting with Transmission. It isn't designed yet, so there's no version for it and no date.</p>
+        <a class="more" href="https://github.com/diogochaves/omaseed/milestone/5">The engines milestone</a>
+      </article>
+    </div>
+    <!-- /roadmap -->
   </section>
 
   <section class="wrap sec" id="next">
     <div class="head">
       <p class="tag">What's next</p>
-      <h2 class="two">Open on GitHub. <span>Work that's planned, as the issues name it. No dates.</span></h2>
+      <h2 class="two">Open on GitHub. <span>The issues being worked on, as they are named there.</span></h2>
     </div>
     <ul class="next">
       <!-- next: written by build.mjs from omaseed's open issues; this list is the fallback -->
-      <li><span>#56</span><a href="https://github.com/diogochaves/omaseed/issues/56">qBittorrent's log in omaseed (like the Web UI's View → Log)</a></li>
-      <li><span>#55</span><a href="https://github.com/diogochaves/omaseed/issues/55">Show other per-torrent failures from qBittorrent's log (move, rename, web seed)</a></li>
-      <li><span>#52</span><a href="https://github.com/diogochaves/omaseed/issues/52">Table: resize columns by dragging a header's edge</a></li>
-      <li><span>#44</span><a href="https://github.com/diogochaves/omaseed/issues/44">Add sheet: choose a magnet's files before it starts</a></li>
+      <li><span>#130</span><a href="https://github.com/diogochaves/omaseed/issues/130">After a move, where it says so (strip, places opener, mouse multi-select, move back after close)</a></li>
+      <li><span>#125</span><a href="https://github.com/diogochaves/omaseed/issues/125">Search: ignore . _ - between words (Big.Buck.Bunny matches "big buck bunny")</a></li>
+      <li><span>#118</span><a href="https://github.com/diogochaves/omaseed/issues/118">Skipped files that still take space: on-disk column, band, free the space</a></li>
+      <li><span>#91</span><a href="https://github.com/diogochaves/omaseed/issues/91">Screen readers: the last gaps (an unnamed field, selection state, a modal's background, reading order)</a></li>
       <!-- /next -->
     </ul>
   </section>
@@ -909,7 +1113,7 @@ makepkg -si">Copy</button></div>
 
   <footer class="wrap">
     <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
-    <span>v<span class="ver">0.2.0</span> · MIT</span>
+    <span>v<span class="ver">0.3.0</span> · MIT</span>
     <nav aria-label="More"><a href="https://github.com/diogochaves/omaseed">GitHub</a><a href="#open">Contribute</a><a href="https://github.com/diogochaves/omaseed/blob/main/CHANGELOG.md">Changelog</a><a href="https://github.com/diogochaves/omaseed/issues">Issues</a><a href="https://omabox.app">omabox</a></nav>
     <small>omaseed is an independent client for qBittorrent and is not part of the qBittorrent project. Every number on this page is demo data.</small>
   </footer>
@@ -942,6 +1146,7 @@ function applyTheme() {
   t ? r.setProperty("color-scheme", t.mode) : r.removeProperty("color-scheme");
   $("modeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
   const names = Object.keys(THEMES).filter(n => THEMES[n].mode === mode);
+  liftContrast();
   $("chips").innerHTML = names.map(n => `<button type="button" data-t="${n}" aria-pressed="${n === current()}"><i style="background:${THEMES[n].accent}"></i>${esc(THEMES[n].label)}</button>`).join("");
 }
 $("modeSeg").addEventListener("click", e => {
@@ -955,11 +1160,25 @@ $("chips").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   picked = b.dataset.t; mode = THEMES[picked].mode; store.set("omaseed-site-theme", picked); applyTheme();
 });
+// omaseed lifts every text colour towards the foreground in 1/256 steps until it reads 4.5:1 on
+// the window (docs/38); one that already reads is kept. The replicas get the lifted colours.
+const AA = ["fg-dark", "accent", "red", "yellow", "orange", "green", "cyan", "blue", "magenta"];
+const rgb = h => { h = h.trim().replace("#", ""); if (h.length === 3) h = [...h].map(c => c + c).join(""); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
+const lum = c => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * r + .7152 * g + .0722 * b; };
+const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+function liftContrast() {
+  const cs = getComputedStyle(document.documentElement), bg = rgb(cs.getPropertyValue("--bg")), fg = rgb(cs.getPropertyValue("--fg")), r = document.documentElement.style;
+  for (const k of AA) {
+    const c = rgb(cs.getPropertyValue("--" + k)); let out = c;
+    for (let s = 1; s <= 256 && ratio(out, bg) < 4.5; s++) out = c.map((v, i) => Math.round(v + (fg[i] - v) * s / 256));
+    r.setProperty("--aa-" + k, "#" + out.map(v => v.toString(16).padStart(2, "0")).join(""));
+  }
+}
 const followViewer = () => { if (!picked) { mode = viewerDark() ? "dark" : "light"; applyTheme(); } };
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", followViewer);
 new MutationObserver(followViewer).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 const nT = Object.keys(THEMES).length; if (nT) $("nThemes").textContent = nT;
-if (nT) applyTheme(); else document.querySelector(".themes").hidden = true;
+if (nT) applyTheme(); else { document.querySelector(".themes").hidden = true; liftContrast(); }
 
 // ── demo data ───────────────────────────────────────────────────────────────────
 // name, category, tags, size GB, progress %, state, seeds/peers connected, swarm seeds, waiting, ↓ KB/s, ↑ KB/s, ratio, tracker
@@ -981,11 +1200,18 @@ const ROWS = [
   ["omarchy-4.0.4-x86_64.iso", "linux", [], 1.95, 0, "queue", "0 / 0", 4, 0, 0, 0, 0, "example.net"],
   ["Spring (2019) 4K (CC-BY)", "movies", ["4k", "private"], 4.61, 100, "done", "0 / 4", 6, 4, 0, 0, 1.38, "example.org"],
 ].map(([name, cat, tags, size, prog, st, sp, swarm, wait, dl, ul, ratio, trk], id) =>
-  ({ id, name, cat, tags, size, prog, st, sp, swarm, wait, dl, ul, ratio, trk, was: st, added: (id * 5 + 2), opts: { seq: false, flp: false, sup: false, auto: true } }));
+  ({ id, name, cat, tags, size, prog, st, sp, swarm, wait, dl, ul, ratio, trk, was: st, added: (id * 5 + 2), path: "/data/torrents" + (cat === "none" ? "" : "/" + cat), opts: { seq: false, flp: false, sup: false, auto: true } }));
+ROWS.find(r => r.st === "err").cause = "no access";
+// the log says when qBittorrent couldn't do a move it had accepted; General shows it (docs/32)
+const T0 = Date.now();
+ROWS.find(r => r.name.startsWith("Sintel")).fail = { at: T0 - 52 * 60000, to: "/mnt/media/films" };
 let nextId = ROWS.length;
 const byId = id => ROWS.find(r => r.id === id);
 const ST = { down: ["downloading", "--st-down", "↓"], seed: ["seeding", "--st-seed", "↑"], stop: ["stopped", "--st-stop", "■"], err: ["errored", "--st-err", "!"],
-  check: ["checking", "--st-check", "⟳"], queue: ["queued", "--st-queue", "≡"], stall: ["stalled", "--st-stall", "◌"], done: ["completed", "--st-seed", "✓"] };
+  check: ["checking", "--st-check", "⟳"], queue: ["queued", "--st-queue", "≡"], stall: ["stalled", "--st-stall", "◌"], done: ["completed", "--st-seed", "✓"],
+  errstop: ["stopped", "--st-err", "!"] };
+const isStopped = r => r.st === "stop" || r.st === "errstop";
+const isErr = r => r.st === "err" || r.st === "errstop";
 
 // a seeded random, so the demo is the same on every visit
 let seed = 20261010;
@@ -1035,11 +1261,15 @@ const app = $("app");
 let L = null, A = null;                                                // the open layer (menu, sheet), the add sheet's state
 const targets = () => S.sel.size ? [...S.sel].filter(byId) : [S.cur];
 let noteT;
-function note(t) { S.note = t; foot(); clearTimeout(noteT); noteT = setTimeout(() => { S.note = ""; foot(); }, 3200); }
+function note(t, kind = "", ms = 3200) { S.note = t; S.noteK = kind; foot(); clearTimeout(noteT); noteT = setTimeout(() => { S.note = ""; foot(); }, ms); }
+const cutL = (p, n = 34) => p.length > n ? "…" + p.slice(-(n - 1)) : p;
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 function matches(r, f) {
-  if (f.k === "status") return ({ all: true, downloading: r.st === "down", seeding: r.st === "seed", completed: r.prog >= 100, stopped: r.st === "stop",
-    active: r.dl > 0 || r.ul > 0, stalled: r.st === "stall", checking: r.st === "check", errored: r.st === "err" })[f.v];
+  if (f.k === "status") return ({ all: true, downloading: r.st === "down", seeding: r.st === "seed", completed: r.prog >= 100, stopped: isStopped(r),
+    active: r.dl > 0 || r.ul > 0, stalled: r.st === "stall", checking: r.st === "check", errored: isErr(r) })[f.v];
+  if (f.k === "folder") return r.path === f.v || r.path.startsWith(f.v + "/");
+  if (f.k === "ids") return f.v.has(r.id);
   if (f.v === "all") return true;
   if (f.k === "cat") return r.cat === f.v;
   if (f.k === "tag") return f.v === "untagged" ? !r.tags.length : r.tags.includes(f.v);
@@ -1052,9 +1282,30 @@ function rail() {
     `<button type="button" data-k="${k}" data-v="${esc(v)}" aria-pressed="${S.filter.k === k && S.filter.v === v}"><span class="g">${g}</span><span>${esc(v)}</span><span class="n">${ROWS.filter(r => matches(r, { k, v })).length}</span></button>`).join("")}</div>`;
   $("rail").innerHTML = grp("status", "status", [["all", "◆"], ["downloading", "↓"], ["seeding", "↑"], ["completed", "✓"], ["stopped", "■"], ["active", "●"], ["stalled", "◌"], ["checking", "⟳"], ["errored", "!"]])
     + grp("categories", "cat", [["all", ""], ["linux", "▭"], ["movies", "▭"], ["none", "·"]])
+    + foldersHTML()
     + grp("tags", "tag", [["all", ""], ["4k", "#"], ["keep", "#"], ["private", "#"], ["untagged", "·"]])
     + grp("trackers", "trk", [["all", ""], ["example.net", "◦"], ["example.org", "◦"], ["trackerless", "·"]]);
+  $("rail").innerHTML = `<div class="rs">${$("rail").innerHTML}</div><div class="srvb"><span class="l">servers · ${SERVERS.length}<span>▾</span></span>${SERVERS.map((v, i) =>
+    `<button type="button" data-srv="${i}" aria-pressed="${i === 0}"><span class="g ${v.dot}">●</span><span>${v.name}</span><span class="n${v.dot === "bad" ? " bad" : ""}">${i === 0 ? ROWS.length : v.count}</span></button>`).join("")}</div>`;
 }
+// The library's folders, as a tree under each drive: a drive's top with no torrents of its own is a
+// dim heading (docs/42 F1). A folder's count is its torrents and those below it.
+const DRIVES = ["/data", "/mnt/fast"];
+function foldersHTML() {
+  const paths = [...new Set(ROWS.map(r => r.path))], rows = [];
+  for (const d of DRIVES) {
+    const under = paths.filter(p => p.startsWith(d + "/")); if (!under.length) continue;
+    const dirs = new Set(); under.forEach(p => { const parts = p.slice(d.length + 1).split("/"); parts.forEach((_, i) => dirs.add(d + "/" + parts.slice(0, i + 1).join("/"))); });
+    rows.push(`<button type="button" class="fh" tabindex="-1" style="padding-left:16px"><span class="g">▾</span><span class="nm">${d}</span></button>`);
+    [...dirs].sort().forEach(p => {
+      const depth = p.slice(d.length + 1).split("/").length, kids = [...dirs].some(x => x.startsWith(p + "/")), mv = MV?.root === p && MV.phase === "run";
+      const n = mv ? Math.floor(MV.done / MV.total * 100) + " %" : MV?.phase === "run" && MV.root && p.startsWith(MV.root + "/") ? "↻" : ROWS.filter(r => matches(r, { k: "folder", v: p })).length;
+      rows.push(`<button type="button" data-k="folder" data-v="${esc(p)}" aria-pressed="${S.filter.k === "folder" && S.filter.v === p}" style="padding-left:${16 + depth * 12}px"><span class="g">${kids ? "▾" : "·"}</span><span class="nm">${esc(p.split("/").pop())}</span><span class="n">${n}</span></button>`);
+    });
+  }
+  return `<div class="grp"><span class="l">folders</span>${rows.join("")}</div>`;
+}
+const SERVERS = [{ name: "home", dot: "on", addr: "127.0.0.1:8080" }, { name: "nas", dot: "idle", count: 412, addr: "192.168.1.20:8080" }, { name: "seedbox", dot: "bad", count: "!", addr: "sb.example.net" }];
 
 function table() {
   const rows = visible();
@@ -1064,7 +1315,7 @@ function table() {
   $("tbl").innerHTML = H + (rows.length ? rows.map(r => {
     const s = ST[r.st], tag = `<em>${r.cat === "none" ? "" : r.cat}</em>${r.tags.includes("private") ? `<em class="pv">private</em>` : ""}`;
     const cls = [S.sel.has(r.id) && "sel", r.id === S.cur && "cur"].filter(Boolean).join(" ");
-    return `<div class="r ${cls}" data-id="${r.id}"><div class="c-nm" title="${esc(r.name)}"><span>${esc(r.name)}</span>${tag}</div><div class="num c-sz">${gb(r.size)}</div><div class="c-pg" style="--st:var(${s[1]})"><div class="bar"><b style="width:${r.prog}%"></b></div><span>${r.prog >= 100 ? "100" : r.prog.toFixed(1)}%</span></div><div class="c-st"><i style="color:var(${s[1]})">${s[2]}</i><span>${s[0]}</span></div><div class="num c-sp">${r.sp}</div><div class="num c-dl${r.dl ? "" : " dim0"}">${spd(r.dl)}</div><div class="num c-ul${r.ul ? "" : " dim0"}">${spd(r.ul)}</div><div class="num c-eta">${eta(r)}</div><div class="num c-rt">${r.ratio.toFixed(2)}</div></div>`;
+    return `<div class="r ${cls}" data-id="${r.id}"><div class="c-nm" title="${esc(r.name)}"><span>${esc(r.name)}</span>${tag}</div><div class="num c-sz">${gb(r.size)}</div><div class="c-pg" style="--st:var(${s[1]})"><div class="bar"><b style="width:${r.prog}%"></b></div><span>${r.prog >= 100 ? "100" : r.prog.toFixed(1)}%</span></div><div class="c-st"><i style="color:var(${s[1]})">${s[2]}</i><span${r.st === "errstop" ? ` style="color:var(${s[1]})"` : ""}>${r.st === "err" ? r.cause : s[0]}</span></div><div class="num c-sp">${r.sp}</div><div class="num c-dl${r.dl ? "" : " dim0"}">${spd(r.dl)}</div><div class="num c-ul${r.ul ? "" : " dim0"}">${spd(r.ul)}</div><div class="num c-eta">${eta(r)}</div><div class="num c-rt">${r.ratio.toFixed(2)}</div></div>`;
   }).join("") : `<div class="empty">Nothing matches. <b>esc</b> clears the filter.</div>`);
 }
 
@@ -1076,16 +1327,16 @@ function details() {
   if (S.tab === 0) {
     let bits = ""; seed = r.id * 7919 + 1;
     for (let i = 0; i < 60; i++) { const have = r.prog >= 100 || rnd() * 100 < r.prog; bits += `<rect x="${i * 5}" y="0" width="4.4" height="10" class="${have ? "h" : ""}"/>`; }
-    pane = `<div class="pieces" style="--st:var(${s[1]})"><div class="t"><span class="l">pieces</span><span class="l">${r.prog >= 100 ? "100" : r.prog.toFixed(1)} %</span></div><svg viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">${bits}</svg></div>
+    pane = `${blocksHTML(r)}<div class="pieces" style="--st:var(${s[1]})"><div class="t"><span class="l">pieces</span><span class="l">${r.prog >= 100 ? "100" : r.prog.toFixed(1)} %</span></div><svg viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">${bits}</svg></div>
       <div class="kv"><span class="sec">transfer</span>
-      <span class="k">status</span><span class="v" style="color:var(${s[1]})">${s[0]}</span>
+      <span class="k">status</span>${isErr(r) ? `<span class="v"><span style="color:var(--red)">error</span><span style="color:var(--fg-dark)">${r.st === "errstop" ? " · stopped" : ""} · ${r.cause}</span></span>` : `<span class="v" style="color:var(${s[1]})">${s[0]}</span>`}
       <span class="k">downloaded</span><span class="v">${gb(taken(r))} of ${gb(r.size)}</span>
       <span class="k">uploaded</span><span class="v">${gb(given(r))}</span>
       <span class="k">seeds</span><span class="v">${r.sp.split(" / ")[0]} connected · ${r.swarm} in swarm</span>
       <span class="k">peers</span><span class="v">${r.sp.split(" / ")[1]} connected · ${r.wait} waiting</span>
       <span class="k">avg speed</span><span class="v">↓ ${spd(r.dl * .9)} · ↑ ${spd(r.ul * .8)}</span>
       <span class="sec">information</span>
-      <span class="k">save path</span><span class="v">/data/torrents/${r.cat === "none" ? "" : r.cat + "/"}</span>
+      <span class="k">save path</span><span class="v" title="${esc(r.path)}">${esc(r.path)}/</span>
       <span class="k">hash v1</span><span class="v">${hash(r.name)}</span>
       <span class="k">tracker</span><span class="v">${r.trk === "trackerless" ? "none, DHT only" : "tracker." + r.trk}</span>
       <span class="k">private</span><span class="v">${r.tags.includes("private") ? "yes" : "no"}</span>
@@ -1111,6 +1362,25 @@ function details() {
     <div class="pane">${pane}</div>`;
 }
 
+// What sits at the top of General: an error first (red), then a failure only the log tells
+// (yellow, docs/32), then the last move it was part of, with the way back (docs/43 D7).
+const hm = t => new Date(t).toTimeString().slice(0, 5);
+const dayhm = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); return (d.getTime() === today.getTime() ? "today " : new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + " ") + hm(t); };
+const keyHint = (k, t) => `<span data-key="${esc(k)}"><b>${k}</b>${t}</span>`;
+function blocksHTML(r) {
+  let out = "";
+  if (isErr(r)) out += `<div class="k-eb"><span class="g">✕</span><span class="h">Can't write to its save folder</span><span class="l">Permission denied, opening ${esc(r.name)}/ed_1080p.mkv</span><span class="l d">${esc(r.path)}</span><span class="l d">qBittorrent's log · ${dayhm(T0 - 95 * 60000)} · 2 times</span>
+    <div class="eacts">${keyHint("e", "retry")}${keyHint("m", "move…")}${keyHint("o", "open folder")}<span>copy the line</span><span data-key="~">its lines in the log</span></div></div>`;
+  if (r.fail) out += `<div class="k-eb y"><span class="g">!</span><span class="h">The move to ${r.fail.to.split("/").slice(-2).join("/")} didn't happen</span><span class="l">Permission denied, moving ${esc(r.name)}</span><span class="l d">Its files are still in ${esc(r.path)}</span><span class="l d">qBittorrent's log · ${dayhm(r.fail.at)} · 2 times</span>
+    <div class="eacts">${keyHint("m", "move…")}${keyHint("o", "open folder")}<span>copy the line</span><span data-key="~">its lines in the log</span><span data-key="x"><b>x</b>dismiss</span></div></div>`;
+  const mv = MOVES.find(m => m.rows.some(x => x.id === r.id));
+  if (mv) { const n = mv.rows.length - 1, still = mv.rows.find(x => x.id === r.id).to === r.path;
+    out += `<div class="k-mvb"><span class="h">Moved ${dayhm(mv.at)}</span><span>from ${esc(mv.rows.find(x => x.id === r.id).from)} to ${esc(mv.rows.find(x => x.id === r.id).to)}</span>
+      <span class="m">${still ? `${n ? `with ${n} other torrent(s) · ` : ""}${esc(mv.what)}` : "moved again since: nothing to move back"}</span>
+      ${still ? `<div class="acts2"><button type="button" data-mb="${mv.id}">move back…</button><button type="button" data-mb1="${mv.id}">this one only</button><button type="button" data-mshow="${mv.id}">show the move</button></div>` : ""}</div>`; }
+  return out;
+}
+
 function selbar() {
   const sel = ROWS.filter(r => S.sel.has(r.id));
   $("selbar").hidden = !sel.length || S.face !== "lib";
@@ -1118,15 +1388,18 @@ function selbar() {
   const g = sel.reduce((a, r) => a + given(r), 0), t = sel.reduce((a, r) => a + taken(r), 0);
   const ico = (d, fill) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="${fill ? "currentColor" : "none"}" stroke="${fill ? "none" : "currentColor"}" stroke-width="1.3" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
   $("selbar").innerHTML = `<b>${sel.length}</b><span>selected</span><button type="button" class="x" data-act="clear" title="clear selection · esc">✕</button><span class="sum"><span>${gb(sel.reduce((a, r) => a + r.size, 0))}</span><span>given <b>${gb(g)}</b></span><span>ratio <b style="${g >= t ? "color:var(--green)" : ""}">${t ? (g / t).toFixed(2) : "—"}</b></span></span>
-    <div class="ic"><button type="button" data-act="start" title="start · p">${ico("M8 5 L19 12 L8 19 Z")}</button><button type="button" data-act="stop" title="stop · p">${ico("M6.5 6.5 H17.5 V17.5 H6.5 Z")}</button><i></i><button type="button" data-act="menu" title="all actions · enter">${ico("M4.6 10.6 H7.4 V13.4 H4.6 Z M10.6 10.6 H13.4 V13.4 H10.6 Z M16.6 10.6 H19.4 V13.4 H16.6 Z", 1)}</button><button type="button" data-act="del" title="delete · d" style="color:var(--red)">${ico("M4 7 H20 M9 7 V4.5 H15 V7 M6.5 7 L7.5 20 H16.5 L17.5 7 M10 11 V16 M14 11 V16")}</button></div>`;
+    <div class="ic"><button type="button" data-act="start" title="start · p">${ico("M8 5 L19 12 L8 19 Z")}</button><button type="button" data-act="stop" title="stop · p">${ico("M6.5 6.5 H17.5 V17.5 H6.5 Z")}</button><i></i><button type="button" data-act="move" title="move… · m">${ico("M3.5 7.5 H9.5 L11 9.5 H20.5 V18.5 H3.5 Z M12 14 H17 M15 12 L17 14 L15 16")}</button><button type="button" data-act="menu" title="all actions · enter">${ico("M4.6 10.6 H7.4 V13.4 H4.6 Z M10.6 10.6 H13.4 V13.4 H10.6 Z M16.6 10.6 H19.4 V13.4 H16.6 Z", 1)}</button><button type="button" data-act="del" title="delete · d" style="color:var(--red)">${ico("M4 7 H20 M9 7 V4.5 H15 V7 M6.5 7 L7.5 20 H16.5 L17.5 7 M10 11 V16 M14 11 V16")}</button></div>`;
 }
 
 function foot() {
   const down = ROWS.filter(r => r.st === "down").length;
-  const facts = S.note ? `<span><b>${esc(S.note)}</b></span>` : `<span><b>${ROWS.length}</b> torrents</span><span>·</span><span><b>${down}</b> downloading</span><span>·</span><span><b>1.80 TB</b> free</span><span>·</span><span>${S.sel.size} selected</span>`;
+  const facts = S.note ? (S.noteK === "ok" ? `<span class="ok">✓</span><span class="okt">${esc(S.note)}</span>` : S.noteK === "warn" ? `<span class="wt">${esc(S.note)}</span>` : `<span><b>${esc(S.note)}</b></span>`)
+    : S.face === "log" ? `<span class="fol${S.log.follow ? "" : " off"}">${S.log.follow ? "● following" : "○ paused"}</span>`
+    : `<span><b>${ROWS.length}</b> torrents</span><span>·</span><span><b>${down}</b> downloading</span><span>·</span><span><b>1.80 TB</b> free</span><span>·</span><span>${S.sel.size} selected</span>`;
   const hints = S.face === "lib"
-    ? `<span><b>j k</b> move</span><span><b>space</b> select</span><span><b>enter</b> actions</span><span><b>a</b> add</span><span><b>p</b> stop/start</span><span><b>d</b> delete</span><span><b>\`</b> seed</span><span><b>?</b> help</span>`
-    : `<span><b>\`</b> library</span><span><b>[ ]</b> range</span><span><b>/</b> filter</span><span><b>?</b> help</span>`;
+    ? `<span><b>j k</b> move</span><span><b>space</b> select</span><span><b>enter</b> actions</span><span><b>a</b> add</span><span><b>p</b> stop/start</span><span><b>d</b> delete</span><span><b>\`</b> seed</span><span><b>:</b> commands</span><span><b>?</b> help</span>`
+    : S.face === "log" ? `<span><b>1–4</b> levels</span><span><b>/</b> filter</span><span><b>w</b> next warning</span><span><b>y</b> copy</span><span><b>enter</b> show torrent</span><span><b>f</b> ${S.log.follow ? "follow" : "newest"}</span><span><b>~</b> library</span>`
+    : `<span><b>\`</b> library</span><span><b>[ ]</b> range</span><span><b>/</b> filter</span><span><b>:</b> commands</span><span><b>?</b> help</span>`;
   $("foot").innerHTML = `<div class="facts">${facts}</div><div class="hints">${hints}</div>`;
 }
 
@@ -1362,15 +1635,17 @@ function addNow(stopped) {
 }
 
 // ── the actions menu (enter or a right-click), as shipped ──────────────────────────
-const MENU = [["toggle", "p"], ["force start", "P"], 0, ["recheck", "c"], ["reannounce", "R"], 0, ["category", "C"], ["tags", "t"], ["set location", "m"], ["limits", "L"], ["rename", "r"], 0,
+const MENU = [["toggle", "p"], ["retry", "e"], ["force start", "P"], 0, ["recheck", "c"], ["reannounce", "R"], 0, ["category", "C"], ["tags", "t"], ["move…", "m"], ["limits", "L"], ["rename", "r"], 0,
   ["sequential download", "s", "seq"], ["first / last pieces first", "f", "flp"], ["super seeding", "S", "sup"], ["automatic management", "a", "auto"], 0,
   ["queue up", "["], ["queue down", "]"], ["copy magnet", "y"], ["copy hash", "Y"], ["copy name", "n"], ["open folder", "o"], 0, ["delete", "d"]];
-const ITEMS = MENU.filter(Boolean);
+const menuList = () => MENU.filter(m => !m || m[0] !== "retry" || targets().some(id => byId(id) && isErr(byId(id))));
+let ITEMS = MENU.filter(Boolean);
 function menuHTML() {
   const r = byId(S.cur), ids = targets(); let i = -1;
-  return `<div class="k-menu" id="menu" role="menu" aria-label="Actions">${ids.length > 1 ? `<div class="mh">${ids.length} selected</div>` : ""}${MENU.map(m => {
+  const list = menuList(); ITEMS = list.filter(Boolean);
+  return `<div class="k-menu" id="menu" role="menu" aria-label="Actions">${ids.length > 1 ? `<div class="mh">${ids.length} selected</div>` : ""}${list.map(m => {
     if (!m) return `<div class="sep"></div>`; i++;
-    const label = m[0] === "toggle" ? (r.st === "stop" || r.st === "err" ? "start" : "stop") : m[0];
+    const label = m[0] === "toggle" ? (isStopped(r) ? "start" : "stop") : m[0];
     return `<button type="button" role="menuitem" class="it${i === L.i ? " cur" : ""}${m[0] === "delete" ? " danger" : ""}" data-i="${i}">${m[2] ? `<span class="g">${r.opts[m[2]] ? "✓" : ""}</span>` : ""}<span>${label}</span><span class="kk">${m[1]}</span></button>`;
   }).join("")}</div>`;
 }
@@ -1396,6 +1671,8 @@ function runItem(i) {
   layer(null);
   switch (m[0]) {
     case "toggle": toggle(ids); break;
+    case "retry": retry(ids); break;
+    case "move…": openMove(ids); break;
     case "force start": rs.forEach(r => { r.st = r.prog >= 100 ? "seed" : "down"; if (r.st === "down" && !r.dl) r.dl = 500; }); render(); note("force started, past the queue"); break;
     case "recheck": rs.forEach(r => { const before = r.st; r.st = "check"; setTimeout(() => { r.st = before === "check" ? (r.prog >= 100 ? "seed" : "down") : before; render(); }, 2400); }); render(); note(`checking the data of ${one ? rs[0].name : rs.length + " torrents"}`); break;
     case "reannounce": note(`reannounced ${one ? "it" : rs.length + " torrents"} to every tracker`); break;
@@ -1429,29 +1706,412 @@ function doDelete() {
 }
 
 const HELP = `<div class="k-sheet narrow" role="dialog" aria-label="Keys"><div class="k-hd"><span class="k-ic">?</span><div><b>Keys in this demo</b><span class="s">omaseed has a key for every action; ? in the app lists them all</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
-  <div class="k-help" style="grid-template-columns:minmax(0,1fr)">${[["j k  ↑ ↓", "Move the cursor"], ["space", "Select or unselect the cursor row"], ["enter", "Open the actions menu (or right-click a torrent)"], ["a", "Add a torrent"], ["p", "Stop or start"], ["d", "Delete"], ["`", "Flip between the library and the seed console"], ["[ ]", "Seed console: a shorter or longer range"], ["1–4", "Details tab"], ["/", "Filter the table by name"], ["esc", "Close, then clear the filter, then the selection"]].map(([k, t]) => `<div class="r"><b>${k}</b><span>${t}</span></div>`).join("")}</div></div>`;
+  <div class="k-help" style="grid-template-columns:minmax(0,1fr)">${[["j k  ↑ ↓", "Move the cursor"], ["space", "Select or unselect the cursor row"], ["enter", "Open the actions menu (or right-click a torrent)"], ["a", "Add a torrent"], ["p", "Stop or start; stops an errored one"], ["e", "Retry an errored torrent"], ["m", "Move… the selection"], ["M", "Move the folder picked in the rail"], ["d", "Delete"], [":", "Run any command by name"], ["ctrl+s", "Switch server"], ["`", "Flip between the library and the seed console"], ["~", "qBittorrent's log; 1–4 levels, w next warning"], ["[ ]", "Seed console: a shorter or longer range"], ["1–4", "Details tab"], ["/", "Filter the table by name"], ["esc", "Close, then clear the filter, then the selection"]].map(([k, t]) => `<div class="r"><b>${k}</b><span>${t}</span></div>`).join("")}</div></div>`;
+
+// ── qBittorrent's log, the third face (~), as docs/32 and LogView.qml draw it ─────────
+// Lines are qBittorrent's own wording, on the demo's torrents; omaseed's moves add theirs.
+const LV = [["normal", "--fg"], ["info", "--accent"], ["warning", "--yellow"], ["critical", "--red"]];
+const QS = T0 - 3 * 3600000 - 17 * 60000;                                // when qBittorrent started
+const LOG = [];
+const logLine = (t, lv, msg, id = null, mv = null) => LOG.push({ t, lv, msg, id, mv });
+(() => {
+  const at = m => QS + m * 1000;
+  logLine(at(0), 0, "qBittorrent v5.2.3 started. Process ID: 1184");
+  logLine(at(0), 1, 'Using config directory: "~/.config/qBittorrent/"');
+  logLine(at(1), 1, 'Successfully listening on IP. IP: "0.0.0.0". Port: "TCP/6881"');
+  logLine(at(1), 1, 'Successfully listening on IP. IP: "0.0.0.0". Port: "UTP/6881"');
+  logLine(at(1), 0, 'Peer ID: "-qB5230-"');
+  logLine(at(1), 0, "Distributed Hash Table (DHT) support: ON");
+  logLine(at(1), 0, "Local Peer Discovery support: ON");
+  logLine(at(1), 0, "Encryption support: ON");
+  logLine(at(2), 1, "WebUI: Now listening on IP: *, port: 8080");
+  ROWS.forEach((r, i) => logLine(at(3 + i), 0, `Restored torrent. Torrent: "${r.name}"`, r.id));
+  const ed = ROWS.find(r => r.st === "err"), sin = ROWS.find(r => r.fail), bl = ROWS.find(r => r.name.startsWith("Blender")), sp = ROWS.find(r => r.st === "done");
+  const fe = t => logLine(t, 2, `File error alert. Torrent: "${ed.name}". File: "${ed.path}/${ed.name}/ed_1080p.mkv". Reason: "${ed.name} file_open (${ed.path}/${ed.name}/ed_1080p.mkv) error: Permission denied"`, ed.id);
+  fe(at(20));
+  logLine(T0 - 140 * 60000, 0, `Torrent download finished. Torrent: "${sp.name}"`, sp.id);
+  logLine(T0 - 118 * 60000, 2, `Received error message from URL seed. Torrent: "${bl.name}". URL: "https://mirror.example.org/blender/blender-5.1-linux-x64.tar.xz". Message: "404 File not found"`, bl.id);
+  fe(T0 - 95 * 60000);
+  logLine(sin.fail.at - 2000, 0, `Start moving torrent. Torrent: "${sin.name}". Destination: "${sin.fail.to}"`, sin.id);
+  logLine(sin.fail.at, 2, `Failed to move torrent. Torrent: "${sin.name}". Source: "${sin.path}". Destination: "${sin.fail.to}". Reason: "storage move failed. file_rename (${sin.path}/${sin.name}): Permission denied"`, sin.id);
+  logLine(sin.fail.at + 60000, 2, `Failed to move torrent. Torrent: "${sin.name}". Source: "${sin.path}". Destination: "${sin.fail.to}". Reason: "storage move failed. file_rename (${sin.path}/${sin.name}): Permission denied"`, sin.id);
+  logLine(T0 - 31 * 60000, 1, 'Detected external IP. IP: "203.0.113.7"');
+  logLine(T0 - 12 * 60000, 0, `Added new torrent. Torrent: "${ROWS[0].name}"`, ROWS[0].id);
+})();
+S.log = { on: [true, true, true, true], q: "", cur: LOG.length - 1, tor: null, follow: true, marks: new Set() };
+const logTime = t => { const d = new Date(t), d0 = new Date(t); d0.setHours(0, 0, 0, 0); const hms = d.toTimeString().slice(0, 8);
+  return d0.getTime() === today.getTime() ? hms : `<span>${d.toLocaleDateString("en-GB", { day: "numeric", month: "short" })} </span>${hms}`; };
+const logShown = () => LOG.map((l, i) => ({ ...l, i })).filter(l => S.log.on[l.lv] && (S.log.tor == null || l.id === S.log.tor)
+  && S.log.q.toLowerCase().split(/\s+/).filter(Boolean).every(w => l.msg.toLowerCase().includes(w)));
+const logMsg = m => m.split(/("[^"]*")/).map((p, i) => i % 2 ? `<b>${esc(p)}</b>` : esc(p)).join("");
+function logView() {
+  const lv = S.log, n = LOG.length, tor = lv.tor != null && byId(lv.tor);
+  $("logView").innerHTML = `<div class="lbar">${LV.map(([t, c], i) => `<button type="button" class="lchip${lv.on[i] ? " on" : ""}" data-lv="${i}" style="--c:var(${c})" aria-pressed="${lv.on[i]}">${t} <b>${LOG.filter(l => l.lv === i).length}</b><kbd>${i + 1}</kbd></button>`).join("")}
+    ${tor ? `<button type="button" class="lchip tor" data-lv="tor" title="only the lines that name it · esc clears">torrent: ${esc(tor.name.slice(0, 24))}  ✕</button>` : ""}
+    <label class="flt"><span>/</span><input id="logQ" type="text" placeholder="filter lines" value="${esc(lv.q)}" autocomplete="off" spellcheck="false" aria-label="Filter lines"></label>
+    <span class="since" id="logSince"></span></div>
+    <div class="lhead"><span>time</span><span>level</span><span>message</span></div><div class="lrows" id="lrows"></div>`;
+  logRows();
+}
+function logRows() {
+  const shown = logShown(), lv = S.log;
+  if (!shown.some(l => l.i === lv.cur) && shown.length) lv.cur = shown[shown.length - 1].i;
+  $("logSince").textContent = lv.q || lv.tor != null ? `${shown.length} of ${LOG.length} lines` : `since qBittorrent started · ${new Date(QS).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ${hm(QS)} · ${LOG.length} lines`;
+  const atEnd = S.log.follow;
+  $("lrows").innerHTML = shown.length ? shown.map(l => `<div class="lr${l.i === lv.cur ? " cur" : ""}${lv.marks.has(l.i) ? " mk" : ""}" data-li="${l.i}"><span class="lt">${logTime(l.t)}</span><span style="color:var(${l.lv ? LV[l.lv][1] : "--fg-dark"})">${LV[l.lv][0]}</span><span class="lm">${logMsg(l.msg)}${l.mv ? `<button type="button" class="mb" data-mb="${l.mv}">move back…</button>` : ""}</span></div>`).join("")
+    : `<div class="lempty">${LOG.length ? "no line matches · esc clears" : "qBittorrent's log is empty"}</div>`;
+  if (atEnd) $("lrows").scrollTop = $("lrows").scrollHeight;
+}
+function logFollow() { const c = $("lrows"); if (!c) return; if (S.log.follow) c.scrollTop = c.scrollHeight; else app.querySelector(".lr.cur")?.scrollIntoView({ block: "nearest" }); }
+function logMove(d) { const sh = logShown(); if (!sh.length) return; const i = sh.findIndex(l => l.i === S.log.cur); const j = Math.max(0, Math.min(sh.length - 1, i + d)); S.log.cur = sh[j].i; S.log.follow = j === sh.length - 1; logRows(); foot(); app.querySelector(".lr.cur")?.scrollIntoView({ block: "nearest" }); }
+function logWarn(d) { const sh = logShown(), i = sh.findIndex(l => l.i === S.log.cur);
+  const hit = d > 0 ? sh.slice(i + 1).find(l => l.lv >= 2) : sh.slice(0, Math.max(0, i)).reverse().find(l => l.lv >= 2);
+  if (!hit) { note(d > 0 ? "no warning below" : "no warning above"); return; } S.log.cur = hit.i; S.log.follow = false; logRows(); foot(); app.querySelector(".lr.cur")?.scrollIntoView({ block: "nearest" }); }
+function logKey(k) {
+  const lv = S.log, l = LOG[lv.cur];
+  const act = {
+    j: () => logMove(1), ArrowDown: () => logMove(1), k: () => logMove(-1), ArrowUp: () => logMove(-1), g: () => logMove(-1e6),
+    G: () => { lv.follow = true; logMove(1e6); }, w: () => logWarn(1), W: () => logWarn(-1),
+    f: () => { lv.follow = !lv.follow; foot(); logFollow(); },
+    1: () => logLevel(0), 2: () => logLevel(1), 3: () => logLevel(2), 4: () => logLevel(3),
+    "/": () => $("logQ").focus(),
+    " ": () => { lv.marks.has(lv.cur) ? lv.marks.delete(lv.cur) : lv.marks.add(lv.cur); logRows(); },
+    y: () => { const ls = (lv.marks.size ? [...lv.marks].sort((a, b) => a - b) : [lv.cur]).map(i => LOG[i]);
+      const stamp = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${d.toTimeString().slice(0, 8)}`; };
+      copy(ls.map(x => `${stamp(x.t)} ${LV[x.lv][0]} ${x.msg}`).join("\n"), ls.length === 1 ? "line" : ls.length + " lines"); },
+    Enter: () => { if (l?.id == null || !byId(l.id)) { note("this line names no torrent in the library"); return; } S.cur = l.id; S.sel = new Set([l.id]); S.tab = 0; S.filter = { k: "status", v: "all" }; S.q = ""; $("q").value = ""; face("lib"); app.querySelector(".r.cur")?.scrollIntoView({ block: "nearest" }); },
+    t: () => { if (l?.id == null) { note("this line names no torrent in the library"); return; } lv.tor = l.id; logView(); },
+    Escape: () => { if (lv.marks.size) { lv.marks.clear(); logRows(); } else if (lv.tor != null) { lv.tor = null; logView(); } else if (lv.q) { lv.q = ""; logView(); } else face("lib"); },
+  }[k];
+  if (act) { act(); return true; }
+}
+function logLevel(i) { S.log.on[i] = !S.log.on[i]; logView(); }
+
+// ── moving (docs/42, 43; MoveController): a folder or a selection, checked before anything is
+// sent, smallest first, followed by the band until the last one lands; the files no torrent
+// owns carried after; the last moves kept so they can go back ─────────────────────
+let MV = null;                                                          // the move running, or its summary
+const MOVES = [], QUEUE = [];                                           // finished moves, newest first; moves waiting their turn
+let moveSeq = 0, mvTimer = null, RECENTP = ["/mnt/fast/linux"];
+const LOOSE = { "/data/torrents/movies": { n: 23, gb: 3.1, never: 4 } };   // files no torrent owns, beside the torrents' folders
+const FREE_ON = { "/data": 1800, "/mnt/fast": 412 };
+const driveOf = p => DRIVES.find(d => p === d || p.startsWith(d + "/")) || "/data";
+const RATE = .19;                                                       // GB/s, what the band says; the demo runs ten times faster
+const onDisk = r => taken(r);
+const nameOf = p => p.split("/").filter(Boolean).pop() || p;
+const parentOf = p => p.slice(0, p.lastIndexOf("/")) || "/";
+const timeLeft = gbLeft => { const s = gbLeft / RATE; return s < 60 ? "less than a minute left" : s < 3600 ? `about ${Math.round(s / 60)} min left` : `about ${Math.floor(s / 3600)} h ${Math.round(s % 3600 / 60)} min left`; };
+const took = gbs => { const s = Math.max(1, Math.round(gbs / RATE)); return s < 60 ? `${s} s` : `${Math.round(s / 60)} min`; };
+const commonRoot = ps => { let c = ps[0].split("/"); for (const p of ps) { const q = p.split("/"); let i = 0; while (i < c.length && c[i] === q[i]) i++; c = c.slice(0, i); } return c.join("/") || "/"; };
+
+function openMoveFolder(path, to) {
+  if (!path) { note("pick a folder in the rail"); return; }
+  const ids = ROWS.filter(r => matches(r, { k: "folder", v: path })).map(r => r.id);
+  tried("move"); layer("mv", { mk: "folder", root: path, ids, to: to || path, carry: true, selAll: !to });
+}
+function openMove(ids) {
+  ids = ids.filter(byId); if (!ids.length) { note("nothing selected, no torrent under the cursor"); return; }
+  layer("mv", { mk: "sel", ids, to: byId(ids[0]).path, mode: "one", open: false, pi: 0 });
+}
+// what a sheet would do: each torrent's destination, the bytes, the drive, what stops it
+function plan(M) {
+  const rs = M.ids.map(byId).filter(Boolean), to = M.to.trim().replace(/\/+$/, "") || "", paths = [...new Set(rs.map(r => r.path))];
+  const root = M.mk === "folder" ? M.root : commonRoot(paths);
+  const dest = r => M.mk === "folder" || M.mode === "keep" ? to + r.path.slice(root.length) : to;
+  const moving = rs.filter(r => dest(r) !== r.path), there = rs.length - moving.length;
+  const loose = M.mk === "folder" && M.carry && LOOSE[M.root] ? LOOSE[M.root] : null;
+  const bytes = moving.reduce((a, r) => a + onDisk(r), 0) + (loose ? loose.gb : 0), drive = driveOf(to), same = moving.every(r => driveOf(r.path) === drive);
+  let block = null;
+  if (!to.startsWith("/")) block = M.mk === "folder" ? "Type the folder's new path." : "Type the new path.";
+  else if (M.mk === "folder" && to === M.root) block = `${nameOf(M.root)} is already there.`;
+  else if (M.mk === "folder" && to.startsWith(M.root + "/")) block = `That is inside ${nameOf(M.root)}.`;
+  else if (!moving.length) block = rs.length === 1 ? `It is already at ${to}.` : `All ${rs.length} are already at ${to}.`;
+  else if (!same && bytes > FREE_ON[drive] - 2) block = `Not enough room on ${drive}.`;
+  return { rs, to, root, paths, dest, moving, there, loose, bytes, drive, same, block };
+}
+function checksHTML(M, P) {
+  const L2 = [], line = (cls, g, t, nt = "", lk = "") => L2.push(`<div class="${cls}"><span class="g">${g}</span><span class="t">${t}</span>${lk ? `<span class="lk">${lk}</span>` : "<span></span>"}${nt ? `<span class="nt">${nt}</span>` : ""}</div>`);
+  if (P.block && !P.moving.length) return "";
+  const free = FREE_ON[P.drive], auto = P.moving.filter(r => r.opts.auto), cats = [...new Set(auto.map(r => r.cat))];
+  if (P.same) line("ok", "✓", "Room. The same drive: each torrent is renamed, nothing is copied.");
+  else line("ok", "✓", `Room. ${gb(P.bytes)} to move${P.loose ? " (torrents and loose files)" : ""}, ${gb(free)} free on ${P.drive}. ${gb(free - P.bytes)} left after.`, "read on this machine, which sees home's disks");
+  const exists = ROWS.some(r => r.path === P.to || r.path.startsWith(P.to + "/"));
+  line("ok", "✓", exists ? `Writable. ${esc(P.to)} is writable by the owner of these files.` : `Writable. ${esc(P.to)} will be made in ${esc(parentOf(P.to))}, which the owner of these files can write to.`, "checked here; qBittorrent's own answer comes from the first torrent, which goes alone");
+  if (auto.length) line("warn", "!", `Automatic management. ${auto.length === 1 ? "1 torrent uses it" : auto.length + " torrents use it"}${cats.length === 1 && cats[0] !== "none" ? ` (category ${cats[0]})` : ""}. Moving turns it off for ${auto.length === 1 ? "it" : "them"}, as qBittorrent does for any set location, and the category still points at the old folder.`, "", "show");
+  if (P.there) line("", "·", `${P.there} already there, at ${esc(P.to)}. Skipped.`);
+  const small = [...P.moving].filter(r => onDisk(r) > 0).sort((a, b) => onDisk(a) - onDisk(b))[0];
+  if (small && !P.same) line("", "·", P.moving.length > 1 ? `Order: smallest first. ${esc(small.name)} (${gb(onDisk(small))}) goes alone; the rest follow, 3 at a time in qBittorrent's queue.` : `Order: ${esc(small.name)} (${gb(onDisk(small))}) goes alone.`);
+  if (MV && MV.phase === "run") line("", "·", `The move of ${esc(MV.title)} is running (${MV.done} of ${MV.rows.length}). These go when it ends. That is ${timeLeft(MV.total - MV.bytes)}.`);
+  if (M.mk === "sel" && L2.every(l => l.startsWith('<div class="ok"'))) return `<div class="k-chk"><div class="ok"><span class="g">✓</span><span class="t">${P.same ? "Same drive: a rename, it lands at once. Room and access are fine." : `Room and access are fine on ${P.drive}: ${gb(P.bytes)} to move, ${gb(free)} free.`}</span><span></span></div></div>`;
+  return `${M.mk === "folder" || L2.length > 1 ? `<span class="k-lab"><span>before anything moves</span></span>` : ""}<div class="k-chk">${L2.join("")}</div>`;
+}
+function looseHTML(M) {
+  const lo = LOOSE[M.root], nm = nameOf(M.root);
+  if (!lo) return `<span class="k-lab"><span>files no torrent owns · a dry run</span></span><div class="k-chk"><div class="ok"><span class="g">✓</span><span class="t">No files no torrent owns in ${esc(nm)}.</span><span></span></div></div>`;
+  return `<span class="k-lab"><span>files no torrent owns · a dry run</span></span><div class="k-chk">
+    <div class="loose"><span class="g">▱</span><span class="t">${lo.n} files, ${gb(lo.gb)}, in ${esc(nm)}, beside the torrents' folders. ${M.carry ? `Carried to the same place below ${esc(M.to)} after the torrents land: copied, checked, then removed here. Never deleted.` : "Left where they are, and listed in the summary."}</span><span class="lk" data-a="list">list ▸</span></div>
+    <div><span class="g">·</span><span class="t">${lo.never} never count: *.parts, *.!qB, Thumbs.db, desktop.ini, .DS_Store.</span><span></span></div></div>
+    <button type="button" class="k-tog${M.carry ? " on" : ""}" data-a="carry"><i></i>carry the ${lo.n} files after the torrents</button>`;
+}
+function placesHTML(M) {
+  const q = M.to.toLowerCase(), lib = [...new Set(ROWS.map(r => r.path))].sort();
+  const hit = p => !M.typed || p.toLowerCase().includes(q);
+  const sec = [["recent", RECENTP.filter(hit).map(p => [p, ""])], ["library", lib.filter(hit).map(p => [p, ROWS.filter(r => r.path === p).length])]].filter(x => x[1].length);
+  let i = -1; M.flat = sec.flatMap(x => x[1].map(y => y[0]));
+  return `<div class="k-places" role="listbox" aria-label="${M.flat.length} places">${sec.map(([t, rows]) => `<span class="sc">${t}</span>${rows.map(([p, d]) => { i++; return `<div class="pr2${i === M.pi ? " cur" : ""}" data-place="${esc(p)}" role="option"><span>${esc(cutL(p, 52))}</span><span>${d}</span></div>`; }).join("")}`).join("")}
+    <span class="ph"><b>↑↓</b> pick  <b>enter</b> fill in  <b>esc</b> close  <b>ctrl+o</b> browse…</span></div>`;
+}
+function mvHTML(M = L) {
+  const P = plan(M), folder = M.mk === "folder", rs = P.rs, n = P.moving.length;
+  const disk = rs.reduce((a, r) => a + onDisk(r), 0), inT = rs.reduce((a, r) => a + r.size, 0), part = rs.filter(r => r.prog < 100).length;
+  const title = folder ? `Move ${esc(nameOf(M.root))}` : rs.length === 1 ? `Move ${esc(rs[0].name)}` : `Move ${rs.length} torrents`;
+  const sub = folder ? `${plural(rs.length, "torrent", "torrents")} · ${gb(disk)} on disk${part ? ` (${gb(inT)} in the torrents: ${part === 1 ? "1 is" : part + " are"} partial)` : ""} · on home`
+    : `${plural(rs.length, "torrent", "torrents")}${P.paths.length > 1 ? ` from ${P.paths.length} folders` : ""} · ${gb(disk)} on disk · on home`;
+  const nm = folder && nameOf(M.root), renamed = folder && nameOf(P.to) !== nm;
+  const why = folder ? (P.to && !P.block ? (renamed ? `${esc(nm)} becomes ${esc(P.to)}. Each torrent keeps its place below it.` : `${esc(nm)} goes inside ${esc(parentOf(P.to))}. Each torrent keeps its place below ${esc(nm)}.`) : "")
+    : rs.length > 1 && M.mode === "one" && !P.block ? `all ${rs.length} go into ${esc(P.to)}` : "";
+  const prows = (folder || M.mode === "keep") && !P.block ? `<div class="rows">${P.paths.map(p => `<div><span>${esc(cutL(p, 30))}</span><span class="ar">→</span><span class="to">${esc(cutL(P.dest(rs.find(r => r.path === p)), 30))}</span><span class="n">${rs.filter(r => r.path === p).length}</span></div>`).join("")}</div>` : "";
+  const choice = !folder && P.paths.length > 1 ? `<div class="k-pick">${[["one", "into one folder", `all ${rs.length} go into ${esc(P.to || "…")}`], ["keep", `keep their places below ${esc(P.root)}`, `each goes to the same place below ${esc(P.to || "…")}`]].map(([k, t, d]) =>
+    `<div class="${M.mode === k ? "cur" : ""}" data-mode="${k}" style="cursor:pointer"><span class="r">${M.mode === k ? "●" : "○"}</span><b>${t}</b><span>${d}</span></div>`).join("")}</div>` : "";
+  const queued = MV && MV.phase === "run";
+  const go = queued ? `move after ${esc(MV.title)}` : folder ? (n ? `move ${plural(n, "torrent", "torrents")}` : "move") : n > 1 ? `move ${n} torrents` : "move";
+  const show = folder || P.paths.length > 1 ? `<button type="button" data-a="show">show the ${rs.length}</button>` : "";
+  return `<div class="k-sheet k-mv" role="dialog" aria-label="${title}" style="max-width:${folder ? 640 : 560}px">
+    <div class="k-hd"><span class="k-ic">▱</span><div><b>${title}</b><span class="s">${sub}</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
+    <div class="k-grp"><span class="k-lab"><span>${folder ? "new path of the folder" : "new path on home"}</span></span><label class="k-fld on"><input id="mvTo" type="text" value="${esc(M.to)}" autocomplete="off" spellcheck="false" aria-label="new path">${folder ? "" : `<button type="button" class="pl2" data-a="places">places ${M.open ? "▴" : "▾"}</button>`}<button type="button" class="tr" data-a="browse">browse<span class="k-kc">ctrl+o</span></button></label>
+      ${!folder && M.open ? placesHTML(M) : ""}${why ? `<span class="why">${why}</span>` : ""}</div>
+    ${choice}${prows}${P.block ? `<span class="blk">${esc(P.block)}</span>` : ""}
+    ${checksHTML(M, P)}${folder ? looseHTML(M) : ""}
+    <div class="k-btns${show ? "" : " two"}"><button type="button" data-a="close">cancel</button>${show}<button type="button" class="pri cur" data-a="go"${P.block ? ' style="opacity:.45"' : ""}>${go}</button></div>
+    <div class="k-hints"><span><b>enter</b> move</span><span><b>${folder ? "tab" : "↓"}</b> ${folder ? "next" : "places"}</span><span><b>esc</b> cancel</span></div></div>`;
+}
+function mvGo() {
+  const M = L, P = plan(M);
+  if (P.block) { note(P.block, "warn"); return; }
+  if (!RECENTP.includes(P.to)) RECENTP.unshift(P.to); RECENTP = RECENTP.slice(0, 8);
+  const title = M.mk === "folder" ? nameOf(M.root) : P.moving.length === 1 ? P.moving[0].name : `${P.moving.length} torrents`;
+  const job = { id: ++moveSeq, kind: M.mk, title, root: M.mk === "folder" ? M.root : P.root, to: P.to, keep: M.mode === "keep",
+    rows: [...P.moving].sort((a, b) => onDisk(a) - onDisk(b)).map(r => ({ id: r.id, from: r.path, to: P.dest(r), gb: onDisk(r), name: r.name })), loose: P.loose && { ...P.loose, done: 0 } };
+  layer(null);
+  if (MV && MV.phase === "run") { QUEUE.push(job); note(`${plural(job.rows.length, "torrent", "torrents")} wait for the move of ${MV.title}`); band(); return; }
+  startJob(job, P.same);
+}
+function startJob(job, same) {
+  const total = job.rows.reduce((a, x) => a + x.gb, 0) + (job.loose ? job.loose.gb : 0);
+  MV = { ...job, total, bytes: 0, done: 0, phase: "run", t0: Date.now(), dl: false, shown: job.kind === "folder" };
+  if (same) { MV.rows.forEach(x => land(x)); MV.bytes = total; finish(); return; }
+  clearInterval(mvTimer); mvTimer = setInterval(tick, 200); render();
+}
+function land(x) { const r = byId(x.id); if (r) { r.path = x.to; if (MV.kind !== "back") r.opts.auto = false; } MV.done++; x.landed = true; }
+function tick() {
+  const m = MV; if (!m || m.phase === "pause") return;
+  m.bytes = Math.min(m.total, m.bytes + RATE * 10 * .2);
+  let acc = 0; for (const x of m.rows) { acc += x.gb; if (!x.landed && m.bytes >= acc - 1e-9) land(x); }
+  if (m.done === m.rows.length && m.loose && m.phase === "run") m.phase = "carry";
+  if (m.phase === "carry") m.loose.done = Math.min(m.loose.n, Math.floor((m.bytes - acc) / m.loose.gb * m.loose.n));
+  if (!m.shown && Date.now() - m.t0 > 3000) m.shown = true;
+  if (m.bytes >= m.total - 1e-9) { finish(); return; }
+  band(); rail(); if (S.face === "lib" && !over) details();
+}
+function finish() {
+  const m = MV; clearInterval(mvTimer); m.phase = "done"; m.at = Date.now();
+  const back = m.kind === "back", lo = m.loose;
+  m.head = back ? `${m.title} moved back` : lo ? `${m.title} moved, loose files too` : `${m.title} moved to ${m.to}`;
+  if (S.filter.k === "folder" && m.root && (S.filter.v === m.root || S.filter.v.startsWith(m.root + "/"))) S.filter = { k: "folder", v: m.to + S.filter.v.slice(m.root.length) };
+  if (back) { const i = MOVES.findIndex(x => x.id === m.of); if (i >= 0) MOVES.splice(i, 1); }
+  else {
+    MOVES.unshift({ id: m.id, at: m.at, title: m.title, to: m.to, what: m.head, rows: m.rows.map(x => ({ id: x.id, from: x.from, to: x.to })), loose: lo });
+    MOVES.length = Math.min(MOVES.length, 20);
+    logLine(m.at, 1, m.kind === "folder" ? `omaseed moved the folder "${m.title}", ${plural(m.rows.length, "torrent", "torrents")}, to ${m.to}${lo ? ` and ${lo.n} loose files` : ""}`
+      : m.rows.length === 1 ? `omaseed moved "${m.rows[0].name}" to ${m.to}` : `omaseed moved ${m.rows.length} torrents to ${m.keep ? "their places" : m.to}`, null, m.id);
+    if (S.face === "log") logView();
+  }
+  // a selection that landed before the band showed gets the footer's line, not a summary
+  if (!m.shown) { MV = null; note(back ? `${m.rows.length === 1 ? m.rows[0].name : m.rows.length + " torrents"} moved back` : m.rows.length === 1 ? `${m.rows[0].name} moved to ${m.to}` : `${m.rows.length} moved to ${m.to}`, "ok", 6000); }
+  render();
+  const next = QUEUE.shift(); if (next) setTimeout(() => startJob(next, next.rows.every(x => driveOf(x.from) === driveOf(next.to))), 600);
+}
+function band() {
+  const el = $("band"), m = MV;
+  if (!m || !m.shown) { el.hidden = true; return; }
+  el.hidden = false;
+  const n = m.rows.length, pct = Math.floor(m.bytes / m.total * 100), now = m.rows.find(x => !x.landed);
+  const nx = QUEUE[0] ? ` · next: ${plural(QUEUE[0].rows.length, "torrent", "torrents")} to ${QUEUE[0].to}` : "";
+  const B = (a, t) => `<button type="button" data-b="${a}">${t}</button>`, dt = `<button type="button" class="dt" data-b="dl">details ${m.dl ? "▾" : "›"}</button>`;
+  let k = "", g, h, ln, acts;
+  if (m.phase === "run") { g = "↻"; h = m.kind === "back" ? `Moving ${m.title} back` : `Moving ${m.title} to ${m.to}`;
+    ln = `${m.done} of ${n} · ${gb(m.bytes)} of ${gb(m.total)} · ${pct} % · ${timeLeft(m.total - m.bytes)} at 190 MB/s${now ? ` · now ${now.name} (${gb(now.gb)})` : ""}${nx}`; acts = B("pause", "pause") + B("show", "show") + dt; }
+  else if (m.phase === "carry") { g = "↻"; h = `Carrying ${m.loose.n} loose files to ${m.to}`;
+    ln = `${m.loose.done} of ${m.loose.n} · ${gb(Math.max(0, m.bytes - (m.total - m.loose.gb)))} of ${gb(m.loose.gb)} · ${timeLeft(m.total - m.bytes)} · now ${m.title}/extras/making-of-${String(m.loose.done + 1).padStart(2, "0")}.mkv (copying, then checking)`; acts = B("pause", "pause") + dt; }
+  else if (m.phase === "pause") { g = "‖"; h = `The move of ${m.title} is paused`; ln = `${m.done} of ${n} · ${n - m.done} waiting · nothing is sent until you resume`; acts = B("resume", "resume") + B("end", "end the move") + dt; }
+  else if (m.phase === "ended") { g = "■"; h = `The move of ${m.title} ended early`;
+    ln = m.kind === "folder" ? `${m.done} moved to ${m.to} · ${n - m.done} not moved, still at ${m.root} · every torrent is whole on one side or the other` : `${m.done} moved · ${n - m.done} not moved, still where they were · every torrent is whole on one side or the other`;
+    acts = B("rest", "move the rest…") + (m.done ? B("back", "move back…") : "") + B("show", "show") + B("close", "close"); }
+  else { k = "g"; g = "✓"; h = m.head; ln = m.loose ? `${n} torrents and ${m.loose.n} files at ${m.to} · in ${took(m.total)}` : `${n} of ${n} in ${took(m.total)}`;
+    acts = (m.kind === "back" ? "" : B("back", "move back…")) + B("show", "show") + dt + B("close", "close"); }
+  const dl = m.dl ? `<div class="dl"><span>started ${Math.max(1, Math.round((Date.now() - m.t0) / 60000))} min ago</span><span>from ${esc(m.kind === "folder" ? m.root : "their folders")} to ${esc(m.to)}</span>${m.rows.map(x => `<span>${x.landed ? "moved" : "waiting"} · ${esc(x.name)} · ${esc(x.from)} → ${esc(x.to)}</span>`).join("")}${QUEUE.map(q => `<span>waiting: ${plural(q.rows.length, "torrent", "torrents")}</span>`).join("")}</div>` : "";
+  el.className = "mband" + (k ? " " + k : "");
+  el.innerHTML = `<span class="g">${g}</span><span class="h">${esc(h)}</span><span class="a">${acts}</span><span class="ln">${esc(ln)}</span>${dl}${["run", "carry", "pause"].includes(m.phase) ? `<i class="pg" style="width:${pct}%"></i>` : ""}`;
+}
+$("band").addEventListener("click", e => {
+  const b = e.target.closest("[data-b]"); if (!b || !MV) return; const a = b.dataset.b, m = MV;
+  if (a === "pause") m.phase = "pause";
+  if (a === "resume") m.phase = m.done === m.rows.length && m.loose ? "carry" : "run";
+  if (a === "end") { m.phase = "ended"; clearInterval(mvTimer); if (m.done) { MOVES.unshift({ id: m.id, at: Date.now(), title: m.title, to: m.to, what: `The move of ${m.title} ended early`, rows: m.rows.filter(x => x.landed).map(x => ({ id: x.id, from: x.from, to: x.to })) }); } }
+  if (a === "dl") m.dl = !m.dl;
+  if (a === "close") { MV = null; render(); return; }
+  if (a === "show") { S.filter = { k: "ids", v: new Set(m.rows.map(x => x.id)), of: m.title }; face("lib"); return; }
+  if (a === "back") { openBack(m.id); return; }
+  if (a === "rest") { const left = m.rows.filter(x => !x.landed).map(x => x.id); MV = null; render(); if (m.kind === "folder") openMoveFolder(m.root, m.to); else openMove(left); return; }
+  band(); rail();
+});
+// move back: each torrent to where it was, if it is still where that move put it
+function openBack(id, only) {
+  const mv = MOVES.find(m => m.id === id); if (!mv) { note("no move to undo"); return; }
+  layer("back", { id, only });
+}
+function backHTML() {
+  const mv = MOVES.find(m => m.id === L.id), rows = mv.rows.filter(x => !L.only || L.only.includes(x.id));
+  const gone = rows.filter(x => !byId(x.id)), since = rows.filter(x => byId(x.id) && byId(x.id).path !== x.to), go = rows.filter(x => byId(x.id)?.path === x.to);
+  const disk = go.reduce((a, x) => a + onDisk(byId(x.id)), 0), stay = gone.length + since.length;
+  const title = L.only && rows.length === 1 ? `Move ${esc(byId(rows[0].id)?.name || "it")} back` : `Move ${esc(mv.title)} back`;
+  const paths = [...new Set(go.map(x => x.to + "\u0000" + x.from))];
+  const lines = [];
+  if (since.length) lines.push(`<div class="warn"><span class="g">!</span><span class="t">${since.length} ${since.length === 1 ? "was" : "were"} moved since: ${since.length === 1 ? "it stays where it is" : "they stay where they are"} now.</span><span></span></div>`);
+  if (gone.length) lines.push(`<div><span class="g">·</span><span class="t">${gone.length === 1 ? "1 is" : gone.length + " are"} no longer in the library.</span><span></span></div>`);
+  lines.push(`<div class="warn"><span class="g">!</span><span class="t">Automatic management stays off for the ${go.length === 1 ? "1" : go.length} that had it. Turning it on again is up to you (the torrent's menu).</span><span></span></div>`);
+  if (mv.loose && !L.only) lines.push(`<div><span class="g">·</span><span class="t">The ${mv.loose.n} loose files carried stay at ${esc(mv.to)}.</span><span></span></div>`);
+  return `<div class="k-sheet k-mv" role="dialog" aria-label="${title}" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>${title}</b><span class="s">each to where it was before ${hm(mv.at)} · ${gb(disk)} on disk · on home</span></div><button type="button" class="k-esc" data-a="close">esc</button></div>
+    <div class="rows">${paths.map(k => { const [t, f] = k.split("\u0000"); return `<div><span>${esc(cutL(t, 30))}</span><span class="ar">→</span><span class="to">${esc(cutL(f, 30))}</span><span class="n">${go.filter(x => x.to === t && x.from === f).length}</span></div>`; }).join("")}</div>
+    <div class="k-chk">${lines.join("")}</div>
+    <div class="k-btns two"><button type="button" data-a="close">cancel</button><button type="button" class="pri cur" data-a="go"${go.length ? "" : ' style="opacity:.45"'}>move ${go.length} back${stay ? ` · ${stay} ${stay === 1 ? "stays" : "stay"}` : ""}</button></div>
+    <div class="k-hints"><span><b>enter</b> move</span><span><b>esc</b> cancel</span></div></div>`;
+}
+function backGo() {
+  const mv = MOVES.find(m => m.id === L.id), rows = mv.rows.filter(x => (!L.only || L.only.includes(x.id)) && byId(x.id)?.path === x.to);
+  if (!rows.length) { layer(null); note("moved again since: nothing to move back"); return; }
+  const job = { id: ++moveSeq, of: L.only ? null : mv.id, kind: "back", title: L.only ? byId(rows[0].id).name : mv.title, to: mv.rows[0].from, root: mv.to,
+    rows: rows.map(x => ({ id: x.id, from: x.to, to: x.from, gb: onDisk(byId(x.id)), name: byId(x.id).name })), loose: null };
+  if (L.only) { const i = mv.rows.findIndex(x => x.id === L.only[0]); mv.rows.splice(i, 1); if (!mv.rows.length) MOVES.splice(MOVES.indexOf(mv), 1); }
+  layer(null);
+  if (MV && MV.phase === "run") { QUEUE.push(job); band(); return; }
+  startJob(job, job.rows.every(x => driveOf(x.from) === driveOf(x.to)));
+}
+// the line over the table: a picked folder, or the torrents a move's "show" filtered to
+function scope() {
+  const el = $("scope"), f = S.filter;
+  el.hidden = S.face !== "lib" || !["folder", "ids"].includes(f.k);
+  if (el.hidden) return;
+  if (f.k === "ids") { const rs = ROWS.filter(r => f.v.has(r.id)); el.innerHTML = `<i>i</i><span>the move of ${esc(f.of)} · ${plural(rs.length, "torrent", "torrents")}</span><button type="button" data-a="all"><kbd>esc</kbd>all torrents</button>`; return; }
+  const rs = ROWS.filter(r => matches(r, f)), paths = new Set(rs.map(r => r.path)), lo = LOOSE[f.v];
+  el.innerHTML = `<i>i</i><span>${esc(nameOf(f.v))} · ${esc(f.v)} · ${plural(rs.length, "torrent", "torrents")} · ${gb(rs.reduce((a, r) => a + onDisk(r), 0))} on disk${paths.size > 1 ? ` · ${paths.size} save paths` : ""}${lo ? ` · ${lo.n} files no torrent owns` : ""}</span><button type="button" data-a="mvf"><kbd>shift+m</kbd>move this folder…</button>`;
+}
+$("scope").addEventListener("click", e => { const a = e.target.closest("[data-a]")?.dataset.a;
+  if (a === "mvf") openMoveFolder(S.filter.v);
+  if (a === "all") { S.filter = { k: "status", v: "all" }; render(); } });
+
+// ── the command palette (: or ctrl+shift+p), docs/30: every command by name, with its key;
+// one that can't run now says why; the last five run come first ──────────────────
+const RECENT = [];
+const demoOnly = t => () => note(`${t}: in omaseed; this demo stops here`);
+function commands() {
+  const ids = targets(), rs = ids.map(byId).filter(Boolean), n = rs.length, cur = byId(S.cur);
+  const tgt = S.sel.size ? `${S.sel.size} selected` : cur?.name || "";
+  const none = n ? null : "nothing selected, no torrent under the cursor";
+  const already = w => n === 1 ? `already ${w}` : n === 2 ? `both already ${w}` : `all ${n} already ${w}`;
+  const stopped = rs.filter(isStopped), running = rs.filter(r => !isStopped(r)), last = MOVES[0];
+  const T = "torrents", c = (t, k, area, why, run, also = "") => ({ t, k, area, why, run, also });
+  const folder = S.filter.k === "folder" ? S.filter.v : cur?.path;
+  return [
+    c("start", stopped.length ? "p" : "", T, none || (!stopped.length && already("running")), () => toggle(stopped.map(r => r.id))),
+    c("stop", running.length ? "p" : "", T, none || (!running.length && already("stopped")), () => toggle(running.map(r => r.id))),
+    ...(rs.some(isErr) ? [c("retry", "e", T, null, () => retry(ids))] : []),
+    c("force start", "P", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "force start"))),
+    c("recheck", "c", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "recheck"))),
+    c("reannounce", "R", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "reannounce"))),
+    c("delete", "d", T, none, () => openDel(ids)), c("delete with files", "D", T, none, () => openDel(ids, true)),
+    c("set category", "C", T, none, demoOnly("set category")), c("set tags", "t", T, none, demoOnly("set tags")),
+    c("move…", "m", T, none, () => openMove(ids), "set location"),
+    c("move folder…", "M", "library", folder ? null : "pick a folder in the rail", () => openMoveFolder(folder), "move this folder"),
+    c("limits", "L", T, none, demoOnly("limits")), c("rename", "r", T, cur ? null : "no torrent under the cursor", demoOnly("rename")),
+    c("open folder", "o", T, cur ? null : "no torrent under the cursor", () => note(`opens ${cur.path}/ in your file manager`)),
+    c("queue up", "[", T, none, demoOnly("queue up")), c("queue down", "]", T, none, demoOnly("queue down")),
+    c("copy magnet", "y", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "copy magnet"))),
+    c("copy hash", "Y", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "copy hash"))),
+    c("copy name", "n", T, none, () => runItem(ITEMS.findIndex(m => m[0] === "copy name"))),
+    c("select all visible", "ctrl+a", "selection", null, () => { visible().forEach(r => S.sel.add(r.id)); render(); }),
+    c("clear the selection", "esc", "selection", S.sel.size ? null : "nothing selected", () => { S.sel.clear(); render(); }),
+    c("add a torrent", "a", "library", null, () => openAdd()),
+    c("filter the table", "/", "library", null, () => { face("lib"); $("q").focus(); }),
+    c("jump to a torrent", "ctrl+k", "library", null, demoOnly("jump to a torrent")),
+    ...(last ? [c("undo last move", "via :", "library", last.rows.some(x => byId(x.id)?.path === x.to) ? null : "moved again since: nothing to move back", () => openBack(last.id), "move back")] : []),
+    c(S.face === "seed" ? "back to the library" : "seed console", "`", "view", null, () => face(S.face === "seed" ? "lib" : "seed")),
+    c(S.face === "log" ? "back from the log" : "qBittorrent's log", "~", "view", null, () => face(S.face === "log" ? "lib" : "log")),
+    c("alt-speed on", "A", "speed", null, demoOnly("alt-speed")),
+    c("switch server…", "ctrl+s", "app", null, () => layer("pal", { q: "", i: 0, srv: true })),
+    c("settings", ",", "app", null, demoOnly("settings")), c("shortcuts", "?", "app", null, () => layer("help")),
+    c("hide the window", "q", "app", null, demoOnly("hide the window")), c("quit", "ctrl+q", "app", null, demoOnly("quit")),
+  ].map(x => ({ ...x, d: x.why || (x.area === T ? `${T} · ${tgt}` : x.t === "undo last move" ? `library · ${last.title} · ${hm(last.at)} · ${last.to}` : x.area) }));
+}
+function serverRows() {
+  return SERVERS.map((v, i) => ({ t: v.name, k: i ? (v.dot === "bad" ? "didn't answer" : `${v.count} torrents`) : "on it now",
+    d: i ? `${v.addr} · ${v.dot === "bad" ? "last try" : "last seen"} yesterday ${v.dot === "bad" ? "09:12" : "21:04"}` : `${v.addr} · ${ROWS.length} torrents · qBittorrent 5.2.3`,
+    run: () => i ? note(`switching to ${v.name}: omaseed shows its library; this demo has only home's`) : note("on home already") }));
+}
+function palRows() {
+  if (L.srv) { const q = L.q.toLowerCase(); return serverRows().filter(r => r.t.includes(q)); }
+  const all = commands(), q = L.q.trim().toLowerCase();
+  if (!q) { const rec = RECENT.map(t => all.find(x => x.t === t && !x.why)).filter(Boolean);
+    return [...rec, ...all.filter(x => !x.why && !rec.includes(x)), ...all.filter(x => x.why)]; }
+  const score = x => { const h = (x.t + " " + x.also).toLowerCase(), at = h.indexOf(q); if (at >= 0) return 100 - at;
+    let j = 0; for (const ch of h) if (ch === q[j]) j++; return j === q.length ? 10 : -1; };
+  return all.map(x => ({ x, s: score(x) })).filter(o => o.s >= 0).sort((a, b) => (!!a.x.why - !!b.x.why) || b.s - a.s).map(o => o.x);
+}
+function palHTML() {
+  const rows = palRows(), q = L.q.trim(), total = L.srv ? SERVERS.length : commands().length;
+  if (L.i >= rows.length || rows[L.i]?.why) L.i = Math.max(0, rows.findIndex(r => !r.why));
+  const title = L.srv ? "switch server" : S.face === "log" ? "commands for the log" : S.sel.size ? `commands for ${S.sel.size} selected` : byId(S.cur) ? `commands for ${byId(S.cur).name}` : "commands";
+  const body = rows.length ? rows.map((r, i) => `<div class="pr${i === L.i ? " cur" : ""}${r.why ? " no" : ""}" data-pi="${i}" role="option" aria-selected="${i === L.i}"><b>${esc(r.t)}</b><span class="kk">${esc(r.k || "")}</span><span class="d">${esc(r.d)}</span></div>`).join("")
+    : L.srv ? `<div class="pm">No server matches “${esc(q)}”.</div>` : `<div class="pm">No command matches “${esc(q)}”.</div><div class="pr cur" data-pi="find"><b>find torrents matching “${esc(q)}”</b><span class="kk">ctrl+k</span><span class="d">library · opens the jump palette with your text</span></div>`;
+  return `<div class="k-pal" role="dialog" aria-label="${title}"><label class="pq"><span class="g">${L.srv ? "⛁" : ":"}</span><input id="palQ" type="text" value="${esc(L.q)}" placeholder="${esc(title)}" autocomplete="off" spellcheck="false" aria-label="${title}"><span class="cn">${q ? `${rows.length} of ${total}` : `${total} ${L.srv ? "servers" : "commands"}`}</span></label>
+    <div class="pl" role="listbox">${body}</div>
+    <div class="pf"><span><b>↑↓</b> move</span>${rows.some(r => !r.why) || !rows.length ? `<span><b>enter</b> ${L.srv ? "switch" : rows.length ? "run" : "jump palette"}</span>` : ""}${L.srv ? "<span><b>,</b> manage servers</span>" : ""}<span><b>esc</b> ${q ? "clear" : "close"}</span>${L.srv ? "" : `<span class="r">? lists every key</span>`}</div></div>`;
+}
+function palRun(i) {
+  const rows = palRows();
+  if (i === "find") { const q = L.q; layer(null); face("lib"); S.q = q; $("q").value = q; render(); return; }
+  const r = rows[i]; if (!r || r.why) return;
+  if (!L.srv) { const at = RECENT.indexOf(r.t); if (at >= 0) RECENT.splice(at, 1); RECENT.unshift(r.t); RECENT.length = Math.min(RECENT.length, 5); }
+  layer(null); r.run();
+}
+function openPal() { tried("pal"); layer("pal", { q: "", i: 0 }); }
 
 // ── layers over the window ───────────────────────────────────────────────────────
-function layer(kind, opts) { L = kind ? { kind, ...opts } : null; drawLayer(); }
+function layer(kind, opts) { L = kind ? { kind, ...opts } : null; drawLayer(["pal", "mv"].includes(kind)); }
 function drawLayer(focusSrc) {
   const el = $("layer");
   el.hidden = !L;
   if (!L) { el.innerHTML = ""; app.focus({ preventScroll: true }); return; }
-  el.className = "k layer" + (L.kind === "menu" ? " menu" : "");
-  el.innerHTML = L.kind === "menu" ? menuHTML() : L.kind === "add" ? addHTML() : L.kind === "del" ? delHTML() : HELP;
-  if (L.kind === "menu") placeMenu();
-  const src = $("addSrc");
-  if (src && focusSrc) { src.focus({ preventScroll: true }); src.setSelectionRange(src.value.length, src.value.length); }
+  el.className = "k layer" + (L.kind === "menu" || L.kind === "fmenu" ? " menu" : "");
+  el.innerHTML = { menu: menuHTML, fmenu: fmenuHTML, add: addHTML, del: delHTML, pal: palHTML, mv: mvHTML, back: backHTML }[L.kind]?.() ?? HELP;
+  if (L.kind === "menu" || L.kind === "fmenu") placeMenu();
+  const src = $("addSrc") || $("palQ") || $("mvTo");
+  if (src && focusSrc) { src.focus({ preventScroll: true });
+    if (L.selAll) { src.select(); L.selAll = false; } else src.setSelectionRange(src.value.length, src.value.length); }
   else if (!el.contains(document.activeElement)) app.focus({ preventScroll: true });
+  el.querySelector(".k-pal .pr.cur")?.scrollIntoView({ block: "nearest" });
 }
+// a folder's own menu in the rail: one item (docs/42, C19 T3)
+const fmenuHTML = () => `<div class="k-menu" id="menu" role="menu" aria-label="${esc(nameOf(L.path))}" style="width:240px"><div class="mh">${esc(nameOf(L.path))}</div><button type="button" role="menuitem" class="it cur" data-fm="1"><span>move this folder…</span><span class="kk">M</span></button></div>`;
 
 function render() {
   const lib = S.face === "lib";
-  $("fLib").setAttribute("aria-selected", String(lib)); $("fSeed").setAttribute("aria-selected", String(!lib));
-  $("tbl").hidden = !lib; $("seedView").hidden = lib;
-  rail(); hero(); foot(); selbar(); details();
-  lib ? table() : seedView();
+  $("fLib").setAttribute("aria-selected", String(lib)); $("fSeed").setAttribute("aria-selected", String(S.face === "seed")); $("fLog").setAttribute("aria-selected", String(S.face === "log"));
+  $("tbl").hidden = !lib; $("seedView").hidden = S.face !== "seed"; $("logView").hidden = S.face !== "log"; $("body").classList.toggle("full", S.face === "log");
+  rail(); hero(); foot(); selbar(); details(); scope(); band();
+  lib ? table() : S.face === "seed" ? seedView() : logView();
 }
+function face(f) { S.face = f; tried(f === "lib" ? "" : f); render(); if (f === "log") logFollow(); }
 
 // ── pointers to try things; each goes once it has been done ─────────────────────
 const TRIED = new Set();
@@ -1460,11 +2120,16 @@ function tried(k) {
   document.querySelector(`#try [data-try="${k}"]`)?.classList.add("done");
   if (k === "seed") $("fSeed").classList.remove("beacon");
   if (k === "add") $("addBtn").classList.remove("beacon");
+  if (k === "log") $("fLog").classList.remove("beacon");
 }
 $("try").addEventListener("click", e => {
   const b = e.target.closest("[data-try]"); if (!b) return;
   const k = b.dataset.try;
   if (k === "menu") { S.face = "lib"; render(); menuAtCursor(); }
+  if (k === "move") { face("lib"); S.filter = { k: "folder", v: "/data/torrents/movies" }; render();
+    if (MV && MV.phase !== "done") note("a move is already running"); else openMoveFolder("/data/torrents/movies", "/mnt/fast/movies"); }
+  if (k === "pal") openPal();
+  if (k === "log") face("log");
   if (k === "seed") { S.face = "seed"; tried("seed"); render(); }
   if (k === "add") openAdd();
   if (k === "help") { tried("help"); layer("help"); }
@@ -1474,9 +2139,15 @@ $("try").addEventListener("click", e => {
 // ── input ───────────────────────────────────────────────────────────────────────
 const move = d => { const v = visible(); if (!v.length) return; const i = v.findIndex(r => r.id === S.cur); S.cur = v[Math.max(0, Math.min(v.length - 1, i + d))].id; render();
   app.querySelector(".r.cur")?.scrollIntoView({ block: "nearest" }); };
+// p on an errored torrent stops it, so a retry that only fails again comes to an end; starting it
+// again is a retry, which here fails the same way (DECISIONS C20)
 const toggle = ids => { for (const id of ids) { const r = byId(id); if (!r) continue;
-  if (r.st === "stop" || r.st === "err") { r.st = r.was === "stop" || r.was === "err" ? (r.prog >= 100 ? "seed" : "down") : r.was; if (r.st === "down" && !r.dl) r.dl = 300; }
+  if (r.st === "err") { r.st = "errstop"; r.dl = 0; r.ul = 0; }
+  else if (r.st === "errstop") r.st = "err";
+  else if (r.st === "stop") { r.st = r.was === "stop" ? (r.prog >= 100 ? "seed" : "down") : r.was; if (r.st === "down" && !r.dl) r.dl = 300; }
   else { r.was = r.st; r.st = "stop"; r.dl = 0; r.ul = 0; } } render(); };
+const retry = ids => { const rs = ids.map(byId).filter(r => r && isErr(r)); if (!rs.length) { note("none in error"); return; }
+  rs.forEach(r => r.st = "err"); render(); note(`retried ${rs.length === 1 ? rs[0].name : rs.length + " torrents"}: ${rs.length === 1 ? "it" : "they"} failed again · ${rs[0].cause}`); };
 const setRange = i => { S.range = Math.max(0, Math.min(RANGES.length - 1, i)); render(); bigSeed(); };
 const pick = (e, id) => {
   if (e.ctrlKey || e.metaKey) S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id);
@@ -1496,13 +2167,29 @@ $("tbl").addEventListener("contextmenu", e => {
   const w = app.getBoundingClientRect();
   openMenu(e.clientX - w.left, e.clientY - w.top);
 });
-$("rail").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.filter = { k: b.dataset.k, v: b.dataset.v }; S.face = "lib"; render(); });
-$("det").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) { S.tab = +b.dataset.tab; details(); } });
+$("rail").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || b.classList.contains("fh")) return;
+  if (b.dataset.srv) { const i = +b.dataset.srv; if (i) serverRows()[i].run(); return; }
+  S.filter = b.dataset.k === "folder" && S.filter.k === "folder" && S.filter.v === b.dataset.v ? { k: "status", v: "all" } : { k: b.dataset.k, v: b.dataset.v }; S.face = "lib"; render(); });
+$("rail").addEventListener("contextmenu", e => { const b = e.target.closest('button[data-k="folder"]'); if (!b) return; e.preventDefault();
+  const w = app.getBoundingClientRect(); layer("fmenu", { path: b.dataset.v, x: e.clientX - w.left, y: e.clientY - w.top }); });
+$("det").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) { S.tab = +b.dataset.tab; details(); return; }
+  const k = e.target.closest("[data-key]"); if (k) { keyAct(k.dataset.key)?.(); return; }
+  const mb = e.target.closest("[data-mb]"), m1 = e.target.closest("[data-mb1]"), ms = e.target.closest("[data-mshow]");
+  if (mb) openBack(+mb.dataset.mb); if (m1) openBack(+m1.dataset.mb1, [S.cur]);
+  if (ms) { const mv = MOVES.find(m => m.id === +ms.dataset.mshow); S.filter = { k: "ids", v: new Set(mv.rows.map(x => x.id)), of: mv.title }; render(); } });
+$("logView").addEventListener("click", e => {
+  const c = e.target.closest("[data-lv]"); if (c) { if (c.dataset.lv === "tor") { S.log.tor = null; logView(); } else logLevel(+c.dataset.lv); return; }
+  const mb = e.target.closest("[data-mb]"); if (mb) { openBack(+mb.dataset.mb); return; }
+  const r = e.target.closest("[data-li]"); if (r) { S.log.cur = +r.dataset.li; S.log.follow = false; logRows(); foot(); } });
+$("logView").addEventListener("dblclick", e => { if (e.target.closest("[data-li]")) logKey("Enter"); });
+$("logView").addEventListener("input", e => { if (e.target.id === "logQ") { S.log.q = e.target.value; logRows(); } });
+$("fLog").addEventListener("click", () => face("log"));
 $("selbar").addEventListener("click", e => { const b = e.target.closest("[data-act]"); if (!b) return; const a = b.dataset.act;
   if (a === "menu") { const w = app.getBoundingClientRect(), c = b.getBoundingClientRect(); openMenu(c.right - w.left - 250, c.top - w.top, true); return; }
   if (a === "del") { openDel(targets()); return; }
   if (a === "clear") { S.sel.clear(); render(); return; }
-  toggle([...S.sel].filter(id => (a === "stop") === (byId(id)?.st !== "stop"))); });
+  if (a === "move") { openMove(targets()); return; }
+  toggle([...S.sel].filter(id => byId(id) && (a === "stop") === !isStopped(byId(id)))); });
 $("fLib").addEventListener("click", () => { S.face = "lib"; render(); });
 $("fSeed").addEventListener("click", () => { S.face = "seed"; tried("seed"); render(); });
 $("addBtn").addEventListener("click", () => openAdd());
@@ -1517,6 +2204,8 @@ layerEl.addEventListener("contextmenu", e => { if (L?.kind === "menu") { e.preve
   if (el) el.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY })); } });
 layerEl.addEventListener("mouseover", e => { const it = e.target.closest(".k-menu .it"); if (it && L?.kind === "menu" && +it.dataset.i !== L.i) { L.i = +it.dataset.i; layerEl.querySelectorAll(".k-menu .it").forEach(x => x.classList.toggle("cur", +x.dataset.i === L.i)); } });
 layerEl.addEventListener("input", e => {
+  if (e.target.id === "palQ") { L.q = e.target.value; L.i = 0; drawLayer(true); return; }
+  if (e.target.id === "mvTo") { L.to = e.target.value; L.typed = true; if (L.kind === "mv" && L.mode) { L.open = true; L.pi = 0; } drawLayer(true); return; }
   if (e.target.id !== "addSrc") return;
   A.text = e.target.value;
   const hit = DL.find(d => A.text.trim().endsWith(d.file));
@@ -1528,6 +2217,22 @@ layerEl.addEventListener("click", e => {
   const t = e.target;
   if (L.kind === "menu") { const it = t.closest(".it"); if (it) runItem(+it.dataset.i); return; }
   if (L.kind === "help") { if (t.closest("[data-a=close]")) layer(null); return; }
+  if (L.kind === "fmenu") { if (t.closest("[data-fm]")) openMoveFolder(L.path); return; }
+  if (L.kind === "pal") { const r = t.closest("[data-pi]"); if (r) palRun(r.dataset.pi === "find" ? "find" : +r.dataset.pi); return; }
+  if (L.kind === "back") { const a = t.closest("[data-a]")?.dataset.a; if (a === "close") layer(null); if (a === "go") backGo(); return; }
+  if (L.kind === "mv") {
+    const a = t.closest("[data-a]")?.dataset.a, pl = t.closest("[data-place]"), md = t.closest("[data-mode]");
+    if (pl) { L.to = pl.dataset.place; L.open = false; L.typed = false; drawLayer(true); return; }
+    if (md) { L.mode = md.dataset.mode; drawLayer(); return; }
+    if (a === "close") layer(null);
+    if (a === "places") { L.open = !L.open; L.typed = false; L.pi = 0; drawLayer(true); }
+    if (a === "carry") { L.carry = !L.carry; drawLayer(); }
+    if (a === "browse") note("browse opens your file picker in omaseed");
+    if (a === "list") note("list ▸ shows each file no torrent owns, and what happens to it");
+    if (a === "show") { const ids = new Set(L.ids), of = L.kind === "mv" && L.root ? nameOf(L.root) : "the move sheet"; layer(null); S.filter = { k: "ids", v: ids, of }; face("lib"); }
+    if (a === "go") mvGo();
+    return;
+  }
   if (L.kind === "del") {
     const a = t.closest("[data-a]")?.dataset.a;
     if (a === "files") { L.files = !L.files; drawLayer(); }
@@ -1562,8 +2267,31 @@ layerEl.addEventListener("click", e => {
 });
 
 app.addEventListener("keydown", e => {
-  if (e.ctrlKey || e.metaKey) return;
   const k = e.key;
+  if (e.ctrlKey && !e.altKey && (k === "s" || (e.shiftKey && k.toLowerCase() === "p"))) { e.preventDefault(); k === "s" ? layer("pal", { q: "", i: 0, srv: true }) : openPal(); return; }
+  if (e.ctrlKey || e.metaKey) return;
+  if (L?.kind === "pal") {
+    const rows = palRows(), step = d => { let i = L.i; for (let n = 0; n < rows.length; n++) { i = (i + d + rows.length) % rows.length; if (!rows[i].why) break; } L.i = i; drawLayer(true); };
+    if (k === "Escape") { e.preventDefault(); if (L.q) { L.q = ""; L.i = 0; drawLayer(true); } else layer(null); }
+    else if (k === "ArrowDown") { e.preventDefault(); if (rows.length) step(1); }
+    else if (k === "ArrowUp") { e.preventDefault(); if (rows.length) step(-1); }
+    else if (k === "Enter") { e.preventDefault(); palRun(rows.length ? L.i : "find"); }
+    return;
+  }
+  if (L?.kind === "mv") {
+    if (L.open && L.mode) {
+      const n = L.flat?.length || 0;
+      if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); L.pi = (L.pi + (k === "ArrowDown" ? 1 : -1) + n) % Math.max(1, n); drawLayer(true); return; }
+      if ((k === "Enter" || k === "Tab") && n) { e.preventDefault(); L.to = L.flat[L.pi]; L.open = false; L.typed = false; drawLayer(true); return; }
+      if (k === "Escape") { e.preventDefault(); L.open = false; drawLayer(true); return; }
+    }
+    if (k === "ArrowDown" && L.mode) { e.preventDefault(); L.open = true; L.typed = false; L.pi = 0; drawLayer(true); return; }
+    if (k === "Enter") { e.preventDefault(); mvGo(); return; }
+    if (k === "Escape") { e.preventDefault(); layer(null); }
+    return;
+  }
+  if (L?.kind === "back") { if (k === "Enter") { e.preventDefault(); backGo(); } if (k === "Escape") { e.preventDefault(); layer(null); } return; }
+  if (L?.kind === "fmenu") { e.preventDefault(); if (k === "Enter" || k === "M") openMoveFolder(L.path); else if (k === "Escape") layer(null); return; }
   if (L) {
     if (k === "Escape") { e.preventDefault(); layer(null); return; }
     if (L.kind === "menu") {
@@ -1588,6 +2316,8 @@ app.addEventListener("keydown", e => {
     return;
   }
   if (e.altKey) return;
+  if (e.target.id === "logQ") { if (k === "Escape" || k === "Enter" || k === "ArrowDown") { e.preventDefault(); if (k === "Escape") { S.log.q = ""; logView(); } app.focus({ preventScroll: true }); } return; }
+  if (S.face === "log" && k !== "~" && k !== "`" && k !== ":" && k !== "?" && logKey(k)) { e.preventDefault(); return; }
   const inField = e.target === $("q");
   if (k === "Escape") { e.preventDefault();
     if (inField || S.q) { S.q = ""; $("q").value = ""; app.focus({ preventScroll: true }); render(); }
@@ -1595,18 +2325,25 @@ app.addEventListener("keydown", e => {
     else { S.sel.clear(); render(); }
     return; }
   if (inField) { if (k === "Enter" || k === "ArrowDown") { e.preventDefault(); app.focus({ preventScroll: true }); } return; }
-  const act = {
+  const act = keyAct(k);
+  if (act) { e.preventDefault(); act(); }
+});
+function keyAct(k) {
+  return {
+    m: () => openMove(targets()), M: () => openMoveFolder(S.filter.k === "folder" ? S.filter.v : byId(S.cur)?.path),
+    ":": () => openPal(), "~": () => face(S.face === "log" ? "lib" : "log"), e: () => retry(targets()),
+    x: () => { const r = byId(S.cur); if (r?.fail) { delete r.fail; details(); } },
+    o: () => note(`opens ${byId(S.cur).path}/ in your file manager`),
     j: () => move(1), ArrowDown: () => move(1), k: () => move(-1), ArrowUp: () => move(-1),
     " ": () => { S.sel.has(S.cur) ? S.sel.delete(S.cur) : S.sel.add(S.cur); render(); },
     Enter: () => menuAtCursor(), a: () => openAdd(), p: () => toggle(targets()), d: () => openDel(targets()), D: () => openDel(targets(), true),
-    "`": () => { S.face = S.face === "lib" ? "seed" : "lib"; tried("seed"); render(); },
+    "`": () => face(S.face === "seed" ? "lib" : "seed"),
     "[": () => setRange(S.range - 1), "]": () => setRange(S.range + 1),
     "/": () => { S.face = "lib"; render(); $("q").focus(); },
     "?": () => { tried("help"); layer("help"); },
     1: () => { S.tab = 0; details(); }, 2: () => { S.tab = 1; details(); }, 3: () => { S.tab = 2; details(); }, 4: () => { S.tab = 3; details(); },
   }[k];
-  if (act) { e.preventDefault(); act(); }
-});
+}
 
 // ── drop a .torrent file on the window: it is read here, in the page, and never sent anywhere ──
 function bdecode(buf) {
@@ -1690,7 +2427,7 @@ $("repFree").innerHTML = `<div class="k-sheet" style="max-width:540px;border-col
 $("repSrv").innerHTML = `<div class="k-set"><nav aria-label="Settings sections (picture)"><span class="l">settings</span>${[["⚙", "General"], ["⛁", "Servers", 1], ["◔", "Notifications"], ["⌨", "Keybindings"], ["◐", "Appearance"], ["↺", "Backup"], ["i", "About"]].map(([g, t, on]) => `<span class="it${on ? " on" : ""}"><i>${g}</i>${t}</span>`).join("")}
   <span class="l q">qbittorrent</span><span class="v">home 5.2.3</span>${[["⇅", "Speed"], ["◎", "Discovery and privacy"], ["⇌", "Connection"], ["⇢", "Proxy"], ["↑", "Seeding"], ["≡", "Queue"], ["▤", "Downloads and files"]].map(([g, t]) => `<span class="it"><i>${g}</i>${t}</span>`).join("")}</nav>
   <div class="pane"><div class="t">Servers<span>esc</span></div><div class="k-srv">
-    <div><span class="d"></span><div class="t"><b>home</b><span>http://127.0.0.1:8080 · API key · 5.2.3 · 16 torrents</span></div><span class="s">default</span></div>
+    <div><span class="d"></span><div class="t"><b>home</b><span>http://127.0.0.1:8080 · API key · 5.2.3 · 16 torrents</span></div><span class="s">in use</span></div>
     <div><span class="d"></span><div class="t"><b>nas</b><span>http://192.168.1.20:8080 · cookie · 5.2.3 · 412 torrents</span></div><span class="s"></span></div>
     <div><span class="d err"></span><div class="t"><b>seedbox</b><span>https://sb.example.net · API key · unreachable since 09:12</span></div><span class="s err">retrying</span></div>
     <div class="add"><span>+</span><div class="t"><span style="color:var(--fg-dark);font-size:12px">add a server</span></div><span class="s">a</span></div></div></div></div>`;
@@ -1766,9 +2503,9 @@ $("repNotes").innerHTML = `<div class="notes">
 const HELPROWS = [
   ["move", "Get around the window without the mouse.", [["j k", "Move the cursor down and up"], ["g G", "Jump to the first or the last torrent"], ["h l", "Move focus between the rail, the table and the details"], ["/", "Filter the table by name, category, tag or hash"], ["0–8", "Filter by status: 0 all, 1 downloading, 2 seeding…"], ["ctrl+k", "Jump to any torrent, category or tag by name"]]],
   ["select", "Most actions apply to the selection, or to the cursor row when nothing is selected.", [["space", "Add or remove the cursor row"], ["v", "Select a range from the last row you marked"], ["esc", "Clear the selection, then the filter, then close"]]],
-  ["view", "What the window shows.", [["`", "Flip between the library and the seed console; with a selection, the console counts only it"], ["i", "Show or hide the details panel"], ["|", "Pick and order the table's columns"]]],
-  ["act on torrents", "On the selection, or the cursor row. Open folder and rename take the cursor row.", [["a", "Add a torrent: magnet, file or URL"], ["enter", "Open the actions menu for the selection"], ["p P", "Stop or start · force start, skipping the queue"], ["d D", "Delete · delete with its files"], ["c R", "Recheck the data · reannounce to every tracker"], ["C t m L r", "Set category · tags · location · limits; rename the cursor row"], ["[ ]", "Move up or down in the queue"], ["y Y n", "Copy the magnet · hash · name, one line per selected torrent"]]],
-  ["app", "", [["A", "Toggle the alternative speed limits"], [", ctrl+,", "Settings"], ["q", "Hide to the tray"], ["ctrl+q", "Quit"]]],
+  ["view", "What the window shows.", [["`", "Flip between the library and the seed console; with a selection, the console counts only it"], ["~", "qBittorrent's log, followed live"], ["i", "Show or hide the details panel"], ["|", "Pick and order the table's columns"]]],
+  ["act on torrents", "On the selection, or the cursor row. Open folder and rename take the cursor row.", [["a", "Add a torrent: magnet, file or URL"], ["enter", "Open the actions menu for the selection"], ["p P", "Stop or start · force start, skipping the queue"], ["e", "Retry an errored torrent"], ["d D", "Delete · delete with its files"], ["c R", "Recheck the data · reannounce to every tracker"], ["C t m L r", "Set category · tags · move… · limits; rename the cursor row"], ["M", "Move the folder picked in the rail, or the cursor torrent's"], ["[ ]", "Move up or down in the queue"], ["y Y n", "Copy the magnet · hash · name, one line per selected torrent"]]],
+  ["app", "", [[":", "Find any command by name and run it (or ctrl+shift+p); each row teaches its key"], ["ctrl+s", "Switch server"], ["A", "Toggle the alternative speed limits"], [", ctrl+,", "Settings"], ["q", "Hide to the tray"], ["ctrl+q", "Quit"]]],
 ];
 const helpCol = list => list.map(([h, p, rows]) => `<div class="hg"><h4>${h}</h4>${p ? `<p>${p}</p>` : ""}${rows.map(([k, t]) => `<div class="r"><b>${esc(k)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("");
 $("repHelp").innerHTML = `<div class="k-sheet" style="max-width:820px"><div class="k-hd"><span class="k-ic">?</span><div><b>Shortcuts</b><span class="s">single letters act on the table · capitals are the stronger variant · ctrl is app-level</span></div><span class="k-esc">esc</span></div>
@@ -1798,8 +2535,48 @@ $("repLast").innerHTML = `<div class="k-sheet conf k-conf"><div class="msg">Dele
 $("repErr").innerHTML = `<div class="k-sheet" style="max-width:620px;border-color:var(--muted)">
   <div class="k-list" style="background:none"><div style="grid-template-columns:minmax(0,1fr) auto"><span style="color:var(--fg-bright)">Elephants Dream 1080p (CC-BY)</span><span><span style="color:var(--red)">!</span> no access</span></div></div>
   <div class="kv" style="font-size:11px"><span class="k">status</span><span class="v"><span style="color:var(--red)">error</span><span style="color:var(--fg-dark)"> · no access</span></span></div>
-  <div class="k-eb"><span class="g">✕</span><span class="h">Can't write to its save folder</span><span class="l">Permission denied, opening Elephants Dream 1080p (CC-BY)/ed_1080p.mkv</span><span class="l d">/data/torrents/movies</span><span class="l d">qBittorrent's log · today 19:00 · 2 times</span>
-    <div class="eacts"><span><b>m</b>set location</span><span><b>p</b>try again</span><span>copy the line</span></div></div></div>`;
+  <div class="k-eb"><span class="g">✕</span><span class="h">Can't write to its save folder</span><span class="l">Permission denied, opening Elephants Dream 1080p (CC-BY)/ed_1080p.mkv</span><span class="l d">/data/torrents/movies</span><span class="l d">qBittorrent's log · ${dayhm(T0 - 95 * 60000)} · 2 times</span>
+    <div class="eacts"><span><b>e</b>retry</span><span><b>m</b>move…</span><span><b>o</b>open folder</span><span>copy the line</span><span>its lines in the log</span></div></div></div>`;
+
+// Moving: the sheets as the demo library would show them, drawn once; the band's three states
+const still = h => h.replace(/ id="mvTo"/g, ' readonly tabindex="-1"');
+$("repMvSheet").innerHTML = still(mvHTML({ mk: "folder", root: "/data/torrents/movies", ids: ROWS.filter(r => r.path === "/data/torrents/movies").map(r => r.id), to: "/mnt/fast/movies", carry: true }));
+$("repMvPlaces").innerHTML = still(mvHTML({ mk: "sel", ids: ROWS.filter(r => /^(Wikipedia|ubuntu|Big Buck)/.test(r.name)).map(r => r.id), to: "/mnt/fast/library", mode: "one", open: true, pi: 1 }));
+const bandHTML = (k, g, h, acts, ln, pct) => `<div class="mband${k ? " " + k : ""}"><span class="g">${g}</span><span class="h">${h}</span><span class="a">${acts.map(a => a === "details" ? `<button type="button" class="dt" tabindex="-1">details ›</button>` : `<button type="button" tabindex="-1">${a}</button>`).join("")}</span><span class="ln">${ln}</span>${pct != null ? `<i class="pg" style="width:${pct}%"></i>` : ""}</div>`;
+$("repMvBand").innerHTML = `<div class="k-sheet" style="max-width:860px;padding:0;gap:0;border-color:var(--hairline)">
+  ${bandHTML("", "↻", "Moving movies to /mnt/fast/movies", ["pause", "show", "details"], "3 of 6 · 9.12 GB of 21.7 GB · 42 % · about 1 min left at 190 MB/s · now Tears of Steel 4K (CC-BY) (6.20 GB)", 42)}
+  ${bandHTML("", "‖", "The move of movies is paused", ["resume", "end the move", "details"], "3 of 6 · 3 waiting · nothing is sent until you resume", 42)}
+  ${bandHTML("g", "✓", "movies moved, loose files too", ["move back…", "show", "details", "close"], "6 torrents and 23 files at /mnt/fast/movies · in 2 min")}</div>`;
+$("repMvBack").innerHTML = `<div class="k-sheet k-mv" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Move films back</b><span class="s">each to where it was before 14:02 · 84.1 GB on disk · on home</span></div><span class="k-esc">esc</span></div>
+  <div class="rows"><div><span>/mnt/fast/films</span><span class="ar">→</span><span class="to">/srv/media/films</span><span class="n">46</span></div></div>
+  <div class="k-chk"><div class="warn"><span class="g">!</span><span class="t">3 were moved again since, by the move to /mnt/usb (16:40): they stay where they are now.</span><span class="lk">move that one back first</span><span class="nt">Moving that one back first puts them where this move left them.</span></div>
+    <div class="warn"><span class="g">!</span><span class="t">Automatic management stays off for the 3 that had it. Turning it on again is up to you (the torrent's menu).</span><span></span></div></div>
+  <div class="k-btns two"><span>cancel</span><span class="pri cur">move 46 back · 3 stay</span></div>
+  <div class="k-hints"><span><b>enter</b> move</span><span><b>esc</b> cancel</span></div></div>`;
+
+// Careful: a move qBittorrent accepted and then couldn't do; a qBittorrent's backups
+$("repFail").innerHTML = `<div class="k-sheet" style="max-width:520px;border-color:var(--muted)"><div class="kv" style="font-size:11px"><span class="k">status</span><span class="v" style="color:var(--green)">seeding</span></div>
+  <div class="k-eb y"><span class="g">!</span><span class="h">The move to media/films didn't happen</span><span class="l">Permission denied, moving Sintel 1080p (CC-BY)</span><span class="l d">Its files are still in /data/torrents/movies</span><span class="l d">qBittorrent's log · today ${hm(ROWS.find(r => r.fail).fail.at)} · 2 times</span>
+    <div class="eacts"><span><b>m</b>move…</span><span><b>o</b>open folder</span><span>copy the line</span><span>its lines in the log</span><span><b>x</b>dismiss</span></div></div></div>`;
+const bakRow = (g, t, b, d) => `<div style="display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:2px 10px;padding:8px 0;border-bottom:1px solid var(--faint)"><span style="color:var(--fg-dark)">${g}</span><b style="color:var(--fg-bright);font-weight:500">${t}</b><span class="k-btns" style="display:block"><span style="padding:0 10px">${b}</span></span><span style="grid-column:2/-1;color:var(--fg-dark);font-size:11px">${d}</span></div>`;
+$("repBak").innerHTML = `<div class="k-sheet" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Backup</b><span class="s">home's own settings and torrents, read from and sent to home only.</span></div><span class="k-esc">esc</span></div>
+  <div><span class="k-lab"><span>settings</span></span>${bakRow("↓", "Export home's settings", "export…", "Preferences, 2 categories, 3 tags, 2 RSS feeds and 5 rules. Passwords are left out.")}${bakRow("↑", "Import settings into home", "import…", "From a qBittorrent export or an omaseed backup. Every change is shown first; paths, ports and the Web UI login stay as they are unless you tick them.")}${bakRow("⇄", "Copy settings from another server", "copy…", "Read from that server just now, then shown as an import into home. Nothing changes on the other server.")}</div>
+  <div><span class="k-lab"><span>torrents</span></span>${bakRow("↓", "Export home's torrents", "export…", "16 torrents with their save paths, categories, tags and limits. The ${gb(ROWS.reduce((a, r) => a + taken(r), 0))} of files stay where they are.")}${bakRow("↑", "Import torrents into home", "import…", "Adds them, lets qBittorrent check the files on disk, then starts the complete ones. Torrents already on home are skipped.")}</div></div>`;
+
+// Servers: the band when one stops answering, and the rail's servers
+$("repDown").innerHTML = `<div class="k-sheet" style="max-width:600px;padding:0;gap:0;border-color:var(--hairline)">${bandHTML("y", "!", "nas didn't answer", ["retry now", "switch server", "details"], "Nothing is listening at 192.168.1.20:8080. omaseed tries again in 7 s. The list below is from 23:26.")}
+  ${bandHTML("r", "✕", "seedbox refused the sign-in", ["edit login", "switch server", "details"], "The API key omaseed has for it is wrong. It won't try again until you change it.")}</div>`;
+
+// Omarchy: the palette and the log, as drawn in the app
+$("repPal").innerHTML = `<div class="k-pal" style="margin:0;max-height:none"><label class="pq"><span class="g">:</span><input readonly tabindex="-1" value="mov" aria-label="commands"><span class="cn">3 of 44</span></label><div class="pl">
+  <div class="pr cur"><b>move…</b><span class="kk">m</span><span class="d">torrents · 2 selected</span></div>
+  <div class="pr"><b>move folder…</b><span class="kk">M</span><span class="d">library · movies</span></div>
+  <div class="pr"><b>undo last move</b><span class="kk">via :</span><span class="d">library · linux · 16:24 · /mnt/fast/linux</span></div></div>
+  <div class="pf"><span><b>↑↓</b> move</span><span><b>enter</b> run</span><span><b>esc</b> clear</span><span class="r">? lists every key</span></div></div>`;
+{ const pick = LOG.filter(l => !/File error alert|config directory/.test(l.msg) && (l.lv >= 1 || /finished|Start moving|Added new/.test(l.msg))).slice(-7);
+  $("repLog").innerHTML = `<div class="k-sheet" style="max-width:none;padding:0;gap:0;border-color:var(--muted)"><div class="lbar">${LV.map(([t, c], i) => `<span class="lchip on" style="--c:var(${c})">${t} <b>${LOG.filter(l => l.lv === i).length}</b><kbd>${i + 1}</kbd></span>`).join("")}</div>
+  <div class="lrows" style="max-height:none">${pick.map(l => `<div class="lr" style="grid-template-columns:64px 60px minmax(0,1fr);padding:4px 12px"><span class="lt">${new Date(l.t).toTimeString().slice(0, 5)}</span><span style="color:var(${l.lv ? LV[l.lv][1] : "--fg-dark"})">${LV[l.lv][0]}</span><span class="lm">${logMsg(l.msg)}</span></div>`).join("")}</div>
+  <div class="foot" style="border-top:1px solid var(--hairline)"><span class="fol">● following</span><div class="hints"><span><b>w</b> next warning</span><span><b>enter</b> show torrent</span><span><b>~</b> library</span></div></div></div>`; }
 
 drawRepDl(); drawRepMatch(); drawBar(); drawShared();
 render(); bigSeed();

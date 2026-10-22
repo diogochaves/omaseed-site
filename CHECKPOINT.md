@@ -1,57 +1,34 @@
-# Checkpoint (2026-10-14)
+# Checkpoint (2026-10-22)
 
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
 ## Done
-- Repo public on GitHub, diogochaves/omaseed-site (2026-10-14, Diogo asked). Its history was
-  rewritten first; the old private repo is diogochaves/omaseed-site-old (safe to delete).
-- The four open questions answered (DIRECTION.md, "Decided"): promise line "Torrents, finally at
-  home on Omarchy.", home plus /install and /changelog, "What's next" from issues, omabox credit
-  as its own section.
-- Home page draft 1 (`site/omaseed.html`), published privately:
-  <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>. A working copy of the main window with
-  demo data (click, j k, space, p, `, [ ], 1-4, /, ?), live speeds, the seed console in the window
-  and big in its own section, the page repainted by any of the 22 bundled Omarchy themes.
-- `build.mjs` (version and "What's next" from GitHub), `themes.mjs`, favicon. Checked in an
-  omabox box at 1920x1080 and 412x915.
-
-- Draft 2 (same URL, version 3), from Diogo's notes on draft 1: the window has a "Try" row and
-  pulsing pointers; the right-click and `enter` actions menu as shipped (ActionsMenu.qml order); the
-  add sheet (`a` or +) with "In Downloads", the files-on-disk match, the duplicate sheet, the file
-  tree and free-space line; delete with the last-seed guard; drop a real .torrent on the window and
-  it's read in the page (bdecode, never sent anywhere). New sections "Adding torrents" and "Careful
-  with your data"; Servers and Omarchy got replicas (settings › Servers, the certificate prompt, the
-  bar widget and popup, playable; notifications; the shortcuts sheet with a working filter). Copy
-  and looks from the spec agents' reports on docs 05, 14, 17, 18, 19, 25, 26, 28 and the QML.
-  "Why it errored" is labelled "next release" (unreleased on main).
-
-- Version 4 (same URL): omaseed v0.2.0 (13 Oct 2026) ships a prebuilt package. The hero and
-  Install show its one line (`curl -fLO …/latest/download/omaseed-x86_64.pkg.tar.zst && sudo
-  pacman -U …`, as in omaseed's README), building from source folded under it. The changelog's
-  "Next" entry became v0.2.0; "Why it errored" says "new in 0.2.0" (its key hints were broken by
-  the window's `.acts` rules, now `.eacts`). The omabox section has omabox's mark and "No desktops
-  were harmed in the making of omaseed. And no mouse was captured." New "Open source" section
-  (MIT, code, issues, pull requests); omaseed has no CONTRIBUTING.md, so none is linked.
-- The hero's "NEW" pill text (`v0.2.0: errors explained, one-line install`) is hand-written: the
-  build updates only the version number in it, so change the words at each release.
-
-- Live at <https://omaseed.app> since 2026-10-13 (Cloudflare Pages project `omaseed`, first deploy
-  run 38502344180); www.omaseed.app redirects to it. The deploy token is omabox-site's, extended
-  to omaseed.app and rolled the same day; both repos hold the new value.
-
-- Link card (2026-10-14): `site/media/og.png`, from `og/card.html` (`og/README.md`), linked in the
-  head as og:image with a version from its bytes. The same PNG is meant for omaseed's GitHub social
-  preview (repo Settings › Social preview, by hand) and its `docs/media/social-preview.png` on
-  the readme-showcase branch, which Diogo replaces himself.
+- The site for omaseed v0.3.0, on the local branch `site-v0.3.0` (not pushed; pushing to main
+  deploys). Private draft: <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>, version 6.
+  - Hero pill "v0.3.0: move whole folders, and move them back" (hand-written; the build only
+    changes the number). Changelog entry for v0.3.0 from omaseed's CHANGELOG.
+  - New section "Moving": the folder sheet with its checks, the band (running, paused, summary),
+    Move… with places, move back.
+  - The window: the rail's folders and servers, `m` / `M` and a folder move that runs to its
+    summary, move back from General, the log face (`~`), the command palette (`:`), the server
+    switcher (`ctrl+s`), errored torrents that stop (`p`) and retry (`e`), the yellow block for a
+    move only the log reports. The Try row lists the new ones.
+  - Servers, Careful and Omarchy: the server-down band, what only the log says, backups, the
+    palette and the log as section copies, screen readers and the 4.5:1 floor (the page lifts
+    its replicas' text the same way).
+  - Roadmap section (hand-written from the milestones: v0.4.0, engines as planned). `build.mjs`
+    drops "Board N:" and "(board …)" from "What's next" titles. The omabox block lists all 11
+    walks and the visual check.
+  - Checked in an omabox box at 1920x1080 and 412x915, in Tokyo Night and Lupine.
+  - Words and looks: `reference/SPEC-NOTES-2026-10-22-moving.md` and `-window.md`.
 
 ## Next (in this order)
-1. Diogo reviews the live page (and the artifact, version 5). Open with him: label `next` on omaseed issues to choose "What's next"
-   (today it shows the newest four enhancements). Known glitch: opening the page at a `#section`
-   address lands past that section (in-page nav clicks are fine).
-2. Measure memory and CPU (omaseed on the :8081 playground in an omabox; never :8080), then put the
-   numbers and the method on the page. Until then the page makes no such claim.
-3. After the home page is approved: `/install`, `/changelog` (read from the omaseed repo's latest
-   tag, like omabox-site).
+1. Diogo reviews version 6. Open with him: label four omaseed issues `next` (the newest
+   enhancements include #126, whose title says "board 35's notice band"). When v0.3.1 is out:
+   its changelog entry, and check the pill still reads right with the new number.
+2. After his yes: merge `site-v0.3.0` into main and push (that deploys omaseed.app).
+3. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
+   `/changelog` pages after the home page.
 
 ## Standing rules
 - The repo is public on GitHub (diogochaves/omaseed-site); pushing to main deploys omaseed.app
