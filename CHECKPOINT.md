@@ -3,8 +3,8 @@
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
 ## Done
-- The site for omaseed v0.3.0, on the local branch `site-v0.3.0` (not pushed; pushing to main
-  deploys). Private draft: <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>, version 7.
+- The site for omaseed v0.3.0, approved by Diogo and pushed to main on 2026-10-22 (which deploys
+  omaseed.app). Private draft: <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>, version 7.
   - Hero pill "v0.3.0: move whole folders, and move them back" (hand-written; the build only
     changes the number), right-aligned under the top bar, in line with its Install button. Changelog entry for v0.3.0 from omaseed's CHANGELOG.
   - New section "Moving": the folder sheet with its checks, the band (running, paused, summary),
@@ -23,10 +23,9 @@ Where the work stopped and what comes next. Replace this file as the work moves 
   - Words and looks: `reference/SPEC-NOTES-2026-10-22-moving.md` and `-window.md`.
 
 ## Next (in this order)
-1. Diogo reviews version 7. When v0.3.1 is out: its changelog entry, and check the pill still
-   reads right with the new number.
-2. After his yes: merge `site-v0.3.0` into main and push (that deploys omaseed.app).
-3. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
+1. When v0.3.1 is out: its changelog entry, and check the pill still reads right with the new
+   number. At each release: the pill's words and the Roadmap by hand.
+2. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
    `/changelog` pages after the home page.
 
 ## Standing rules
