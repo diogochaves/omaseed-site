@@ -700,6 +700,7 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .road li { padding-left: 18px; position: relative; }
 .road li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dark); }
 .road li b { color: var(--fg-bright); font-weight: 500; }
+.road li a { text-decoration: none; } .road li a:hover b { text-decoration: underline; text-underline-offset: 3px; }
 .road .more { font-size: 14px; justify-self: start; margin-top: 4px; }
 
 .get { padding-block: clamp(96px, 12vw, 160px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; justify-items: start; }
@@ -1497,15 +1498,20 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
   <section class="wrap sec" id="roadmap">
     <div class="head">
       <p class="tag">Roadmap</p>
-      <h2 class="two">Where it goes from here. <span>As omaseed's milestones on GitHub group the work. No dates. Every issue is <a href="https://github.com/diogochaves/omaseed/issues">open on GitHub</a>.</span></h2>
+      <h2 class="two">Where it goes from here. <span>What is being designed, and the engines to come. No versions, no dates. Every issue is <a href="https://github.com/diogochaves/omaseed/issues">open on GitHub</a>.</span></h2>
     </div>
-    <!-- roadmap: hand-written from omaseed's open milestones; change it when one is released -->
+    <!-- roadmap: hand-written from omaseed's open issues waiting on a design (board first) and the engines milestone; change it when one is built or released -->
     <div class="road">
       <article>
-        <div class="when"><b>Next</b><span class="st">as it is ready</span></div>
-        <h3>Releases ship what is ready</h3>
-        <p>One feature makes a minor version, and fixes ship as patch versions once they are merged. What a release takes is what has passed omaseed's tests, its walks and the visual check, so the next one has no list to wait for.</p>
-        <a class="more" href="https://github.com/diogochaves/omaseed/milestone/2">The next milestone</a>
+        <div class="when"><b>Being drawn</b><span class="st">design first</span></div>
+        <h3>Next on the drawing board</h3>
+        <p>Each of these gets a design of its own before anything is built, so none has a version or a date yet.</p>
+        <ul>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/172"><b>The add sheet, redrawn.</b></a> What's inside at a glance, by kind; the category guessed from your own past choices; a guess at when it will be ready; and a warning when a torrent that says it's a film carries a program.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/175"><b>Long moves off a hard disk.</b></a> Pause the drive's other torrents while a move runs, and start exactly those again when it ends, fails or is cancelled.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/163"><b>A way in for agents.</b></a> omaseed's status, errors, log and moves as JSON, then actions through omaseed's own checks, only if you turn that on.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/199"><b>Console's station.</b></a> Whether the overview gets the numbered plates the Console design drew, as a display for every skin.</li>
+        </ul>
       </article>
       <article class="planned">
         <div class="when"><b>Engines</b><span class="st">planned</span></div>

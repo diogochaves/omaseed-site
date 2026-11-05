@@ -46,9 +46,9 @@ Live at omaseed.app since 2026-10-13. Diogo reviews every change as a private ar
    check ran in a box, so the agent never touched the desktop. Links to omabox.app. True today:
    see `omaseed/scripts/dev/*-walk.sh` and `docs/CHECKPOINT.md`.
 7. **New in:** the latest releases, dated, read from the omaseed repo (as omabox-site does).
-8. **Roadmap:** omaseed's open milestones in plain words, hand-written from their issues: the next
-   release (v0.4.0) and "engines", marked planned, with no version and no date. Each card links
-   to its milestone; the heading links to the issues.
+8. **Roadmap:** hand-written in plain words: "Being drawn", the open issues that wait on a design
+   board of their own (each line links to its issue), and "engines", marked planned. No versions,
+   no dates; the heading links to the issues.
 9. **Install**, again.
 
 ## Not on the page until it is true
@@ -60,6 +60,12 @@ Live at omaseed.app since 2026-10-13. Diogo reviews every change as a private ar
 - **A roadmap page** of its own, or dates on the roadmap. The home page's Roadmap section names the
   open milestones and promises nothing more.
 - **Stars, installs, user counts.** None to show yet.
+
+## Decided (2026-11-05)
+
+- **Roadmap: "Being drawn" and Engines** (Diogo). omaseed's "next" milestone is empty under C33
+  (releases ship what is ready), so the roadmap shows the work waiting on a design (#172, #175,
+  #163, #199) beside the engines milestone. Change it when one is built or released.
 
 ## Decided (2026-10-22)
 
