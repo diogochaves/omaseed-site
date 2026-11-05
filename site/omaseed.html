@@ -3007,7 +3007,7 @@ const move = d => { const v = ordered(); if (!v.length) return; const i = v.find
 const toggle = ids => { let n = 0, stopped = 0; for (const id of ids) { const r = byId(id); if (!r) continue; n++;
   if (r.st === "err") { r.st = "errstop"; r.dl = 0; r.ul = 0; stopped++; }
   else if (r.st === "errstop") r.st = "err";
-  else if (r.st === "stop") { r.st = r.was === "stop" ? (r.prog >= 100 ? "seed" : "down") : r.was; if (r.st === "down" && !r.dl) r.dl = 300; }
+  else if (r.st === "stop") { r.st = r.was === "stop" ? (r.prog >= 100 ? "seed" : "down") : r.was; if (r.st === "down" && !r.dl) r.dl = r.dl0 || 300; if (r.ul0) r.ul = r.ul0; }
   else { r.was = r.st; r.st = "stop"; r.dl = 0; r.ul = 0; stopped++; } }
   render(); if (n) note(`${stopped ? "stopped" : "started"} ${n === 1 ? byId(ids[0]).name : n + " torrents"}`); };
 const retry = ids => { const rs = ids.map(byId).filter(r => r && isErr(r)); if (!rs.length) { note("none in error", "dim"); return; }
@@ -3343,11 +3343,12 @@ app.addEventListener("pointerenter", () => over = true);
 app.addEventListener("pointerleave", () => over = false);
 if (!reduced) setInterval(() => {
   if (!onScreen || document.hidden) return;
-  seed = (Date.now() / 1000) | 0;
+  // each speed wanders around the torrent's own (dl0, ul0) and is pulled back to it, so it never runs off
+  const near = (v, base, spread) => v + (base * (1 - spread + Math.random() * 2 * spread) - v) * .35;
   for (const r of ROWS) {
-    if (r.st === "down" && r.dl > 0) { r.dl = Math.max(80, r.dl * (.88 + rnd() * .24)); r.prog = Math.min(100, r.prog + r.dl / (r.size * 1e4));
-      if (r.prog >= 100) { r.st = "seed"; r.dl = 0; r.ul = 150; r.sp = "0 / 3"; r.doneAt = Date.now(); } }
-    if (r.ul > 0) r.ul = Math.max(20, r.ul * (.85 + rnd() * .3));
+    if (r.st === "down" && r.dl > 0) { r.dl0 ??= r.dl; r.dl = Math.max(80, near(r.dl, r.dl0, .25)); r.prog = Math.min(100, r.prog + r.dl / (r.size * 1e4));
+      if (r.prog >= 100) { r.st = "seed"; r.dl = 0; r.ul = r.ul0 = r.ul0 || 150; r.sp = "0 / 3"; r.doneAt = Date.now(); } }
+    if (r.ul > 0) { r.ul0 ??= r.ul; r.ul = Math.max(20, near(r.ul, r.ul0, .3)); }
   }
   hero();
   if (over || L) return;
