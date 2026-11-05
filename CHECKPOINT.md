@@ -1,31 +1,31 @@
-# Checkpoint (2026-10-22)
+# Checkpoint (2026-11-05)
 
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
-## Done
-- The site for omaseed v0.3.0, approved by Diogo and pushed to main on 2026-10-22 (which deploys
-  omaseed.app). Private draft: <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>, version 7.
-  - Hero pill "v0.3.0: move whole folders, and move them back" (hand-written; the build only
-    changes the number), right-aligned under the top bar, in line with its Install button. Changelog entry for v0.3.0 from omaseed's CHANGELOG.
-  - New section "Moving": the folder sheet with its checks, the band (running, paused, summary),
-    Move… with places, move back.
-  - The window: the rail's folders and servers, `m` / `M` and a folder move that runs to its
-    summary, move back from General, the log face (`~`), the command palette (`:`), the server
-    switcher (`ctrl+s`), errored torrents that stop (`p`) and retry (`e`), the yellow block for a
-    move only the log reports. The Try row lists the new ones.
-  - Servers, Careful and Omarchy: the server-down band, what only the log says, backups, the
-    palette and the log as section copies, screen readers and the 4.5:1 floor (the page lifts
-    its replicas' text the same way).
-  - Roadmap section (hand-written from the milestones: v0.4.0, engines as planned). "What's next"
-    is gone (Diogo), and the build no longer reads issues. The omabox block lists all 11 walks
-    and the visual check.
-  - Checked in an omabox box at 1920x1080 and 412x915, in Tokyo Night and Lupine.
-  - Words and looks: `reference/SPEC-NOTES-2026-10-22-moving.md` and `-window.md`.
+## In review
+- The site for omaseed v0.6.0, on the local branch `site-v0.6` (not pushed: a push to main deploys
+  omaseed.app). Private draft for Diogo: <https://claude.ai/artifact/GTydbDKQPsJU2EEgJA4hpg>,
+  version 1 (the v0.3.0 drafts stay at the old link).
+  - The window replica rebuilt on the v0.5 window: the rail (views, the five questions, places,
+    servers, settings; folds with `ctrl+b`), the title bar's sentence and speeds with their last
+    minute, rows / table / space, details as the story, the floating action bar and outcome strip,
+    the torrent menu with its submenus, the omaseed menu, alt for key badges, search with its rail,
+    the create sheet (anyone and private), turtle and burst, and the Console skin under the
+    window's new Omarchy | Console switch. Log and seed console kept, the log's levels in the rail.
+  - New sections: the window (five questions), search, create, turtle and burst, two skins;
+    older sections' words brought to v0.6.0 (servers, Omarchy, moving, careful).
+  - Changelog v0.4.0 to v0.6.0 (older ones folded), roadmap from the open milestones (next: as
+    ready; engines: Transmission then Deluge, planned), the 14 walks and the visual check in two
+    skins, the hero pill for v0.6.0. 23 bundled themes (`node themes.mjs`, Omarchy 4.5).
+  - Words and shapes: `reference/SPEC-NOTES-2026-11-05-v06.md`.
+  - Checked in an omabox box at 1920x1080 and 412x915, Tokyo Night and Lupine, both skins.
 
 ## Next (in this order)
-1. When v0.3.1 is out: its changelog entry, and check the pill still reads right with the new
-   number. At each release: the pill's words and the Roadmap by hand.
-2. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
+1. Diogo's marks on the draft; fix them, then merge `site-v0.6` into main and push (deploys).
+2. The X post for v0.6.0 (text, optional 2–3 post thread, optional 15–30 s clip with the director
+   skill from omabox footage), written to a file for Diogo; he posts it himself.
+3. At each release: the pill's words, the changelog entry and the Roadmap by hand.
+4. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
    `/changelog` pages after the home page.
 
 ## Standing rules
