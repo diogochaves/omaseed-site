@@ -1,0 +1,13 @@
+{
+  "name": "omaseed-0.6-0.6",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "director check",
+    "render": "director render",
+    "draft": "director render --draft"
+  },
+  "director": {
+    "hyperframes": "0.8.179"
+  }
+}

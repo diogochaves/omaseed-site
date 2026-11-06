@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- Written by build.py from index.html.tmpl (cut 4): edit the chapters there, then python3 build.py. -->
+    <script src="lib/gsap.min.js"></script>
+    <script src="lib/director.js"></script>
+    <style>
+      @font-face { font-family: Montserrat; font-weight: 900; src: url(assets/fonts/Montserrat-Black.ttf); }
+      @font-face { font-family: Montserrat; font-weight: 800; src: url(assets/fonts/Montserrat-ExtraBold.ttf); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url(assets/fonts/JetBrainsMono-Bold.ttf); }
+      :root { --ground: #16161e; --lift: #1f2335; --ink: #e2e7ff; --dim: #a9b1d6; --edge: #3b4261; --accent: #7aa2f7; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); }
+      #root { position: relative; width: 100%; height: 100%; color: var(--ink); background: var(--ground); overflow: hidden; }
+      .display { font-family: Montserrat, sans-serif; letter-spacing: -0.025em; line-height: 1.05; }
+      .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+      .accent { color: var(--accent); }
+      .zoom { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+      .zoom video { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+      .title, .close { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center; background: radial-gradient(ellipse at 50% 38%, var(--lift) 0%, var(--ground) 72%); }
+      .title img, .close > img { width: 170px; height: 170px; margin-bottom: 34px; }
+      .big { font-weight: 900; font-size: 150px; letter-spacing: -0.035em; line-height: 1; }
+      .sub { font-weight: 800; font-size: 50px; color: var(--dim); margin-top: 22px; }
+      .ver, .url { font-size: 34px; color: var(--accent); margin-top: 26px; letter-spacing: 0.04em; }
+      .omabox { display: flex; align-items: center; gap: 28px; margin-top: 64px; padding: 22px 34px; border-radius: 16px;
+        box-shadow: 0 0 0 2px var(--edge); background: rgba(31, 35, 53, 0.6); }
+      .omabox img { height: 52px; width: auto; }
+      .ob { font-weight: 800; font-size: 32px; color: var(--ink); text-align: left; max-width: 980px; }
+      .note { font-size: 24px; color: var(--dim); margin-top: 28px; letter-spacing: 0.06em; }
+      .card { position: absolute; left: 150px; right: 150px; top: 330px; }
+      .eb { font-size: 28px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; }
+      .ct { font-weight: 900; font-size: 132px; letter-spacing: -0.035em; line-height: 1; }
+      .cl { font-weight: 800; font-size: 54px; color: var(--dim); margin-top: 26px; max-width: 1500px; }
+      .tag { position: absolute; left: 54px; bottom: 50px; font-size: 26px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--ink); background: rgba(16, 17, 24, 0.92); padding: 12px 20px; border-radius: 10px; box-shadow: 0 0 0 2px var(--edge); }
+      .tag-br { left: auto; right: 54px; } .tag-tl { bottom: auto; top: 50px; } .tag-bl { }
+      .chip { position: absolute; max-width: 900px; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 46px;
+        letter-spacing: -0.02em; line-height: 1.08; color: var(--ink); background: rgba(16, 17, 24, 0.94); padding: 18px 28px;
+        border-radius: 14px; box-shadow: 0 0 0 3px var(--accent), 0 24px 70px rgba(0,0,0,0.55); }
+      .chip-br { right: 60px; bottom: 60px; text-align: right; } .chip-tr { right: 60px; top: 60px; text-align: right; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="137.5" data-width="1920" data-height="1080">
+<div id="title" class="title">
+  <img id="title-icon" src="assets/icon.svg" alt="" />
+  <div id="title-name" class="display big">omaseed <span class="accent">0.6</span></div>
+  <div id="title-line" class="display sub">A native torrent client for Omarchy</div>
+  <div id="title-ver" class="mono ver">v0.6.0 · 5 Nov 2026</div>
+</div>
+<div id="rows-z0" class="zoom" data-layout-allow-overflow><video id="rows-v0" src="assets/footage/rows.mp4" muted data-start="3.2" data-duration="9.0" data-media-start="0.8" data-track-index="1"></video></div>
+<div id="rows-c0-0" class="chip chip-br">NEEDS YOU first, with the reason</div>
+<div id="rows-z1" class="zoom" data-layout-allow-overflow><video id="rows-v1" src="assets/footage/rows.mp4" muted data-start="12.2" data-duration="2.8" data-media-start="21.3" data-track-index="2"></video></div>
+<div id="rows-card" class="card"><div class="mono eb">01 · the rows view</div><div class="display ct">The rows view</div><div class="display cl">It opens on what needs you. Every row says it in words.</div></div>
+<div id="rows-tag" class="mono tag">the rows view</div>
+<div id="space-z0" class="zoom" data-layout-allow-overflow><video id="space-v0" src="assets/footage/space.mp4" muted data-start="15.0" data-duration="7.0" data-media-start="1.0" data-track-index="3"></video></div>
+<div id="space-z1" class="zoom" data-layout-allow-overflow><video id="space-v1" src="assets/footage/space.mp4" muted data-start="22.0" data-duration="5.7" data-media-start="17.6" data-track-index="4"></video></div>
+<div id="space-c1-0" class="chip chip-tr">Where the space goes, by folder</div>
+<div id="space-card" class="card"><div class="mono eb">02 · rows, table, space</div><div class="display ct">Three ways to see it</div><div class="display cl">Rows by question, one sorted table, or where the space goes.</div></div>
+<div id="space-tag" class="mono tag">rows, table, space</div>
+<div id="move-z0" class="zoom" data-layout-allow-overflow><video id="move-v0" src="assets/footage/before_files.mp4" muted data-start="27.7" data-duration="5.2" data-media-start="1.0" data-track-index="5"></video></div>
+<div id="move-z1" class="zoom" data-layout-allow-overflow><video id="move-v1" src="assets/footage/before_files.mp4" muted data-start="32.9" data-duration="4.0" data-media-start="7.8" data-track-index="6"></video></div>
+<div id="move-z2" class="zoom" data-layout-allow-overflow><video id="move-v2" src="assets/footage/before_web.mp4" muted data-start="36.1" data-duration="4.6" data-media-start="4.4" data-track-index="7"></video></div>
+<div id="move-c2-0" class="chip chip-br">qBittorrent: 10 × Missing Files</div>
+<div id="move-z3" class="zoom" data-layout-allow-overflow><video id="move-v3" src="assets/footage/move.mp4" muted data-start="39.9" data-duration="4.6" data-media-start="3.4" data-track-index="8"></video></div>
+<div id="move-z4" class="zoom" data-layout-allow-overflow><video id="move-v4" src="assets/footage/move.mp4" muted data-start="44.5" data-duration="5.0" data-media-start="13.4" data-track-index="9"></video></div>
+<div id="move-z5" class="zoom" data-layout-allow-overflow><video id="move-v5" src="assets/footage/move.mp4" muted data-start="49.5" data-duration="7.6" data-media-start="19.9" data-track-index="10"></video></div>
+<div id="move-c5-0" class="chip chip-br">Still seeding while it moves</div>
+<div id="move-card" class="card"><div class="mono eb">03 · moving a folder</div><div class="display ct">Moving a whole folder</div><div class="display cl">In a file manager, every torrent in a seeding folder breaks.</div></div>
+<div id="move-tag" class="mono tag">moving a folder</div>
+<div id="fix-z0" class="zoom" data-layout-allow-overflow><video id="fix-v0" src="assets/footage/fix.mp4" muted data-start="57.1" data-duration="4.9" data-media-start="0.3" data-track-index="11"></video></div>
+<div id="fix-z1" class="zoom" data-layout-allow-overflow><video id="fix-v1" src="assets/footage/fix.mp4" muted data-start="62.0" data-duration="2.6" data-media-start="9.6" data-track-index="12"></video></div>
+<div id="fix-z2" class="zoom" data-layout-allow-overflow><video id="fix-v2" src="assets/footage/fix.mp4" muted data-start="64.6" data-duration="4.0" data-media-start="29.5" data-track-index="13"></video></div>
+<div id="fix-card" class="card"><div class="mono eb">04 · needs you</div><div class="display ct">It says why</div><div class="display cl">When a torrent stops, the reason and the fix are beside it.</div></div>
+<div id="fix-tag" class="mono tag">needs you</div>
+<div id="create-z0" class="zoom" data-layout-allow-overflow><video id="create-v0" src="assets/footage/create.mp4" muted data-start="68.6" data-duration="6.6" data-media-start="0.6" data-track-index="14"></video></div>
+<div id="create-z1" class="zoom" data-layout-allow-overflow><video id="create-v1" src="assets/footage/create.mp4" muted data-start="75.2" data-duration="4.8" data-media-start="15.7" data-track-index="15"></video></div>
+<div id="create-c1-0" class="chip chip-tr">Your tracker and passkey, from your library</div>
+<div id="create-z2" class="zoom" data-layout-allow-overflow><video id="create-v2" src="assets/footage/create.mp4" muted data-start="80.0" data-duration="3.4" data-media-start="23.2" data-track-index="16"></video></div>
+<div id="create-card" class="card"><div class="mono eb">05 · create a torrent</div><div class="display ct">Create a torrent</div><div class="display cl">From any folder, with what private trackers need.</div></div>
+<div id="create-tag" class="mono tag">create a torrent</div>
+<div id="burst-z0" class="zoom" data-layout-allow-overflow><video id="burst-v0" src="assets/footage/burst.mp4" muted data-start="83.4" data-duration="4.1" data-media-start="0.0" data-track-index="17"></video></div>
+<div id="burst-z1" class="zoom" data-layout-allow-overflow><video id="burst-v1" src="assets/footage/burst.mp4" muted data-start="87.5" data-duration="2.6" data-media-start="4.6" data-track-index="18"></video></div>
+<div id="burst-z2" class="zoom" data-layout-allow-overflow><video id="burst-v2" src="assets/footage/burst.mp4" muted data-start="90.1" data-duration="4.0" data-media-start="11.2" data-track-index="19"></video></div>
+<div id="burst-c2-0" class="chip chip-br">When I&#x27;m not using the connection</div>
+<div id="burst-z3" class="zoom" data-layout-allow-overflow><video id="burst-v3" src="assets/footage/burst.mp4" muted data-start="94.1" data-duration="2.9" data-media-start="16.0" data-track-index="20"></video></div>
+<div id="burst-card" class="card"><div class="mono eb">06 · turtle and burst</div><div class="display ct">Turtle and burst</div><div class="display cl">Burst for 30 min, an hour, or until you stop it.</div></div>
+<div id="burst-tag" class="mono tag">turtle and burst</div>
+<div id="skin-z0" class="zoom" data-layout-allow-overflow><video id="skin-v0" src="assets/footage/console.mp4" muted data-start="97.0" data-duration="7.2" data-media-start="4.4" data-track-index="21"></video></div>
+<div id="skin-z1" class="zoom" data-layout-allow-overflow><video id="skin-v1" src="assets/footage/console.mp4" muted data-start="104.2" data-duration="2.8" data-media-start="13.9" data-track-index="22"></video></div>
+<div id="skin-card" class="card"><div class="mono eb">07 · a second skin</div><div class="display ct">Console</div><div class="display cl">An experiment, still in beta.</div></div>
+<div id="skin-tag" class="mono tag">a second skin · beta</div>
+<div id="small-z0" class="zoom" data-layout-allow-overflow><video id="small-v0" src="assets/footage/small.mp4" muted data-start="107.0" data-duration="1.8" data-media-start="0.2" data-track-index="23"></video></div>
+<div id="small-z1" class="zoom" data-layout-allow-overflow><video id="small-v1" src="assets/footage/small.mp4" muted data-start="108.8" data-duration="3.5" data-media-start="0.9" data-track-index="24"></video></div>
+<div id="small-l1" class="mono tag tag-br">The rail folds · ctrl+b</div>
+<div id="small-z2" class="zoom" data-layout-allow-overflow><video id="small-v2" src="assets/footage/rows.mp4" muted data-start="112.3" data-duration="2.7" data-media-start="11.0" data-track-index="25"></video></div>
+<div id="small-l2" class="mono tag tag-bl">A title that says what you see</div>
+<div id="small-z3" class="zoom" data-layout-allow-overflow><video id="small-v3" src="assets/footage/small.mp4" muted data-start="115.0" data-duration="2.5" data-media-start="9.0" data-track-index="26"></video></div>
+<div id="small-l3" class="mono tag tag-br">Keys when you ask · hold alt</div>
+<div id="small-z4" class="zoom" data-layout-allow-overflow><video id="small-v4" src="assets/footage/small.mp4" muted data-start="117.5" data-duration="2.3" data-media-start="14.0" data-track-index="27"></video></div>
+<div id="small-l4" class="mono tag tag-br">The omaseed menu</div>
+<div id="small-z5" class="zoom" data-layout-allow-overflow><video id="small-v5" src="assets/footage/small.mp4" muted data-start="119.8" data-duration="2.4" data-media-start="20.8" data-track-index="28"></video></div>
+<div id="small-l5" class="mono tag tag-tl">Every command by name · :</div>
+<div id="small-z6" class="zoom" data-layout-allow-overflow><video id="small-v6" src="assets/footage/small.mp4" muted data-start="122.2" data-duration="2.3" data-media-start="28.2" data-track-index="29"></video></div>
+<div id="small-l6" class="mono tag tag-tl">A bar for the selection</div>
+<div id="small-z7" class="zoom" data-layout-allow-overflow><video id="small-v7" src="assets/footage/small.mp4" muted data-start="124.5" data-duration="2.9" data-media-start="41.0" data-track-index="30"></video></div>
+<div id="small-l7" class="mono tag tag-tl">The torrent menu, with its submenus</div>
+<div id="small-z8" class="zoom" data-layout-allow-overflow><video id="small-v8" src="assets/footage/small.mp4" muted data-start="127.4" data-duration="2.9" data-media-start="55.0" data-track-index="31"></video></div>
+<div id="small-l8" class="mono tag tag-br">Search with your qBittorrent&#x27;s plugins</div>
+<div id="small-z9" class="zoom" data-layout-allow-overflow><video id="small-v9" src="assets/footage/small.mp4" muted data-start="130.3" data-duration="2.7" data-media-start="65.3" data-track-index="32"></video></div>
+<div id="small-l9" class="mono tag tag-br">qBittorrent&#x27;s log, in the window</div>
+<div id="small-card" class="card"><div class="mono eb">08 · and the small things</div><div class="display ct">The small things</div><div class="display cl">New since the launch, one at a time.</div></div>
+<div id="close" class="close">
+  <img id="close-icon" src="assets/icon-close.svg" alt="" />
+  <div id="close-name" class="display big">omaseed</div>
+  <div id="close-line" class="display sub">A native torrent client for Omarchy, powered by qBittorrent</div>
+  <div id="close-url" class="mono url">omaseed.app · free · MIT</div>
+  <div id="close-omabox" class="omabox"><img src="assets/omabox-lockup-dark.svg" alt="omabox" />
+    <div class="display ob">Every shot recorded in omabox, a hidden desktop my agent drives · omabox.app</div></div>
+  <div id="close-note" class="mono note">the library is made up</div>
+</div>
+    </div>
+    <script>
+      const P = {"title": 3.2, "chapters": [{"id": "rows", "tag": "the rows view", "card": ["01 \u00b7 the rows view", "The rows view", "It opens on what needs you. Every row says it in words."], "clips": [{"take": "rows", "at": 0.8, "dur": 9.0, "start": 3.2, "join": "start", "notag": false, "frames": [[3.2, [1.0, 1920.0, 1080.0]], [6.8, [1.5208, 1612.5, 885.2]]], "holds": [[3.2, 6.8], [7.4, 12.2]], "chips": [{"text": "NEEDS YOU first, with the reason", "pos": "br", "a": 7.6, "b": 11.0}]}, {"take": "rows", "at": 21.3, "dur": 2.8, "start": 12.2, "join": "cut", "notag": false, "frames": [[12.2, [1.5208, 1612.5, 1449.8]]], "holds": [[12.2, 15.0]], "chips": []}], "start": 3.2, "end": 15.0}, {"id": "space", "tag": "rows, table, space", "card": ["02 \u00b7 rows, table, space", "Three ways to see it", "Rows by question, one sorted table, or where the space goes."], "clips": [{"take": "space", "at": 1.0, "dur": 7.0, "start": 15.0, "join": "start", "notag": false, "frames": [[15.0, [1.0, 1920.0, 1080.0]]], "holds": [[15.0, 22.0]], "chips": []}, {"take": "space", "at": 17.6, "dur": 5.7, "start": 22.0, "join": "cut", "notag": false, "frames": [[22.0, [1.0, 1920.0, 1080.0]], [23.0, [1.3357, 1937.5, 996.1]]], "holds": [[22.0, 23.0], [23.6, 27.7]], "chips": [{"text": "Where the space goes, by folder", "pos": "tr", "a": 23.8, "b": 27.0}]}], "start": 15.0, "end": 27.7}, {"id": "move", "tag": "moving a folder", "card": ["03 \u00b7 moving a folder", "Moving a whole folder", "In a file manager, every torrent in a seeding folder breaks."], "clips": [{"take": "before_files", "at": 1.0, "dur": 5.2, "start": 27.7, "join": "start", "notag": false, "frames": [[27.7, [1.0, 1920.0, 1080.0]]], "holds": [[27.7, 32.9]], "chips": []}, {"take": "before_files", "at": 7.8, "dur": 3.6, "start": 32.9, "join": "cut", "notag": false, "frames": [[32.9, [1.0, 1920.0, 1080.0]]], "holds": [[32.9, 36.5]], "chips": []}, {"take": "before_web", "at": 4.4, "dur": 4.2, "start": 36.1, "join": "dissolve", "notag": false, "frames": [[36.1, [1.0, 1920.0, 1080.0]], [37.0, [1.8732, 1525.0, 776.6]]], "holds": [[36.1, 37.0], [37.6, 40.3]], "chips": [{"text": "qBittorrent: 10 \u00d7 Missing Files", "pos": "br", "a": 37.8, "b": 40.05}]}, {"take": "move", "at": 3.4, "dur": 4.6, "start": 39.9, "join": "dissolve", "notag": true, "frames": [[39.9, [2.2588, 850.0, 1680.6]]], "holds": [[39.9, 44.5]], "chips": []}, {"take": "move", "at": 13.4, "dur": 5.0, "start": 44.5, "join": "cut", "notag": false, "frames": [[44.5, [1.7067, 2175.0, 1132.8]]], "holds": [[44.5, 49.5]], "chips": []}, {"take": "move", "at": 19.9, "dur": 7.6, "start": 49.5, "join": "cut", "notag": false, "frames": [[49.5, [1.0, 1920.0, 1080.0]], [52.7, [1.28, 1500.0, 843.8]]], "holds": [[49.5, 52.7], [53.3, 57.1]], "chips": [{"text": "Still seeding while it moves", "pos": "br", "a": 49.7, "b": 52.4}]}], "start": 27.7, "end": 57.1}, {"id": "fix", "tag": "needs you", "card": ["04 \u00b7 needs you", "It says why", "When a torrent stops, the reason and the fix are beside it."], "clips": [{"take": "fix", "at": 0.3, "dur": 4.9, "start": 57.1, "join": "start", "notag": false, "frames": [[57.1, [1.8373, 2795.0, 687.8]]], "holds": [[57.1, 62.0]], "chips": []}, {"take": "fix", "at": 9.6, "dur": 2.6, "start": 62.0, "join": "cut", "notag": false, "frames": [[62.0, [2.2588, 1950.0, 1103.1]]], "holds": [[62.0, 64.6]], "chips": []}, {"take": "fix", "at": 29.5, "dur": 4.0, "start": 64.6, "join": "cut", "notag": false, "frames": [[64.6, [1.1497, 2170.0, 989.4]]], "holds": [[64.6, 68.6]], "chips": []}], "start": 57.1, "end": 68.6}, {"id": "create", "tag": "create a torrent", "card": ["05 \u00b7 create a torrent", "Create a torrent", "From any folder, with what private trackers need."], "clips": [{"take": "create", "at": 0.6, "dur": 6.6, "start": 68.6, "join": "start", "notag": false, "frames": [[68.6, [1.1463, 1920.0, 1129.7]]], "holds": [[68.6, 75.2]], "chips": []}, {"take": "create", "at": 15.7, "dur": 4.8, "start": 75.2, "join": "cut", "notag": false, "frames": [[75.2, [2.1943, 1925.0, 1067.2]]], "holds": [[75.2, 80.0]], "chips": [{"text": "Your tracker and passkey, from your library", "pos": "tr", "a": 75.4, "b": 78.8}]}, {"take": "create", "at": 23.2, "dur": 3.4, "start": 80.0, "join": "cut", "notag": false, "frames": [[80.0, [1.3964, 1875.0, 848.4]]], "holds": [[80.0, 83.4]], "chips": []}], "start": 68.6, "end": 83.4}, {"id": "burst", "tag": "turtle and burst", "card": ["06 \u00b7 turtle and burst", "Turtle and burst", "Burst for 30 min, an hour, or until you stop it."], "clips": [{"take": "burst", "at": 0.0, "dur": 4.1, "start": 83.4, "join": "start", "notag": false, "frames": [[83.4, [1.7067, 1625.0, 632.8]]], "holds": [[83.4, 87.5]], "chips": []}, {"take": "burst", "at": 4.6, "dur": 2.6, "start": 87.5, "join": "cut", "notag": false, "frames": [[87.5, [2.1333, 1400.0, 1653.8]]], "holds": [[87.5, 90.1]], "chips": []}, {"take": "burst", "at": 11.2, "dur": 4.0, "start": 90.1, "join": "cut", "notag": false, "frames": [[90.1, [1.1815, 1975.0, 914.1]]], "holds": [[90.1, 94.1]], "chips": [{"text": "When I'm not using the connection", "pos": "br", "a": 90.3, "b": 93.5}]}, {"take": "burst", "at": 16.0, "dur": 2.9, "start": 94.1, "join": "cut", "notag": false, "frames": [[94.1, [2.0211, 1700.0, 1625.6]]], "holds": [[94.1, 97.0]], "chips": []}], "start": 83.4, "end": 97.0}, {"id": "skin", "tag": "a second skin \u00b7 beta", "card": ["07 \u00b7 a second skin", "Console", "An experiment, still in beta."], "clips": [{"take": "console", "at": 4.4, "dur": 7.2, "start": 97.0, "join": "start", "notag": false, "frames": [[97.0, [1.0667, 1920.0, 1117.5]], [100.6, [1.9692, 1925.0, 823.4]]], "holds": [[97.0, 100.6], [101.2, 104.2]], "chips": []}, {"take": "console", "at": 13.9, "dur": 2.8, "start": 104.2, "join": "cut", "notag": false, "frames": [[104.2, [1.0667, 1920.0, 1117.5]]], "holds": [[104.2, 107.0]], "chips": []}], "start": 97.0, "end": 107.0}], "montage": {"id": "small", "card": ["08 \u00b7 and the small things", "The small things", "New since the launch, one at a time."], "card_dur": 1.8, "card_clip": ["small", 0.2, [0, 0, 1536]], "items": [{"label": "", "take": "small", "at": 0.2, "dur": 1.8, "start": 107.0, "z": [1.0, 1920.0, 1080.0], "pos": ""}, {"label": "The rail folds \u00b7 ctrl+b", "take": "small", "at": 0.9, "dur": 3.5, "start": 108.8, "z": [1.536, 1250.0, 703.1], "pos": "br"}, {"label": "A title that says what you see", "take": "rows", "at": 11.0, "dur": 2.7, "start": 112.3, "z": [2.0211, 1400.0, 534.4], "pos": "bl"}, {"label": "Keys when you ask \u00b7 hold alt", "take": "small", "at": 9.0, "dur": 2.5, "start": 115.0, "z": [1.3964, 1375.0, 773.4], "pos": "br"}, {"label": "The omaseed menu", "take": "small", "at": 14.0, "dur": 2.3, "start": 117.5, "z": [2.0211, 950.0, 584.4], "pos": "br"}, {"label": "Every command by name \u00b7 :", "take": "small", "at": 20.8, "dur": 2.4, "start": 119.8, "z": [1.8732, 1920.0, 1076.6], "pos": "tl"}, {"label": "A bar for the selection", "take": "small", "at": 28.2, "dur": 2.3, "start": 122.2, "z": [1.3593, 1712.5, 1364.5], "pos": "tl"}, {"label": "The torrent menu, with its submenus", "take": "small", "at": 41.0, "dur": 2.9, "start": 124.5, "z": [1.9443, 2487.5, 1604.5], "pos": "tl"}, {"label": "Search with your qBittorrent's plugins", "take": "small", "at": 55.0, "dur": 2.9, "start": 127.4, "z": [1.536, 1250.0, 703.1], "pos": "br"}, {"label": "qBittorrent's log, in the window", "take": "small", "at": 65.3, "dur": 2.7, "start": 130.3, "z": [1.3964, 1375.0, 773.4], "pos": "br"}], "start": 107.0, "end": 133.0}, "close": {"start": 133.0, "end": 137.5}, "card": 2.6, "move": 0.6, "xfade": 0.4};
+      const FRAME = { srcW: 3840, srcH: 2160, cardW: 1920, cardH: 1080 };
+      const aim = (z) => director.aim(z[0], z[1], z[2], FRAME);
+      const tl = gsap.timeline({ paused: true });
+      const show = (el, a, b, from) => {
+        tl.fromTo(el, { opacity: 0, ...(from || { y: 12 }) }, { opacity: 1, x: 0, y: 0, duration: 0.3, ease: "power2.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.2, ease: "power2.in" }, b - 0.2);
+      };
+
+      // the title
+      tl.fromTo("#title-icon", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0.1);
+      ["#title-name", "#title-line", "#title-ver"].forEach((el, i) =>
+        tl.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3 + 0.25 * i));
+      tl.to("#title", { opacity: 0, duration: 0.45, ease: "power2.in" }, P.title - 0.45);
+
+      for (const ch of P.chapters) {
+        ch.clips.forEach((k, n) => {
+          const z = `#${ch.id}-z${n}`;
+          tl.set(z, aim(k.frames[0][1]), 0);
+          // a move to each later framing, then still: no overshoot, no drift
+          k.frames.slice(1).forEach(([t, to]) => tl.to(z, { ...aim(to), duration: P.move, ease: "power3.inOut" }, t));
+          if (k.join === "dissolve") tl.fromTo(z, { opacity: 0 }, { opacity: 1, duration: P.xfade, ease: "none" }, k.start);
+          k.chips.forEach((c, i) => show(`#${ch.id}-c${n}-${i}`, c.a, c.b, { scale: 0.96 }));
+        });
+        // the card over the first clip, which is dimmed and blurred under it, then clears
+        const z0 = `#${ch.id}-z0`, card = `#${ch.id}-card`, cEnd = ch.start + P.card;
+        tl.fromTo(z0, { filter: "blur(14px) brightness(0.38)" }, { filter: "blur(0px) brightness(1)", duration: 0.5, ease: "power2.out" }, cEnd - 0.1);
+        tl.fromTo(`${card} .eb`, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, ch.start + 0.05);
+        tl.fromTo(`${card} .ct`, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, ch.start + 0.12);
+        tl.fromTo(`${card} .cl`, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, ch.start + 0.32);
+        tl.to(card, { opacity: 0, duration: 0.35, ease: "power2.in" }, cEnd - 0.3);
+        // the tag, out of the way while a clip shows something in its corner
+        tl.set(`#${ch.id}-tag`, { opacity: 0 }, 0);
+        let on = cEnd + 0.15;
+        ch.clips.forEach((k) => {
+          if (!k.notag) return;
+          if (k.start > on) show(`#${ch.id}-tag`, on, k.start, { x: -20 });
+          on = k.start + k.dur + 0.1;
+        });
+        tl.fromTo(`#${ch.id}-tag`, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, on);
+        tl.to(`#${ch.id}-tag`, { opacity: 0, duration: 0.2, ease: "power2.in" }, ch.end - 0.2);
+      }
+
+      // the small things: a card, then one framing each, held, straight cuts
+      const M = P.montage;
+      M.items.forEach((k, n) => {
+        tl.set(`#small-z${n}`, aim(k.z), 0);
+        if (k.label) show(`#small-l${n}`, k.start + 0.15, k.start + k.dur - 0.05, { x: k.pos === "br" ? 20 : -20 });
+      });
+      tl.fromTo("#small-z0", { filter: "blur(14px) brightness(0.38)" }, { filter: "blur(14px) brightness(0.38)", duration: 0.01 }, M.start);
+      tl.fromTo("#small-card .eb", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, M.start + 0.05);
+      tl.fromTo("#small-card .ct", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, M.start + 0.12);
+      tl.fromTo("#small-card .cl", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, M.start + 0.3);
+      tl.to("#small-card", { opacity: 0, duration: 0.25, ease: "power2.in" }, M.start + M.card_dur - 0.25);
+
+      // the close, with omabox
+      const C = P.close.start;
+      tl.fromTo("#close", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, C);
+      tl.fromTo("#close-icon", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, C + 0.1);
+      ["#close-name", "#close-line", "#close-url", "#close-omabox", "#close-note"].forEach((el, i) =>
+        tl.fromTo(el, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, C + 0.3 + 0.28 * i));
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
