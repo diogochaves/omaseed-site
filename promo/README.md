@@ -30,3 +30,25 @@ omabox down -b promo           # when done (the box has --idle 0)
   ~320 GB so a day comes to ~80 GB (`stage.sh` says why).
 - omaseed keeps each server's table (sort, details folded) in `state.json`; the scripts set it
   there before a launch, since `i` and a header click only flip what the last run left.
+
+## The README's screenshots (omaseed `docs/screenshots/`, 2026-11-25)
+
+Taken by hand in the `promo` stage (v0.17.1 installed: a worktree whose `build-release/omaseed`
+links to `/usr/bin/omaseed`, given as `OMASEED_DIR`), each the window cut out of the 3840x2160
+screen (`-crop 3768x2010+36+114`) and halved, so no wallpaper shows:
+
+- The NAS's "needs you" and "arriving": stop the NAS's qBittorrent, move two films' folders to
+  `NAS/old-drive/films` and start it again (on a running one a recheck only makes them 0 %
+  downloads, not missing files); truncate one film's file and recheck it (arriving, no seed).
+- `library.png` rows; `space.png` the films folder only (the whole library in space froze the
+  window for about two minutes); `move-folder.png` films to `/home/sbx/Archive/films`, after
+  adding loose files dated 12 days back (newer ones are left out of a move).
+- `agent-plan.png`: Settings' agent lines set to ask in `state.json` (`agents.fixes`,
+  `agents.moves`), then `omaseed do --plan` with two locates and two moves, run from a script
+  named `claude` so the window says who asked; refused with esc.
+- `seed-console.png` (30 days), `shortcuts.png` (`?`), `library-light.png` (Catppuccin Latte),
+  `console-skin.png` (`omaseed skin use console`), `add-sheet.png` (This PC, Field Recordings,
+  cut to the sheet) and `widget.png` (cut as `shots.sh` does, after ten minutes running, so its
+  hour of upload has filled).
+- The seed console's GIVEN tile reads qBittorrent's all-time counter, which starts again when the
+  stage's qBittorrent does, while the tide is the made-up year: on this stage the two disagree.

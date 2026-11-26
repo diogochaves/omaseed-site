@@ -108,11 +108,11 @@ done
 cp "$T/Field Recordings Vol. 3 [FLAC].torrent" "$T/Nested Library Sampler (2026).torrent" "$H/Downloads/"
 
 omabox run "${B[@]}" -d -- /home/sbx/bin/ns-up.sh >/dev/null
-omabox wait "${B[@]}" --timeout 60s cmd -- sh -c 'curl -sf http://127.0.0.1:8090/api/v2/app/version && curl -sf http://127.0.0.1:8091/api/v2/app/version && curl -sf http://127.0.0.1:8092/api/v2/app/version' >/dev/null
+omabox wait "${B[@]}" --timeout 60s until -- sh -c 'curl -sf http://127.0.0.1:8090/api/v2/app/version && curl -sf http://127.0.0.1:8091/api/v2/app/version && curl -sf http://127.0.0.1:8092/api/v2/app/version' >/dev/null
 api() { omabox run "${B[@]}" -- curl -s "http://127.0.0.1:$1/api/v2/$2" "${@:3}"; }
 omabox run "${B[@]}" -- sh -c 'for f in ~/.stash/*.torrent; do curl -s -F "torrents=@$f" -F savepath=/home/sbx/Torrents http://127.0.0.1:8090/api/v2/torrents/add >/dev/null; done'
 echo "downloading This PC's library from the swarm"
-omabox wait "${B[@]}" --timeout 300s cmd -- sh -c 'curl -s http://127.0.0.1:8090/api/v2/torrents/info?filter=completed | python3 -c "import json,sys; sys.exit(0 if len(json.load(sys.stdin)) == 4 else 1)"' >/dev/null
+omabox wait "${B[@]}" --timeout 300s until -- sh -c 'curl -s http://127.0.0.1:8090/api/v2/torrents/info?filter=completed | python3 -c "import json,sys; sys.exit(0 if len(json.load(sys.stdin)) == 4 else 1)"' >/dev/null
 
 # servers.json, and the two tables as the takes want them (state.json; record.sh sets them again)
 mkdir -p "$H/.config/omaseed"; chmod 700 "$H/.config/omaseed"
@@ -127,26 +127,32 @@ chmod 600 "$H/.config/omaseed/servers.json"
 # PC's; a switch back writes This PC's. (A quit writes nothing that is still in memory.)
 echo "writing a year of seeding history"
 log=$(QT_FORCE_STDERR_LOGGING=1 OMASEED_LEDGER_DEMO=1 omabox run "${B[@]}" --pass QT_FORCE_STDERR_LOGGING \
-  --pass OMASEED_LEDGER_DEMO -d --wait -- "$BIN" 2>&1 | sed -n 's/.*log: \(.*\))$/\1/p' | head -1)
+  --pass OMASEED_LEDGER_DEMO -d --wait -- "$BIN" 2>&1 | sed -n 's/.*log: \([^,)]*\).*/\1/p' | head -1)
 syncs() { grep -c "first sync" "$log" 2>/dev/null || true; }
 until_syncs() { for _ in $(seq 150); do [ "$(syncs)" -ge "$1" ] && return; sleep 0.2; done; echo "no sync $1" >&2; exit 1; }
 until_syncs 1
 omabox wait "${B[@]}" --timeout 10s still >/dev/null || true
-omabox scroll "${B[@]}" 90 500 900 >/dev/null              # the rail, down to its servers
-omabox wait "${B[@]}" --timeout 5s still >/dev/null || true
-omabox click "${B[@]}" 75 635 >/dev/null; until_syncs 2       # This PC
+# click_item NAME: the rail's row of that name, found in the window's accessibility tree
+click_item() {
+  local at
+  at=$(omabox tree "${B[@]}" --window omaseed --find "$1" | sed -n "s/.*list item \"$1\" @\([0-9]*\),\([0-9]*\) \([0-9]*\)x\([0-9]*\).*/\1 \2 \3 \4/p" | head -1)
+  [ -n "$at" ] || { echo "no rail row $1" >&2; exit 1; }
+  read -r x y w h <<<"$at"
+  omabox click "${B[@]}" --window omaseed $((x + w / 2)) $((y + h / 2)) >/dev/null
+}
+click_item "This PC"; until_syncs 2
 omabox wait "${B[@]}" --timeout 10s still >/dev/null || true
-omabox click "${B[@]}" 61 618 >/dev/null; until_syncs 3       # NAS
+click_item NAS; until_syncs 3
 omabox wait "${B[@]}" --timeout 10s still >/dev/null || true
 pids=$(omabox run "${B[@]}" -- pgrep -f "$BIN|qbt-nas" | tr '\n' ' ')
 omabox run "${B[@]}" -- kill $pids
-omabox wait "${B[@]}" --timeout 20s cmd -- sh -c "for p in $pids; do kill -0 \$p 2>/dev/null && exit 1; done; exit 0" >/dev/null
+omabox wait "${B[@]}" --timeout 20s until -- sh -c "for p in $pids; do kill -0 \$p 2>/dev/null && exit 1; done; exit 0" >/dev/null
 ls "$H/.local/share/omaseed/ledger/"{nas,pc}.sqlite >/dev/null
 
 rm -rf "$D/BT_backup"; mv "$D/BT_backup.full" "$D/BT_backup"
 omabox run "${B[@]}" -d -- nsenter --preserve-credentials -U -n -t "$(cat "$H/ns/pid")" \
   qbittorrent-nox --profile=/home/sbx/.local/share/qbt-nas >/dev/null
-omabox wait "${B[@]}" --timeout 120s cmd -- sh -c 'curl -sf http://127.0.0.1:8091/api/v2/torrents/info | python3 -c "import json,sys; sys.exit(0 if len(json.load(sys.stdin)) == 3500 else 1)"' >/dev/null
+omabox wait "${B[@]}" --timeout 120s until -- sh -c 'curl -sf http://127.0.0.1:8091/api/v2/torrents/info | python3 -c "import json,sys; sys.exit(0 if len(json.load(sys.stdin)) == 3500 else 1)"' >/dev/null
 
 # The leecher: This PC's four and four NAS talks, again and again.
 api 8091 'torrents/info?category=talks&filter=seeding' | python3 -c "
@@ -154,5 +160,5 @@ import json,sys
 for t in [x for x in json.load(sys.stdin) if 300e6 < x['size'] < 700e6][:4]: print(t['hash'])" |
   while read -r h; do cp "$D/BT_backup/$h.torrent" "$H/.stash-nas/"; done
 omabox run "${B[@]}" -d -- /home/sbx/bin/leech.sh >/dev/null
-omabox wait "${B[@]}" --timeout 90s cmd -- sh -c 'for p in 8090 8091; do curl -s http://127.0.0.1:$p/api/v2/transfer/info | grep -q "\"connected\"" || exit 1; done' >/dev/null
+omabox wait "${B[@]}" --timeout 90s until -- sh -c 'for p in 8090 8091; do curl -s http://127.0.0.1:$p/api/v2/transfer/info | grep -q "\"connected\"" || exit 1; done' >/dev/null
 echo "the stage is up: promo/record.sh OUT_DIR, promo/shots.sh OUT_DIR"

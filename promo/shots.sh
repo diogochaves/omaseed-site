@@ -62,7 +62,7 @@ for s in d["servers"]: s["isDefault"] = s["id"] == sys.argv[2]
 json.dump(d, open(p, "w"))
 EOF
   local log
-  log=$(omabox run "${B[@]}" --pass QT_FORCE_STDERR_LOGGING -d --wait -- "$BIN" 2>&1 | sed -n 's/.*log: \(.*\))$/\1/p' | head -1)
+  log=$(omabox run "${B[@]}" --pass QT_FORCE_STDERR_LOGGING -d --wait -- "$BIN" 2>&1 | sed -n 's/.*log: \([^,)]*\).*/\1/p' | head -1)
   for _ in $(seq 100); do grep -q "first sync" "$log" 2>/dev/null && break; sleep 0.2; done
   still 20s
 }
