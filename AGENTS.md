@@ -36,8 +36,9 @@ what is not claimed yet. Diogo is the owner; he says what changes.
 
 ## Publishing the draft
 
-The draft lives at <https://claude.ai/artifact/GTydbDKQPsJU2EEgJA4hpg> (private; started
-2026-11-05 for v0.6.0; the v0.3.0 drafts stay at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>).
+The draft lives at <https://claude.ai/artifact/6u89JRdz1zsK2ikEdKc847> (private; started
+2026-11-25 for v0.17.1; the v0.6.0 drafts stay at <https://claude.ai/artifact/GTydbDKQPsJU2EEgJA4hpg>,
+the v0.3.0 ones at <https://claude.ai/artifact/H34VpeUTKrAWnqG9ypoqGC>).
 `site/omaseed.html` in this repo is its source, so the repo holds the draft too. From a new session,
 read it first (Artifact `action: "read"` with its `url`), then publish with the same `url` and
 `file_path: site/omaseed.html`.

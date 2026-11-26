@@ -883,6 +883,8 @@ kbd { font-size: .78em; color: var(--fg-bright); border: 1px solid var(--border)
 .lempty { padding: 30px 16px; color: var(--fg-dark); }
 @container (max-width: 760px) { .lhead, .lr { grid-template-columns: 64px 64px minmax(0, 1fr); } .lr .lt span { display: none; } .lbar .since { display: none; } }
 .foot .fol { color: var(--green); } .foot .fol.off { color: var(--fg-dark); }
+#repLog .foot { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; padding: 6px 12px; font-size: 10.5px; color: var(--fg-dark); }
+#repLog .foot .hints { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-left: auto; } #repLog .foot .hints b { color: var(--fg); font-weight: 500; margin-right: 5px; }
 .k-pal { width: min(480px, 100%); background: var(--bg); border: 1px solid var(--accent); display: grid; align-self: start; margin-top: 8%; max-height: calc(100% - 24px); grid-template-rows: auto minmax(0, 1fr) auto; }
 .k-pal .pq { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 14px; border-bottom: 1px solid var(--hairline); }
 .k-pal .pq .g { color: var(--fg-dark); }
@@ -1071,6 +1073,57 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
 .k-sheet .k-btns .pri:hover { background: color-mix(in srgb, var(--accent) 86%, var(--fg-bright)) !important; }
 .k-sheet .k-btns .ft { margin-right: auto; align-self: center; color: var(--fg-dark); font-size: 10.5px; border: 0 !important; background: none !important; display: block !important; padding: 0 !important; min-width: 0; text-align: left; }
 .k-sheet .k-hints { display: none; }
+
+/* ── v0.13 to v0.17 replicas: space, files by kind, the drives, agents ── */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.card { background: var(--bg); border: 1px solid var(--hairline); display: grid; grid-template-rows: 210px auto; min-width: 0; overflow: hidden; }
+.card .thumb { height: 210px; padding: 18px 16px 0; place-items: start center; overflow: hidden; pointer-events: none; border-bottom: 1px solid var(--hairline);
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+.card .thumb > * { zoom: .55; width: 180%; flex: none; }
+.card .tx { display: grid; gap: 8px; padding: 18px 20px 22px; align-content: start; }
+.card h3 { font-size: 17px; letter-spacing: -.01em; }
+.card p { color: var(--dim); font-size: 15px; }
+.sec > .head.sub { padding-top: clamp(40px, 6vw, 72px); }
+.rep > .rspace { position: relative; height: clamp(320px, 42vw, 440px); }
+.rspace .under { display: flex; gap: 8px; flex-wrap: wrap; font-size: 10.5px; color: var(--fg-dark); overflow: hidden; max-height: 20px; }
+.kchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.kchips button { display: inline-flex; gap: 7px; align-items: center; font: inherit; font-size: 11px; padding: 2px 9px; border: 1px solid var(--hairline); color: var(--fg); background: var(--fill); cursor: pointer; }
+.kchips button i { font-style: normal; color: var(--accent); }
+.kchips button span { color: var(--fg-dark); }
+.kchips button[aria-pressed="true"] { border-color: var(--accent); color: var(--fg-bright); }
+.k-files.kk > div, #repKinds .k-files > div { grid-template-columns: 18px minmax(0, 1fr) 70px 70px; }
+#repKinds .k-files .r { text-align: right; }
+.k-drv { font-size: 11px; color: var(--fg); border-left: 2px solid var(--accent); padding: 4px 10px; background: var(--fill); }
+.k-drv.bad { border-color: var(--red); } .k-drv.warn { border-color: var(--yellow); }
+.k-drv .lk { color: var(--accent); margin-left: 6px; white-space: nowrap; }
+.k-eb.ok { border-left-color: var(--green); } .k-eb.ok > .g { color: var(--green); }
+.kterm { width: 100%; max-width: 560px; background: var(--bg); border: 1px solid var(--hairline); }
+.kterm .th { display: flex; justify-content: space-between; padding: 3px 12px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dark); border-bottom: 1px solid var(--hairline); }
+.kterm pre { margin: 0; padding: 12px 14px; font: 11.5px/1.6 var(--mono); color: var(--fg); white-space: pre; overflow-x: auto; }
+.kterm b { color: var(--fg-bright); font-weight: 600; } .kterm .p { color: var(--fg-dark); } .kterm .c { color: var(--fg-bright); }
+.kterm .r { color: var(--red); } .kterm .g { color: var(--green); }
+.kgate { gap: 8px; }
+.kgate .srow { border: 1px solid var(--hairline); display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 6px 10px; padding: 8px 12px; align-items: center; }
+.kgate .srow.head { grid-template-columns: 18px minmax(0, 1fr); align-items: start; }
+.kgate .ic { color: var(--fg-dark); text-align: center; }
+.kgate .tx { display: grid; gap: 2px; min-width: 0; }
+.kgate .tx b { color: var(--fg-bright); font-weight: 500; }
+.kgate .tx span { font-size: 11px; color: var(--fg-dark); }
+.kgate .tx .ok { color: var(--green); }
+.kgate .chips { display: flex; gap: 4px; }
+.kgate .chip { font-size: 11px; padding: 1px 8px; border: 1px solid var(--hairline); color: var(--fg-dark); }
+.kgate .chip.on { background: var(--fill-sel); border-color: transparent; color: var(--fg-bright); }
+.kask .grp { display: grid; gap: 2px; }
+.kask .gh { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; padding: 4px 0; border-bottom: 1px solid var(--hairline); }
+.kask .gh b { color: var(--fg-bright); font-weight: 500; } .kask .gh span { color: var(--fg-dark); }
+.kask .tr { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 8px; align-items: center; font: inherit; font-size: 11px; color: var(--fg); background: none; border: 0; padding: 4px 0; text-align: left; cursor: pointer; }
+.kask .tr i { font-style: normal; width: 13px; height: 13px; border: 1px solid var(--hairline); display: grid; place-items: center; font-size: 9px; color: var(--accent); }
+.kask .tr span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kask .tr em { font-style: normal; color: var(--fg-dark); white-space: nowrap; }
+.kask .dim { opacity: .62; } .kask .mr { font-size: 11px; color: var(--fg-dark); padding: 4px 0; }
+.kask .who { font-size: 10.5px; color: var(--fg-dark); }
+.kask, .kgate { min-width: 0; } .kask .gh { flex-wrap: wrap; } .kask .gh b { overflow-wrap: anywhere; }
+@media (max-width: 560px) { .kask .tr em { display: none; } .kask .k-btns { flex-wrap: wrap; } .kask .k-btns .ft { flex-basis: 100%; } .kask .gh span { display: none; } .kgate .srow { grid-template-columns: 18px minmax(0, 1fr); } .kgate .chips { grid-column: 2; } }
 </style>
 <!-- body -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1081,16 +1134,16 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
 
 <div class="topbar"><div class="in">
   <a class="brand" href="#top" aria-label="omaseed, top of the page"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
-  <nav aria-label="Sections"><a href="#window">Window</a><a href="#seed">Seed console</a><a href="#search">Search</a><a href="#create">Create</a><a href="#moving">Moving</a><a href="#omarchy">Omarchy</a><a href="#new">Changelog</a><a href="#roadmap">Roadmap</a></nav>
+  <nav aria-label="Sections"><a href="#views">Views</a><a href="#moving">Moving</a><a href="#agents">Agents</a><a href="#seed">Seed console</a><a href="#servers">Engines</a><a href="#omarchy">Omarchy</a><a href="#new">Changelog</a><a href="#roadmap">Roadmap</a></nav>
   <a class="gh" href="https://github.com/diogochaves/omaseed"><svg aria-hidden="true"><use href="#ghm"/></svg><span>GitHub</span></a>
   <a class="pill" href="#install">Install</a>
 </div></div>
 
 <main id="top">
   <section class="wrap hero">
-    <a class="news" href="#new"><b>NEW</b><span>v<span class="ver">0.6.0</span>: a new window, search, and create a torrent</span></a>
+    <a class="news" href="#agents"><b>NEW</b><span>v<span class="ver">0.17.1</span>: your coding agent can fix your library, as far as you let it</span></a>
     <h1>Torrents, finally at home on Omarchy.</h1>
-    <p class="lead">A native client for one server or many. Your theme, your keys, your seeding history. Powered by qBittorrent.</p>
+    <p class="lead">A native client for qBittorrent, Transmission or Deluge, on this PC or a NAS. Your theme, your keys, your drives, your agent.</p>
     <div class="cta">
       <a class="pill" href="#install">Install omaseed</a>
       <div class="cmd"><code><span class="p">$ </span>curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst</code><button class="copy" type="button" data-copy="curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst">Copy</button></div>
@@ -1145,25 +1198,78 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
     </div>
   </section>
 
-  <section class="wrap sec" id="window">
+  <section class="wrap sec" id="views">
     <div class="head">
-      <p class="tag">The window</p>
-      <h2 class="two">It answers five questions. <span>What needs you, what is arriving, what landed today, what is giving back and what is resting. The rail asks them, and the rows answer in words before numbers.</span></h2>
+      <p class="tag">Views</p>
+      <h2 class="two">See where your disk went. <span>Rows grouped by what needs you, one sorted table, or space: a map of what each folder and each torrent holds on disk.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice"><header><h3>Space</h3><p>Folders, then the torrents in them, each as big as it is on disk and coloured by what it's doing. The ones under 1 % wait in a line below. The folder under the cursor can be moved from there.</p></header><div class="rep k" id="repSpace"></div></article>
+      <article class="slice half"><header><h3>The files, by kind</h3><p>A torrent's files as chips: videos, audio, subtitles, images, books, archives, disc images, extras. Each chip says how many and how big, shows only those, and ticks or skips them all.</p></header><div class="rep k" id="repKinds"></div></article>
+      <article class="slice half"><header><h3>Rows, or the table</h3><p>Rows under the five questions, "waiting · no seed" and "ready in 3 min" before any figure. Or the table, one sorted list. The tool beside the filter switches them; try it in the window above.</p></header><div class="rep k" id="repSkinA"></div></article>
     </div>
     <div class="blocks">
-      <div><h3>Rows, table or space</h3><p>Rows grouped under the five questions, "waiting · no seed" and "ready in 3 min" before any figure. The table as one sorted list. Or space: a map of where the disk goes, by folder, then torrent. Each folder, category, tag and question remembers its own.</p></div>
-      <div><h3>Details tell the story</h3><p>One fact and a sentence, then what happened to the torrent, newest first: what went wrong, the last move, when it finished, when it was added, and its lines in qBittorrent's log.</p></div>
-      <div><h3>A bar for the selection</h3><p>Pick torrents and a bar floats over the list with the menu's own actions: stop or start, recheck, move, category, tags, limits, delete. What an action came to shows in a strip just above it.</p></div>
-      <div><h3>A title that says what you see</h3><p>"2 need you · 6 arriving, the next in 7 min". The speeds sit beside it, each with its last minute drawn under it, and the filter takes the free room when you use it.</p></div>
-      <div><h3>Keys when you ask for them</h3><p>Hold <kbd>alt</kbd> and every control shows its key. Menus, tooltips, the palette and <kbd>?</kbd> say them too, so the window stays quiet the rest of the time.</p></div>
-      <div><h3>The omaseed menu</h3><p><kbd>ctrl+.</kbd> or the mark: the servers, turtle and burst, stop and start all, and the window's own rows, from the seed console to quit.</p></div>
+      <div><h3>Five questions</h3><p>What needs you, what is arriving, what landed today, what is giving back and what is resting. The rail asks them, <kbd>1</kbd> to <kbd>5</kbd>.</p></div>
+      <div><h3>Details tell the story</h3><p>One fact and a sentence, then what happened to the torrent, newest first: what went wrong, a move, a rename, a new category, when it finished, and its lines in the engine's log.</p></div>
+      <div><h3>A title that says what you see</h3><p>"2 need you · 6 arriving, the next in 7 min". The speeds sit beside it, each with its last minute drawn under it.</p></div>
+      <div><h3>A bar for the selection</h3><p>Pick torrents and a bar floats over the list: stop or start, recheck, move, category, tags, limits, delete. What an action came to shows in a strip above it.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="moving">
+    <div class="head">
+      <p class="tag">Moving</p>
+      <h2 class="two">Move a whole folder to another drive, and move it back. <span>Its torrents, then the files no torrent owns. Checked before anything is sent, followed until the last one lands, and undone in one step later.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice"><header><h3>Checked before anything moves</h3><p>Room on each drive, permission to write, files already at the destination and automatic management, before a single torrent is sent.</p></header><div class="rep k" id="repMvSheet"></div></article>
+      <article class="slice"><header><h3>Smallest first, followed to the end</h3><p>A band under the top says how far the move has got, with pause and resume, until the last torrent lands, even on a server whose disks omaseed can't see. A summary ends it.</p></header><div class="rep plain k" id="repMvBand"></div></article>
+      <article class="slice half"><header><h3>Move…, for any selection</h3><p><kbd>m</kbd> moves what you picked, to places you moved things lately or the library's folders. Torrents from several folders go into one, or keep their places under a new one.</p></header><div class="rep k" id="repMvPlaces"></div></article>
+      <article class="slice half"><header><h3>Move back, later</h3><p>The last 20 moves, or 30 days of them, from a torrent's details, the log or the palette. A torrent goes back only if it is still where that move put it, and the button says what will happen.</p></header><div class="rep k" id="repMvBack"></div></article>
+    </div>
+    <div class="head sub">
+      <p class="tag">The drives</p>
+      <h2 class="two">It knows the drive it writes to. <span>On ntfs3, exFAT and FAT, a file you tick takes its whole size the moment it is wanted. omaseed checks the room before the tick reaches the server, and says what will happen in plain words.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice half"><header><h3>The room, before the tick</h3><p>The add sheet and the files tab name the drive's file system, count what the ticked files take there, and say when it won't fit. Files of 4 GiB or more on FAT32 are named, with "skip these".</p></header><div class="rep plain k" id="repDrive"></div></article>
+      <article class="slice half"><header><h3>A big tick waits, with Undo</h3><p>A tick that adds more than 1 GiB, or one that doesn't fit, waits 3 s in a band before it reaches the server. A misclick undone in time costs nothing.</p></header><div class="rep plain k" id="repTick"></div></article>
+      <article class="slice"><header><h3>Files you moved yourself</h3><p>A torrent whose files are gone says so, and where it last saw them. When its folder is on a drive that isn't mounted, it says to plug it in and recheck. When you moved the files yourself, <code>omaseed do locate</code>, from you or your agent, points it at the new folder: it moves nothing, checks every file is there at its size, then rechecks.</p></header><div class="rep plain k" id="repGone"></div></article>
+    </div>
+    <div class="blocks">
+      <div><h3>Skipped files that still take space</h3><p>A file skipped after it was written stays on disk. omaseed says what skipped files hold, and "free the space" deletes exactly those, after a sheet that says what goes.</p></div>
+      <div><h3>Quitting asks first</h3><p>Quitting while a move runs asks first, and a paused move picks up at the next start.</p></div>
+      <div><h3>One after another</h3><p>A move started while another runs waits its turn. One that takes a few seconds just says so in the footer.</p></div>
+      <div><h3>Then a summary</h3><p>A summary ends it, with "recheck" and "move back…". Recheck starts again only the torrents that were running before the move.</p></div>
+      <div><h3>It tidies up after itself</h3><p>The folders a move leaves empty are removed, up to the folder you moved. A folder that still holds anything, a hidden file included, stays.</p></div>
+      <div><h3>The loose files come back too</h3><p>Move back brings back the files no torrent owns that a folder move carried. A file changed at the new place since stays there, and the summary names it.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="agents">
+    <div class="head">
+      <p class="tag">Agents</p>
+      <h2 class="two">Your coding agent can look after your torrents, as far as you let it. <span>Ask Claude Code, Codex, pi or Gemini why a download stopped, and it asks omaseed. Nothing that changes a torrent runs until you allow it, and no command deletes a file.</span></h2>
+    </div>
+    <div class="slices">
+      <article class="slice half"><header><h3>It reads what the window says</h3><p><code>omaseed status</code>, <code>errors</code>, <code>log</code> and <code>moves</code> ask the running omaseed, in the window's words or as JSON. They keep logins, API keys and passkeys out.</p></header><div class="rep plain k" id="repTerm"></div></article>
+      <article class="slice half"><header><h3>You decide what it may do</h3><p>Settings › General › Agents has four lines. Reads, on or off. Fixes, retry, start here, recheck, reannounce, pause, resume, dismiss and locate: off, ask or allow. Moves and Remove: off or ask, never more.</p></header><div class="rep k" id="repGate"></div></article>
+      <article class="slice"><header><h3>One window asks you</h3><p>When a line says ask, omaseed opens a window of its own with what the agent wants to do, to what and where. A plan comes as one window: each torrent ticked, so you can untick some. Esc refuses, and nothing happens if nobody answers in 2 minutes.</p></header><div class="rep k" id="repAsk"></div></article>
+    </div>
+    <div class="blocks">
+      <div><h3>Checked as a whole, dry-run first</h3><p>A plan is checked before anything runs: one refused line runs nothing. <code>--dry-run</code> makes every check and does nothing.</p></div>
+      <div><h3>It says who did it</h3><p>What an agent did ends in "by an agent" on the strip and in the torrent's story, and the journal names the agent.</p></div>
+      <div><h3>A remove can come back</h3><p>Remove takes off the list a torrent whose files are gone, never its files, and keeps it for 30 days. Add back puts it back, stopped, at its old place.</p></div>
+      <div><h3>A skill your agent finds</h3><p><code>omaseed skill link</code> puts omaseed's guide where agents look for skills, so one started anywhere loads it when you ask about a download.</p></div>
+      <div><h3>Your agent's settings are the wall</h3><p><code>omaseed help agents</code> prints deny rules for your agent's own settings, filled in with your server's address, so the agent stays out of the server itself.</p></div>
+      <div><h3>Skins it makes for you</h3><p>"Make omaseed warmer, and rounder": a skin is a <code>skin.json</code> of shapes, fonts and densities in your theme's colours. <code>omaseed check</code> shows it on invented torrents first.</p></div>
     </div>
   </section>
 
   <section class="wrap sec" id="seed">
     <div class="head">
       <p class="tag">Seed console</p>
-      <h2 class="two">See what you give back. <span>qBittorrent counts your uploads but keeps no history of them. omaseed keeps its own, so a year of seeding is one key away.</span></h2>
+      <h2 class="two">See what you give back. <span>Your torrent engine counts what you upload but keeps no history of it. omaseed keeps its own, so a year of seeding is one key away.</span></h2>
     </div>
     <div class="slices" id="slices">
       <article class="slice">
@@ -1191,97 +1297,19 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
     <p class="where">Everything above is demo data on this page. omaseed writes the real history to <code>~/.local/share/omaseed/ledger/</code> on your machine, so it stays when a server is replaced, and backs it up with the rest of its settings.</p>
   </section>
 
-  <section class="wrap sec" id="search">
-    <div class="head">
-      <p class="tag">Search</p>
-      <h2 class="two">Search through your own qBittorrent. <span>omaseed names, ships and scrapes no site. It asks the search plugins you installed on your server, and every request is qBittorrent's.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice"><header><h3>Answers as they arrive</h3><p>One row per torrent, the other copies folded in. A plugin that is slow or fails is named, with the reason from qBittorrent's log. Rows you already have say so before you add them twice.</p></header><div class="rep k" id="repSearch"></div></article>
-    </div>
-    <div class="blocks">
-      <div><h3>Your plugins, your choice</h3><p>Search plugins are small Python files you choose and install on your qBittorrent, each asking one site. omaseed doesn't name, ship or suggest any, and never asks a site itself.</p></div>
-      <div><h3>A rail of its own</h3><p>Your plugins, ticked or not, each with how it answered; the type to search in; this session's recent searches, a click to ask again. Recent searches stay in memory and are never saved.</p></div>
-      <div><h3>It knows your library</h3><p>"in your library" for a torrent you have, "likely on disk" for the same name and size, and adding goes through the add sheet, which checks the files.</p></div>
-      <div><h3>esc backs out</h3><p>The field ends in "× esc": one press clears the words and the results and stops any plugin still asking. The next goes back to where you were.</p></div>
-    </div>
-  </section>
-
-  <section class="wrap sec" id="create">
-    <div class="head">
-      <p class="tag">Create a torrent</p>
-      <h2 class="two">Make a torrent from a folder. <span>For anyone, it seeds at once from where the files are. For a private tracker, it is saved for the upload, and your passkey is only ever shown as dots.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice half"><header><h3>For anyone</h3><p>Public trackers, DHT and peer exchange. It is added in seed mode where the files already are, nothing copied or moved, and the magnet goes to the clipboard.</p></header><div class="rep k" id="repCrAny"></div></article>
-      <article class="slice half"><header><h3>For a private tracker</h3><p>The announce comes from your library, the private flag and v1 are set, and the source tag is copied from your newest torrent there. Then it is saved for the upload, not added.</p></header><div class="rep k" id="repCrPriv"></div></article>
-    </div>
-    <div class="blocks">
-      <div><h3>The round trip</h3><p>Upload the .torrent on the tracker's site, then add the site's copy: omaseed knows these files and points it at them, so it seeds without downloading.</p></div>
-      <div><h3>The passkey stays hidden</h3><p>Never shown, never written to a log or a file of omaseed's. A pasted announce URL is used for that torrent only.</p></div>
-      <div><h3>Hashing runs on the server</h3><p>qBittorrent makes the torrent, so you can close the window while a band follows it. It needs qBittorrent's Web API 2.10.4 or later.</p></div>
-    </div>
-  </section>
-
-  <section class="wrap sec" id="moving">
-    <div class="head">
-      <p class="tag">Moving</p>
-      <h2 class="two">Move a whole folder, and move it back. <span>Its torrents, then the files no torrent owns, onto another drive. Checked before anything is sent, and followed until the last one lands.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice"><header><h3>Checked before anything moves</h3><p>Room on each drive, permission to write, files already at the destination and automatic management, before a single torrent is sent.</p></header><div class="rep k" id="repMvSheet"></div></article>
-      <article class="slice"><header><h3>Smallest first, followed to the end</h3><p>A band under the top says how far the move has got, with pause and resume, until the last torrent lands, even on a server whose disks omaseed can't see. A summary ends it.</p></header><div class="rep plain k" id="repMvBand"></div></article>
-      <article class="slice half"><header><h3>Move…, for any selection</h3><p><kbd>m</kbd> moves what you picked, to places you moved things lately or the library's folders. Torrents from several folders go into one, or keep their places under a new one.</p></header><div class="rep k" id="repMvPlaces"></div></article>
-      <article class="slice half"><header><h3>Move back, later</h3><p>The last 20 moves, or 30 days of them, from a torrent's details, the log or the palette. A torrent goes back only if it is still where that move put it, and the button says what will happen.</p></header><div class="rep k" id="repMvBack"></div></article>
-    </div>
-    <div class="blocks">
-      <div><h3>Quitting asks first</h3><p>Quitting while a move runs asks first, and a paused move picks up at the next start.</p></div>
-      <div><h3>One after another</h3><p>A move started while another runs waits its turn. One that takes a few seconds just says so in the footer.</p></div>
-      <div><h3>Then a summary</h3><p>A summary ends it, with "recheck" and "move back…". Recheck starts again only the torrents that were running before the move.</p></div>
-      <div><h3>It tidies up after itself</h3><p>The folders a move leaves empty are removed, up to the folder you moved. A folder that still holds anything, a hidden file included, stays.</p></div>
-      <div><h3>The loose files come back too</h3><p>Move back brings back the files no torrent owns that a folder move carried. A file changed at the new place since stays there, and the summary names it.</p></div>
-    </div>
-  </section>
-
-  <section class="wrap sec" id="speeds">
-    <div class="head">
-      <p class="tag">Turtle and burst</p>
-      <h2 class="two">Slow it down, or open it up for an hour. <span>qBittorrent keeps one set of alternative speeds. omaseed gives you two presets for it, and turns either on from the status line.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice half"><header><h3>One set, two presets</h3><p>Turtle is qBittorrent's own alternative set, as its schedule and other clients see it. Burst is written over it for 30 min, 1 h or until you stop it, and turtle is written back after, also when omaseed quits mid-burst.</p></header><div class="rep k" id="repAlt"></div></article>
-      <article class="slice half"><header><h3>Speeds against their caps</h3><p>While one is on, the chip in the status line wears its colour and each speed reads against its cap. <kbd>A</kbd> turns off what is on, or the last one picked back on.</p></header><div class="rep plain k" id="repCaps"></div></article>
-    </div>
-  </section>
-
-  <section class="wrap sec" id="adding">
-    <div class="head">
-      <p class="tag">Adding torrents</p>
-      <h2 class="two">It knows your library before you add. <span>The add sheet looks at your Downloads folder, your disk and what you already seed, so nothing is downloaded twice.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice half"><header><h3>Your newest downloads</h3><p>The newest .torrent files in Downloads are waiting when you open it. Tick several to add them together.</p></header><div class="rep k" id="repDl"></div></article>
-      <article class="slice half"><header><h3>Files already on disk</h3><p>When another torrent already has the same files on disk, one click saves this one beside them, and it seeds without downloading.</p></header><div class="rep k" id="repMatch"></div></article>
-      <article class="slice half"><header><h3>Already in your library</h3><p>A torrent you already have is caught before it's added. A public one's new trackers can be merged into it.</p></header><div class="rep k" id="repDup"></div></article>
-      <article class="slice half"><header><h3>Room on the disk</h3><p>What it needs and what's left on that drive: yellow when it leaves little, red when it won't fit.</p></header><div class="rep plain k" id="repFree"></div></article>
-    </div>
-  </section>
-
   <section class="wrap sec" id="servers">
     <div class="head">
-      <p class="tag">Any server</p>
-      <h2 class="two">This PC, a NAS, or all of them at once. <span>omaseed is a window onto qBittorrent wherever it runs.</span></h2>
+      <p class="tag">Any engine, any server</p>
+      <h2 class="two">qBittorrent, Transmission or Deluge. <span>On this PC, a NAS or a seedbox, or several at once. omaseed is a window onto the engine you already run.</span></h2>
     </div>
     <div class="pair">
       <div class="blocks">
-        <div><h3>Finds the one on this PC</h3><p>First run looks for a qBittorrent on this machine and signs in, or offers to install one.</p></div>
-        <div><h3>Or any on the network</h3><p>A NAS, a seedbox, the machine under the desk: qBittorrent 5.2 or newer with its Web UI on.</p></div>
-        <div><h3>Several within reach</h3><p>The others wait at the foot of the rail, with what omaseed last saw on each; right-click one for its menu. <kbd>ctrl+s</kbd>, the omaseed menu, the tray and the bar widget switch between them.</p></div>
-        <div><h3>Add when it's back</h3><p>The add sheet says which server a torrent goes to. While that one is down, "add when back" sends it as soon as it answers.</p></div>
-        <div><h3>Says what went wrong</h3><p>A server that stops answering gets a band in plain words, with "retry now", "edit login" or "switch server". One that is only slow "isn't answering", in yellow, with how long it has waited; a refused connection is "unreachable", in red.</p></div>
-        <div><h3>Signs in your way</h3><p>An API key, a username and password, or nothing for a server that lets localhost in. Secrets go to the system keyring.</p></div>
-        <div><h3>Self-signed HTTPS</h3><p>omaseed shows the certificate's fingerprint and trusts that one certificate once you say so.</p></div>
-        <div><h3>Opens what you click</h3><p>Magnet links and <code>.torrent</code> files open in omaseed, from the browser, the clipboard, a drag or your Downloads folder.</p></div>
+        <div><h3>Knows its engine</h3><p>Testing an address recognises qBittorrent, Transmission or Deluge, and the sign-in follows: an API key, a username and password, Deluge's one password, or nothing for localhost. Secrets go to the system keyring.</p></div>
+        <div><h3>Each engine's own settings</h3><p>Speed, privacy, connection with its port test, seeding, queue and downloads, read from that engine and written back to it. Deluge's plugins too.</p></div>
+        <div><h3>Finds the one on this PC</h3><p>First run looks for qBittorrent, Transmission and Deluge on this machine and signs in, or offers to install qBittorrent.</p></div>
+        <div><h3>Several within reach</h3><p>The others wait at the foot of the rail, with what omaseed last saw on each. <kbd>ctrl+s</kbd>, the omaseed menu, the tray and the bar widget switch between them.</p></div>
+        <div><h3>A library moves over</h3><p>Export one engine's torrents, each with its folder, labels, limits and renames, and import them into another. What the new engine can't keep is listed before anything is added.</p></div>
+        <div><h3>Says what went wrong</h3><p>A server that stops answering gets a band in plain words, with "retry now", "edit login" or "switch server". After a restart it is seen again within a second or two.</p></div>
       </div>
       <div class="reps"><div class="rep plain k" id="repDown"></div><div class="rep k" id="repSrv"></div><div class="rep plain k" id="repCert"></div></div>
     </div>
@@ -1299,59 +1327,43 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
         <div class="rep k" id="repNotes"></div></article>
       <article class="slice"><header><h3>Keyboard first</h3><p>Every action has a key, and <kbd>?</kbd> lists them all, with a filter; hold <kbd>alt</kbd> to see them on the controls. The mouse works everywhere too: right-click menus, drag and drop, a tick at a row's start to pick several.</p></header>
         <div class="rep k" id="repHelp"></div></article>
-      <article class="slice narrow"><header><h3>Every command by name</h3><p><kbd>:</kbd> runs any command by name and shows its key, so the palette teaches the keys. One that can't run says why. The last five you ran come first.</p></header>
+      <article class="slice narrow"><header><h3>Every command by name</h3><p><kbd>:</kbd> finds commands, settings, servers and torrents in one box, each command with its key, so the palette teaches the keys. <kbd>enter</kbd> on a setting's switch flips it.</p></header>
         <div class="rep k" id="repPal"></div></article>
-      <article class="slice wide"><header><h3>qBittorrent's log, in the window</h3><p>A third face beside the library and the seed console (<kbd>~</kbd>), followed live: levels, a filter, the next warning, and <kbd>enter</kbd> goes to the line's torrent.</p></header>
+      <article class="slice wide"><header><h3>The engine's log, in the window</h3><p>A third face beside the library and the seed console (<kbd>~</kbd>), followed live: levels, a filter, the next warning, and <kbd>enter</kbd> goes to the line's torrent.</p></header>
         <div class="rep k" id="repLog"></div></article>
     </div>
     <div class="blocks">
       <div><h3>Every theme, live</h3><p>All <span id="nThemes">22</span> bundled themes, the light ones too, with your font, base size, transparency and window rounding.</p></div>
-      <div><h3>In the Omarchy menu</h3><p>A Torrents row for the menu, and a window rule for its window. Opaque like the other apps, or translucent if you pick it.</p></div>
+      <div><h3>In the Omarchy menu</h3><p>Trigger › Torrents, added and taken away by a switch in Settings: open, add, search, the speeds, pause or resume, servers and settings, from the menu or by typing <code>torr</code>.</p></div>
+      <div><h3>Adds open where you are</h3><p>A magnet or <code>.torrent</code> from the browser or the file manager opens the add sheet in a small window on the workspace you are on, and a notice says when the server has it.</p></div>
       <div><h3>Any Linux, too</h3><p>Built for Omarchy, and runs on any Linux with a bundled theme when Omarchy isn't there.</p></div>
       <div><h3>Screen readers</h3><p>Every row, control and piece of text can be found, and controls are named by what they do, not by a glyph or a key. The bar widget too, once the shell runs on Quickshell 0.3.2 or later.</p></div>
       <div><h3>Readable in every theme</h3><p>Text reads at 4.5:1 against the window in every theme. A colour that falls short is shifted just enough, and the rest are kept exactly. The copy on this page does the same.</p></div>
     </div>
   </section>
 
-  <section class="wrap sec" id="skins">
+  <section class="wrap sec" id="also">
     <div class="head">
-      <p class="tag">Two skins</p>
-      <h2 class="two">A second look, not a theme. <span>Console redraws the whole window in place: its own faces, kana beside the headings, cut corners and brackets on the cursor. It sits over any Omarchy theme, so the colours stay yours.</span></h2>
+      <p class="tag">Also in omaseed</p>
+      <h2 class="two">The rest of a day with torrents. <span>Each card shows the part of the window it's about, with demo data.</span></h2>
     </div>
-    <div class="slices">
-      <article class="slice half"><header><h3>Omarchy</h3><p>The default: the look of the rest of your desktop.</p></header><div class="rep k" id="repSkinA"></div></article>
-      <article class="slice half"><header><h3>Console</h3><p>Chakra Petch for labels, Share Tech Mono for values, meters drawn as cells.</p></header><div class="rep k" id="repSkinB"></div></article>
-    </div>
-    <div class="blocks">
-      <div><h3>No restart</h3><p>Settings › Appearance › Skin: Omarchy, Console, or follow the desktop. The window repaints at once. The switch under the window above does the same here.</p></div>
-      <div><h3>Every colour is the theme's</h3><p>A skin changes form only. It picks a theme role and how strong, never a colour of its own, so Console looks right in every bundled theme, the light ones too.</p></div>
-      <div><h3>Its fonts are optional</h3><p>Console's faces are optional packages, not bundled. Without them it falls back to the system's.</p></div>
-    </div>
-  </section>
-
-  <section class="wrap sec" id="careful">
-    <div class="head">
-      <p class="tag">Careful with your data</p>
-      <h2 class="two">It asks before it costs you a seed. <span>Deleting files another torrent still seeds, or the last copy anyone has, gets a question first.</span></h2>
-    </div>
-    <div class="slices">
-      <article class="slice half"><header><h3>Shared files</h3><p>Two torrents seeding the same files: deleting one asks whether the other keeps them.</p></header><div class="rep k" id="repShared"></div></article>
-      <article class="slice half"><header><h3>The last seed</h3><p>If you are the only one still seeding it, omaseed says so, and offers to stop it instead.</p></header><div class="rep k" id="repLast"></div></article>
-      <article class="slice"><header><h3>Why it errored</h3><p>qBittorrent's API never says why a torrent stopped. omaseed reads qBittorrent's log and says it in plain words, with the keys that fix it. <kbd>p</kbd> stops an errored torrent, so a retry that only fails again comes to an end; <kbd>e</kbd> retries.</p></header><div class="rep plain k" id="repErr"></div></article>
-      <article class="slice half"><header><h3>What only the log says</h3><p>When qBittorrent accepts a move or a rename and then can't do it, it says so only in its log. omaseed puts it on the torrent: what didn't happen, why, where the files are and how to fix it.</p></header><div class="rep plain k" id="repFail"></div></article>
-      <article class="slice half"><header><h3>Back up a qBittorrent</h3><p>Its torrents to one private file, each with its save path, category, tags, limits and file priorities. Its settings to a readable file with no password in it; importing them shows only what differs, and changes nothing until you apply.</p></header><div class="rep k" id="repBak"></div></article>
-    </div>
-    <div class="blocks">
-      <div><h3>Skipped files that still take space</h3><p>qBittorrent never deletes a file you skip after it was written. omaseed says what skipped files hold, and "free the space" deletes exactly those, after a sheet that says what goes.</p></div>
-      <div><h3>A big tick waits, with Undo</h3><p>Ticking skipped files makes qBittorrent create them at full size at once. A tick of more than 1 GiB waits 3 s with Undo, so a misclick never reaches it.</p></div>
-      <div><h3>Drives that can't hold part of a file</h3><p>On ntfs3, exFAT and FAT a ticked file takes its whole size at once: the add sheet and the files tab say so, and check the room first.</p></div>
+    <div class="cards">
+      <article class="card"><div class="thumb rep k" id="repSearch" aria-hidden="true"></div><div class="tx"><h3>Search through your own server</h3><p>omaseed asks the search plugins you installed on your qBittorrent, folds the copies of a torrent into one row, and says which you already have. It names, ships and scrapes no site.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repCrAny" aria-hidden="true"></div><div class="tx"><h3>Make a torrent from a folder</h3><p>For anyone, it seeds at once from where the files are. For a private tracker, it is saved for the upload, and your passkey is only ever shown as dots.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repAlt" aria-hidden="true"></div><div class="tx"><h3>Turtle and burst</h3><p>Two speed presets from the status line: turtle slows it down, burst opens it up for 30 min, an hour, or until you stop it, then turtle comes back.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repMatch" aria-hidden="true"></div><div class="tx"><h3>The add sheet knows your library</h3><p>Your newest downloads waiting, a torrent you already have caught before it is added twice, the same files on disk found so it seeds without downloading.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repLast" aria-hidden="true"></div><div class="tx"><h3>It asks before it costs you a seed</h3><p>Deleting files another torrent still seeds, or the last copy anyone has, gets a question first, with "stop instead".</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repErr" aria-hidden="true"></div><div class="tx"><h3>Why it errored</h3><p>The reason from the engine's log, in plain words, on the torrent, with the keys that fix it. A move the engine accepted and then couldn't do says so too.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repBak" aria-hidden="true"></div><div class="tx"><h3>Backups</h3><p>A qBittorrent's torrents to one private file, each with its folder, category, tags, limits and file priorities; its settings to a readable file with no password in it.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repSkinB" aria-hidden="true"></div><div class="tx"><h3>A second skin</h3><p>Console redraws the whole window in place, with its own faces and cut corners, over any Omarchy theme. Try it under the window above.</p></div></article>
+      <article class="card"><div class="thumb rep k" id="repPause" aria-hidden="true"></div><div class="tx"><h3>Pause torrents</h3><p>Stops what is running and remembers exactly those, across a restart, so resume torrents leaves the ones you kept stopped alone.</p></div></article>
     </div>
   </section>
 
   <section class="wrap sec">
     <div class="engine">
-      <p class="tag">Powered by qBittorrent</p>
-      <p>omaseed has no torrent engine of its own. <span>qBittorrent does the transferring, on this machine or another, and omaseed is the window you see it through.</span></p>
+      <p class="tag">Powered by your engine</p>
+      <p>omaseed has no torrent engine of its own. <span>qBittorrent, Transmission or Deluge does the transferring, on this machine or another, and omaseed is the window you see it through.</span></p>
     </div>
   </section>
 
@@ -1363,10 +1375,12 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
         <h2 class="two">No desktops were harmed in the making of omaseed. <span>And no mouse was captured. Every window, scale and multi-monitor check ran inside omabox, an invisible Omarchy desktop, so the AI agent building omaseed never touched the desktop it was building for.</span></h2>
         <div class="cta"><a class="btn2" href="https://omabox.app">omabox.app</a></div>
       </div>
-      <pre class="walks"><span class="p"># the 14 walks in omaseed's repo, each run in a box</span>
+      <pre class="walks"><span class="p"># the 18 walks in omaseed's repo, each run in a box</span>
 <b>scripts/dev/</b>actions-walk.sh
+<b>scripts/dev/</b>agent-walk.sh
 <b>scripts/dev/</b>backup-walk.sh
 <b>scripts/dev/</b>create-walk.sh
+<b>scripts/dev/</b>deluge-walk.sh
 <b>scripts/dev/</b>error-walk.sh
 <b>scripts/dev/</b>magnet-walk.sh
 <b>scripts/dev/</b>menu-walk.sh
@@ -1375,10 +1389,12 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
 <b>scripts/dev/</b>search-walk.sh
 <b>scripts/dev/</b>servers-walk.sh
 <b>scripts/dev/</b>settings-walk.sh
+<b>scripts/dev/</b>skins-walk.sh
 <b>scripts/dev/</b>strict-walk.sh
 <b>scripts/dev/</b>stuck-walk.sh
 <b>scripts/dev/</b>swarm-walk.sh
-<span class="p"># and 45 screens against a baseline, in each skin</span>
+<b>scripts/dev/</b>transmission-walk.sh
+<span class="p"># and the screens they reach, against a baseline, in each skin</span>
 <b>scripts/dev/</b>visual-check.sh
 <span class="p">OMASEED_SKIN=console</span> <b>scripts/dev/</b>visual-check.sh</pre>
     </div>
@@ -1387,137 +1403,50 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
   <section class="wrap sec" id="new">
     <div class="head">
       <p class="tag">New in omaseed</p>
-      <h2 class="two">Changelog. <span>Every release, dated.</span></h2>
+      <h2 class="two">New in v0.17. <span>Every release is dated in the full changelog.</span></h2>
     </div>
     <div class="rel">
       <article>
-        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.6.0"><b>v0.6.0</b></a><span class="lbl">5 Nov 2026</span></div>
+        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.17.1"><b>v0.17.0–0.17.1</b></a><span class="lbl">22 Nov 2026</span></div>
         <div>
-          <h3>Search has a rail of its own</h3>
+          <h3>Agents may act, as far as you let them</h3>
           <ul>
-            <li><b>The rail holds what a search is made of:</b> your plugins, each ticked or not with how it answered (a count, still asking, slow, failed), the type to search in, and this session's recent searches. Recent searches stay in memory and are never saved. Fold the rail (<code>ctrl+b</code>) and the plugins and type menus come back to the search bar.</li>
-            <li><b>A way to your plugins from search.</b> "install a plugin…" opens Settings › qBittorrent › Search plugins with the field ready; <code>esc</code> goes back to the search.</li>
-            <li><b>Clear a search.</b> The field ends in "× esc": a click or <code>esc</code> clears the words and the results and stops any plugin still asking. <code>esc</code> backs out one step at a time.</li>
-          </ul>
-        </div>
-      </article>
-      <article>
-        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.5.1"><b>v0.5.1</b></a><span class="lbl">4 Nov 2026</span></div>
-        <div>
-          <h3>Fixes for imports, moves and the action bar</h3>
-          <ul>
-            <li><b>An interrupted import starts what it should.</b> It waits while qBittorrent is still checking any of its torrents, so a complete one is never taken for an empty one and left stopped.</li>
-            <li><b>A move tidies up after itself.</b> The folders a move leaves empty are removed, up to the folder you moved. A folder that still holds anything, a hidden file included, stays.</li>
-            <li><b>The floating action bar is opaque</b> over the list, in both skins, and so is the strip above it.</li>
-          </ul>
-        </div>
-      </article>
-      <article>
-        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.5.0"><b>v0.5.0</b></a><span class="lbl">4 Nov 2026</span></div>
-        <div>
-          <h3>A new window: five questions, search, create, turtle and burst, a second skin</h3>
-          <ul>
-            <li><b>The window answers five questions.</b> The rail lists what needs you, what is arriving, what landed today, what is giving back and what is resting (<code>1</code>–<code>5</code>), under library, seed, log and search, with the servers and settings at its foot. It folds to icons when the window gets narrow, or with <code>ctrl+b</code>.</li>
-            <li><b>Rows, table or space.</b> Rows grouped under the five questions, in words before numbers; the table as one sorted list; or space, a size map by folder, then torrent. Each folder, category, tag and question remembers its own.</li>
-            <li><b>Details tell the story:</b> one fact and a sentence, then story · files · swarm · trackers · facts. The story starts with what went wrong or the last move, then what happened to the torrent, newest first.</li>
-            <li><b>Search through your qBittorrent's search plugins</b> (<code>ctrl+f</code>). omaseed names, ships and scrapes no site. Results arrive as each plugin answers, and rows you already have say so.</li>
-            <li><b>Create a torrent from a folder</b> (<code>ctrl+n</code>), for anyone or for a private tracker. A public one seeds at once and copies the magnet; a private one is saved for the upload, with the passkey only ever shown as dots.</li>
-            <li><b>Turtle and burst.</b> Two presets for qBittorrent's one set of alternative speeds: turtle, the set its schedule and other clients see, and burst, written over it for 30 minutes, an hour or until you stop it, with turtle written back after. <code>A</code> flips the last one picked.</li>
-            <li><b>A floating action bar</b> for a selection, <b>a title bar</b> that says what you are looking at, <b>keys when you ask</b> (hold <code>alt</code>), and the omaseed menu (<code>ctrl+.</code>).</li>
-            <li><b>A second skin, Console,</b> in Settings › Appearance › Skin. The whole window repaints at once, no restart.</li>
-            <li><b>Adding a magnet before its file list arrives</b> no longer crashes qBittorrent 5.3.0.</li>
-          </ul>
-        </div>
-      </article>
-      <article>
-        <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.4.0"><b>v0.4.0</b></a><span class="lbl">23 Oct 2026</span></div>
-        <div>
-          <h3>Skipped files and the disk, and what an action came to</h3>
-          <ul>
-            <li><b>Skipped files that still take space.</b> qBittorrent never deletes a file you skip after it was written. The Files tab says what skipped files hold, and "free the space" deletes exactly those, after a sheet that says what goes.</li>
-            <li><b>A big tick waits 3 s, with Undo.</b> Ticking skipped files makes qBittorrent create them at full size at once; a misclick undone in time never reaches it.</li>
-            <li><b>Drives that can't hold part of a file.</b> On ntfs3, exFAT and FAT a ticked file takes its whole size at once: the add sheet and the Files tab say so and check the room first.</li>
-            <li><b>What an action came to shows where you look:</b> a strip for a move, a stop or a delete, and the row's own status for a moment.</li>
-            <li><b>A slow server isn't "unreachable".</b> One that takes the connection but doesn't reply "isn't answering", in yellow; a refused connection is "unreachable", in red.</li>
-            <li><b>Search by words.</b> "big buck bunny" finds Big.Buck.Bunny.</li>
-            <li><b>"Skip hash check" works with qBittorrent 5.3,</b> and a magnet clicked while omaseed is closed opens the add sheet.</li>
+            <li><b>Four lines in Settings › General › Agents:</b> Reads (on or off), Fixes (off, ask or allow), Moves and Remove (off or ask). Everything that acts is off until you turn it on.</li>
+            <li><b><code>omaseed do</code></b> runs a fix the window offers, through the running omaseed: <code>--list</code> says what is allowed now, <code>--dry-run</code> checks and does nothing, <code>--plan FILE</code> checks a whole list first and asks once.</li>
+            <li><b>One window asks you</b>, with what, to what and where. Moves and removes always ask; esc refuses; nothing happens if nobody answers in 2 minutes.</li>
+            <li><b>Locate</b> points a torrent whose files are missing at the folder you moved them to, after checking every file is there at its size. <b>Remove</b> never touches files and keeps the torrent 30 days for <b>add back</b>.</li>
+            <li><b>A plan reports itself once</b>, and a torrent on a drive that isn't mounted says so: plug it in, then recheck.</li>
           </ul>
         </div>
       </article>
     </div>
-    <details class="older">
-      <summary>Earlier releases</summary>
-      <div class="rel">
-        <article>
-          <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.3.3"><b>v0.3.1–0.3.3</b></a><span class="lbl">22 Oct 2026</span></div>
-          <div>
-            <h3>Fixes for moves, bare info hashes and qBittorrent 5.3</h3>
-            <ul>
-              <li><b>Moves:</b> a big torrent's move reads right from its first second, and a failed move no longer offers to break a hybrid torrent.</li>
-              <li><b>A bare info hash works like a magnet,</b> with a warning when the server has DHT off.</li>
-              <li><b>Share limits work with qBittorrent 5.3.</b></li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.3.0"><b>v0.3.0</b></a><span class="lbl">22 Oct 2026</span></div>
-          <div>
-            <h3>Moving, with a way back. Several servers, qBittorrent's log, a command palette</h3>
-            <ul>
-              <li><b>Move a whole folder.</b> Its torrents, then the files no torrent owns, across drives, checked before anything is sent and followed to the last one, with pause and resume. <b>Move…</b> (<code>m</code>) does the same for a selection, and the last 20 moves can be moved back.</li>
-              <li><b>Several servers within reach,</b> and "add when back" for one that is down.</li>
-              <li><b>Back up a qBittorrent:</b> its torrents to one private file, its settings to a readable one with no password in it.</li>
-              <li><b>qBittorrent's log</b> in the window, and a <b>command palette</b> (<code>:</code>).</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.2.0"><b>v0.2.0</b></a><span class="lbl">13 Oct 2026</span></div>
-          <div>
-            <h3>Errors explained, the mouse everywhere, one-line install</h3>
-            <ul>
-              <li><b>An errored torrent says why,</b> read from qBittorrent's log, with the actions that fix it.</li>
-              <li><b>Everything works with the mouse,</b> and each release ships a prebuilt package.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <div class="when"><a href="https://github.com/diogochaves/omaseed/releases/tag/v0.1.0"><b>v0.1.0</b></a><span class="lbl">10 Oct 2026</span></div>
-          <div>
-            <h3>First release</h3>
-            <ul>
-              <li><b>The library, adding torrents, the seed console, Omarchy and servers:</b> a keyboard-first client that follows the theme live, with a bar widget, the tray and notifications.</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </details>
-    <a class="more" href="https://github.com/diogochaves/omaseed/blob/v0.6.0/CHANGELOG.md">The whole changelog</a>
+    <!-- changelog: only the newest minor line (v0.X.y); the rest is behind the link -->
+    <a class="more" href="https://github.com/diogochaves/omaseed/blob/main/CHANGELOG.md">The full changelog, v0.1.0 to now</a>
   </section>
 
   <section class="wrap sec" id="roadmap">
     <div class="head">
       <p class="tag">Roadmap</p>
-      <h2 class="two">Where it goes from here. <span>What is being designed, and the engines to come. No versions, no dates. Every issue is <a href="https://github.com/diogochaves/omaseed/issues">open on GitHub</a>.</span></h2>
+      <h2 class="two">Where it goes from here. <span>What is being designed, and where it goes next. No versions, no dates. Every issue is <a href="https://github.com/diogochaves/omaseed/issues">open on GitHub</a>.</span></h2>
     </div>
-    <!-- roadmap: hand-written from omaseed's open issues waiting on a design (board first) and the engines milestone; change it when one is built or released -->
+    <!-- roadmap: hand-written from omaseed's open issues waiting on a design (board first) and #185; change it when one is built or released -->
     <div class="road">
       <article>
         <div class="when"><b>Being drawn</b><span class="st">design first</span></div>
         <h3>Next on the drawing board</h3>
         <p>Each of these gets a design of its own before anything is built, so none has a version or a date yet.</p>
         <ul>
-          <li><a href="https://github.com/diogochaves/omaseed/issues/172"><b>The add sheet, redrawn.</b></a> What's inside at a glance, by kind; the category guessed from your own past choices; a guess at when it will be ready; and a warning when a torrent that says it's a film carries a program.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/288"><b>Layouts.</b></a> You, or your agent, arrange the blocks omaseed already has: which ones the rows show and in what order, the table's columns, where the rail and the details sit. Data, like a skin, checked by <code>omaseed check</code>.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/289"><b>New places for the frame.</b></a> The rail on the right, the status line on top.</li>
           <li><a href="https://github.com/diogochaves/omaseed/issues/175"><b>Long moves off a hard disk.</b></a> Pause the drive's other torrents while a move runs, and start exactly those again when it ends, fails or is cancelled.</li>
-          <li><a href="https://github.com/diogochaves/omaseed/issues/163"><b>A way in for agents.</b></a> omaseed's status, errors, log and moves as JSON, then actions through omaseed's own checks, only if you turn that on.</li>
-          <li><a href="https://github.com/diogochaves/omaseed/issues/199"><b>Console's station.</b></a> Whether the overview gets the numbered plates the Console design drew, as a display for every skin.</li>
+          <li><a href="https://github.com/diogochaves/omaseed/issues/172"><b>The add sheet, further.</b></a> The category guessed from your own past choices, a guess at when it will be ready, and a warning when a torrent that says it's a film carries a program.</li>
         </ul>
       </article>
       <article class="planned">
-        <div class="when"><b>Engines</b><span class="st">planned</span></div>
-        <h3>More engines than qBittorrent</h3>
-        <p>omaseed talking to Transmission, then Deluge: servers that know their engine, then each engine's settings, words and backups, and later a way to move a library from one engine to another. No version for it yet, and no date.</p>
-        <a class="more" href="https://github.com/diogochaves/omaseed/milestone/5">The engines milestone</a>
+        <div class="when"><b>Beyond Omarchy</b><span class="st">planned</span></div>
+        <h3>omaseed on the rest of Linux</h3>
+        <p>Omarchy stays its home. The package already installs on plain Arch and falls back to a bundled theme; the work is to make other desktops first-class too. No version for it yet, and no date.</p>
+        <a class="more" href="https://github.com/diogochaves/omaseed/issues/185">The issue</a>
       </article>
     </div>
     <!-- /roadmap -->
@@ -1539,10 +1468,10 @@ footer small { flex-basis: 100%; font-size: 13px; color: var(--fg-dark); }
   <section class="wrap get" id="install">
     <p class="tag">Install</p>
     <h2>Install omaseed.</h2>
-    <p class="lead">On Arch and Omarchy: one line downloads the latest release, already built, and installs it. You need qBittorrent 5.2 or newer with its Web UI on, on this machine or another.</p>
+    <p class="lead">On Arch and Omarchy: one line downloads the latest release, already built, and installs it. You need a torrent engine on this machine or another: qBittorrent 5.2 or newer with its Web UI on, Transmission 4.1 or newer, or Deluge 2.1 or newer with deluge-web.</p>
     <div class="code wide"><pre><span class="p">$ </span>curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp;
   sudo pacman -U omaseed-x86_64.pkg.tar.zst</pre><button class="copy" type="button" data-copy="curl -fLO https://github.com/diogochaves/omaseed/releases/latest/download/omaseed-x86_64.pkg.tar.zst &amp;&amp; sudo pacman -U omaseed-x86_64.pkg.tar.zst">Copy</button></div>
-    <p class="small">pacman pulls Qt and the rest of what omaseed needs from the Arch repos. omaseed isn't in a repo yet, so <code>pacman -Syu</code> doesn't update it: for a new release, run the same line again, and <code>omaseed --quit</code> so the new one starts. First run finds your qBittorrent, or offers to install one.</p>
+    <p class="small">pacman pulls Qt and the rest of what omaseed needs from the Arch repos. omaseed isn't in a repo yet, so <code>pacman -Syu</code> doesn't update it: for a new release, run the same line again, and <code>omaseed --quit</code> so the new one starts. First run finds your qBittorrent, Transmission or Deluge, or offers to install qBittorrent. To let a coding agent find omaseed, run <code>omaseed skill link</code>.</p>
     <details>
       <summary>Build from source instead</summary>
       <div class="code"><pre><span class="p">$ </span>git clone https://github.com/diogochaves/omaseed.git
@@ -1557,9 +1486,9 @@ makepkg -si">Copy</button></div>
 
   <footer class="wrap">
     <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>omaseed</a>
-    <span>v<span class="ver">0.6.0</span> · MIT</span>
+    <span>v<span class="ver">0.17.1</span> · MIT</span>
     <nav aria-label="More"><a href="https://github.com/diogochaves/omaseed">GitHub</a><a href="#open">Contribute</a><a href="https://github.com/diogochaves/omaseed/blob/main/CHANGELOG.md">Changelog</a><a href="https://github.com/diogochaves/omaseed/issues">Issues</a><a href="https://omabox.app">omabox</a></nav>
-    <small>omaseed is an independent client for qBittorrent and is not part of the qBittorrent project. Every number on this page is demo data.</small>
+    <small>omaseed is an independent client for qBittorrent, Transmission and Deluge, and is not part of any of those projects. Every number on this page is demo data.</small>
   </footer>
 </main>
 
@@ -1656,6 +1585,7 @@ const MIDNIGHT = new Date(T0).setHours(0, 0, 0, 0);
 for (const r of ROWS) { if (r.landed != null) { r.doneAt = Math.min(T0 - 60000, Math.max(MIDNIGHT + (2 + r.id % 5) * 60000, T0 - r.landed * 60000)); r.addedAt = r.doneAt - 26 * 60000; r.added = 0; }
   else { r.addedAt = T0 - r.added * 86400000 - r.id * 37 * 60000; if (r.prog >= 100) r.doneAt = r.addedAt + (8 + r.id * 3) * 60000; } }
 let nextId = ROWS.length;
+let PAUSED = null; // the torrents Pause Torrents stopped, which resume torrents starts again
 const byId = id => ROWS.find(r => r.id === id);
 const ST = { down: ["downloading", "--st-down", "↓"], seed: ["seeding", "--st-seed", "↑"], stop: ["stopped", "--st-stop", "■"], err: ["errored", "--st-err", "!"],
   check: ["checking", "--st-check", "⟳"], queue: ["queued", "--st-queue", "≡"], stall: ["stalled", "--st-stall", "◌"], done: ["seeding", "--st-seed", "✓"],
@@ -1777,7 +1707,7 @@ const ordered = () => { const v = visible().sort(SORTS[S.sort][2]); return S.dis
 
 // ── the rail ──
 const DRIVES = ["/data", "/mnt/fast"];
-const SERVERS = [{ name: "home", dot: "on", addr: "127.0.0.1:8080" }, { name: "nas", dot: "idle", count: 412, addr: "192.168.1.20:8080" }, { name: "seedbox", dot: "bad", count: "down", addr: "sb.example.net" }];
+const SERVERS = [{ name: "home", dot: "on", addr: "127.0.0.1:8080", engine: "qBittorrent 5.2.3" }, { name: "nas", dot: "idle", count: 412, addr: "192.168.1.20:9091", engine: "Transmission 4.1.3" }, { name: "seedbox", dot: "bad", count: "down", addr: "sb.example.net", engine: "Deluge 2.2.0" }];
 const isPicked = (k, v) => S.face === "lib" && S.filter.k === k && S.filter.v === v;
 const rrow = (o) => `<button type="button" class="rr${o.cls ? " " + o.cls : ""}" ${o.data || ""}${o.kb ? ` data-kb="${esc(o.kb)}"` : ""} title="${esc(o.tip || o.t)}"><span class="g">${o.g ?? ""}</span><span class="t">${o.t}</span>${o.n != null ? `<span class="n">${o.n}</span>` : ""}${o.ans || ""}</button>`;
 const grp = (title, body, n, keep) => `<div class="rgrp${keep ? "" : " fo"}"><div class="rgh">${title}${n != null ? `<span class="n">${n}</span>` : ""}</div>${body}</div>`;
@@ -2332,10 +2262,10 @@ const ITEMS_OF = {
   disp: () => [{ t: "rows", nt: "by question", ck: S.disp === "rows" ? "✓" : " ", act: () => show("rows") }, { t: "table", nt: "one sorted list", ck: S.disp === "table" ? "✓" : " ", act: () => show("table") },
     { t: "space", nt: "by size", ck: S.disp === "space" ? "✓" : " ", act: () => show("space") }, ...sortItems(), { ft: S.disp === "space" ? "size orders the map, the largest first" : "each folder, category, tag and question remembers its own" }],
   addm: () => [{ t: "add a torrent or magnet…", k: "a", ig: "+", act: () => openAdd() }, { t: "create a torrent from a folder…", k: "ctrl+n", ig: "◇", act: () => openCreate() }, { sep: 1 }, { t: "search…", k: "ctrl+f", ig: "⌕", act: () => face("search") }],
-  amenu: () => [{ hd: document.querySelector(".ver")?.textContent || "0.6.0", s: " · home · qBittorrent 5.3.0", row: 1 }, { cap: "servers" },
+  amenu: () => [{ hd: document.querySelector(".ver")?.textContent || "0.17.1", s: ` · home · ${SERVERS[0].engine}`, row: 1 }, { cap: "servers" },
     ...SERVERS.map((v, i) => ({ t: v.name, ig: `<span class="dot ${v.dot}" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(${v.dot === "on" ? "--green" : v.dot === "bad" ? "--red" : "--fg-dark"})"></span>`, nt: i ? (v.dot === "bad" ? "down" : `${v.count} torrents`) : `${ROWS.length} torrents`, ck: i ? " " : "✓", act: () => serverRows()[i].run() })),
     { sep: 1 }, { t: AS.on === "burst" ? `burst${AS.until ? " · until " + hm(AS.until) : ""}` : AS.on === "turtle" ? "turtle" : "alternative speed limits", k: "A", ig: icon(AS.on === "burst" ? IC.gauge : IC.turtle), act: () => openAlt() },
-    { t: "stop all", ig: "□", act: () => { toggle(ROWS.filter(r => !isStopped(r)).map(r => r.id)); note("stopped every torrent on home"); } }, { t: "start all", ig: "▷", act: () => { toggle(ROWS.filter(r => r.st === "stop").map(r => r.id)); note("started every stopped torrent on home"); } },
+    PAUSED ? { t: "resume torrents", nt: `${PAUSED.length} you paused`, ig: "▷", act: () => { const n = PAUSED.length; toggle(PAUSED); PAUSED = null; note(`started the ${n} torrents Pause Torrents stopped`); } } : { t: "pause torrents", ig: "‖", act: () => { PAUSED = ROWS.filter(r => !isStopped(r)).map(r => r.id); toggle(PAUSED); note(`paused ${PAUSED.length} torrents · resume torrents starts exactly those`); } },
     { sep: 1 }, { t: "add torrent…", k: "a", ig: "+", act: () => openAdd() }, { t: "settings…", k: ",", ig: icon(IC.gear), act: demoOnly("settings") }, { sep: 1 }, { cap: "this window only" },
     { t: "seed console", k: "`", ig: "↑", act: () => face("seed") }, { t: "log", k: "~", ig: "~", act: () => face("log") }, { t: "commands", k: ":", ig: ":", act: () => openPal() }, { t: "keys and help", k: "?", ig: "?", act: () => layer("help") },
     { t: "hide window", k: "q", ig: "–", act: demoOnly("hide the window") }, { sep: 1 }, { t: "quit omaseed", k: "ctrl+q", ig: "×", act: demoOnly("quit") }],
@@ -2344,9 +2274,9 @@ const ITEMS_OF = {
     { t: "burst", ig: `<span style="color:var(--green)">${icon(IC.gauge)}</span>`, nt: "↓∞ ↑2.00M", ck: AS.on === "burst" ? "✓" : " ", act: () => setAlt("burst") }, { sep: 1 }, { cap: "burst lasts" },
     ...["30 min", "1 h", "until I stop it"].map((t, i) => ({ t, ck: AS.lasts === i ? "✓" : " ", act: () => { AS.lasts = i; if (AS.on === "burst") setAlt("burst"); else { L.keep = true; drawLayer(); } } })),
     { sep: 1 }, { t: "edit the presets…", ig: "✎", act: demoOnly("Settings › qBittorrent › Speed") }, { ft: "A turns off what is on, or the last one picked back on." }],
-  smenu: () => { const i = L.srv, v = SERVERS[i]; return [{ hd: v.name, s: i ? `${v.addr} · last seen yesterday 21:04` : `${v.addr} · qBittorrent 5.3.0 · ${ROWS.length} torrents`, block: 1 },
+  smenu: () => { const i = L.srv, v = SERVERS[i]; return [{ hd: v.name, s: i ? `${v.addr} · ${v.engine} · last seen yesterday 21:04` : `${v.addr} · ${v.engine} · ${ROWS.length} torrents`, block: 1 },
     ...(i ? [{ t: "switch to it", k: "enter", ig: "→", act: () => serverRows()[i].run() }] : [{ t: "the current server", ig: "✓", off: 1 }, { t: AS.on || "alternative speed limits", k: "A", ig: icon(IC.turtle), act: () => openAlt() },
-      { t: "stop all", ig: "□", act: () => ITEMS_OF.amenu().find(x => x.t === "stop all").act() }, { t: "start all", ig: "▷", act: () => ITEMS_OF.amenu().find(x => x.t === "start all").act() }]),
+      { ...ITEMS_OF.amenu().find(x => /^(pause|resume) torrents$/.test(x.t)) }]),
     { sep: 1 }, { t: "edit…", act: demoOnly("edit the server") }, { t: "test the connection", act: () => note(i === 2 ? "seedbox didn't answer: nothing at sb.example.net:443" : `${v.name} answered in 12 ms`, i === 2 ? "bad" : "ok") },
     { t: "open its web UI", act: demoOnly("open its web UI") }, { t: "copy its address", act: () => copy(v.addr, "address") }, { sep: 1 }, { t: "remove…", cls: "danger", act: demoOnly("remove the server") }]; },
   fmenu: () => [{ hd: nameOf(L.path), s: L.path, block: 1 }, { t: "move this folder…", k: "M", ig: "⇥", act: () => openMoveFolder(L.path) }, { t: "create a torrent from a folder in it…", ig: "◇", act: () => openCreate(L.path + "/photo-walks") }],
@@ -2916,7 +2846,7 @@ function commands() {
 }
 function serverRows() {
   return SERVERS.map((v, i) => ({ t: v.name, k: i ? (v.dot === "bad" ? "didn't answer" : `${v.count} torrents`) : "on it now",
-    d: i ? `${v.addr} · ${v.dot === "bad" ? "last try" : "last seen"} yesterday ${v.dot === "bad" ? "09:12" : "21:04"}` : `${v.addr} · ${ROWS.length} torrents · qBittorrent 5.2.3`,
+    d: i ? `${v.addr} · ${v.engine} · ${v.dot === "bad" ? "last try" : "last seen"} yesterday ${v.dot === "bad" ? "09:12" : "21:04"}` : `${v.addr} · ${ROWS.length} torrents · ${v.engine}`,
     run: () => i ? note(`switching to ${v.name}: omaseed shows its library; this demo has only home's`) : note("on home already") }));
 }
 function palRows() {
@@ -3361,33 +3291,34 @@ if (!reduced) setInterval(() => {
   if (S.face === "lib") { list(); floating(); if (S.tab === 0) details(); } rail();
 }, 1000);
 
+const R = id => $(id) || document.createElement("div"); // a replica whose section left the page draws nowhere
 // ── the sections' replicas ───────────────────────────────────────────────────────
 // Adding: the Downloads list and the files match answer clicks, the rest is drawn once.
 const repDl = { list: mkDL(), ticks: new Set([0, 2]) };
-const drawRepDl = () => $("repDl").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add ${repDl.ticks.size > 1 ? repDl.ticks.size + " torrents" : "torrent"}</b><span class="s">paste a magnet link, a URL or pick a file</span></div><span class="k-esc">esc</span></div>
+const drawRepDl = () => R("repDl").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add ${repDl.ticks.size > 1 ? repDl.ticks.size + " torrents" : "torrent"}</b><span class="s">paste a magnet link, a URL or pick a file</span></div><span class="k-esc">esc</span></div>
   <div class="k-grp"><span class="k-lab"><span>magnet, url or file</span></span><div class="k-fld ph"><span>magnet:?xt=urn:btih:…</span><span class="tr">browse<span class="k-kc">ctrl+o</span></span></div></div>
   ${dlListHTML(repDl.list, repDl.ticks)}<div class="k-hints"><span><b>j k</b> move</span><span><b>space</b> tick</span><span><b>enter</b> use this file</span><span><b>tab</b> fields</span></div></div>`;
-$("repDl").addEventListener("click", e => { const r = e.target.closest("[data-dl]"); if (!r) return; const i = +r.dataset.dl; repDl.ticks.has(i) ? repDl.ticks.delete(i) : repDl.ticks.add(i); drawRepDl(); });
+R("repDl").addEventListener("click", e => { const r = e.target.closest("[data-dl]"); if (!r) return; const i = +r.dataset.dl; repDl.ticks.has(i) ? repDl.ticks.delete(i) : repDl.ticks.add(i); drawRepDl(); });
 const bbb = DL[1]; let repSaved = false;
-const drawRepMatch = () => $("repMatch").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add torrent</b><span class="s">${bbb.title} · ${gb(bbb.size)} · from file</span></div><span class="k-esc">esc</span></div>
+const drawRepMatch = () => R("repMatch").innerHTML = `<div class="k-sheet" style="max-width:540px"><div class="k-hd"><span class="k-ic">+</span><div><b>Add torrent</b><span class="s">${bbb.title} · ${gb(bbb.size)} · from file</span></div><span class="k-esc">esc</span></div>
   <div class="k-grp"><span class="k-lab"><span>magnet, url or file</span></span><div class="k-fld on"><span>~/Downloads/${esc(bbb.file)}</span><span class="tr">browse<span class="k-kc">ctrl+o</span></span></div></div>
   ${matchHTML(bbb, repSaved)}
   <div class="k-grp"><span class="k-lab"><span>save to</span></span>${repSaved ? `<div class="k-fld hl"><span>${bbb.matchPath}/</span><span class="tr">from the files match · browse</span></div>${freeHTML("good")}` : `<div class="k-fld ph"><span>the server's default</span><span class="tr">browse</span></div>${freeHTML("need", bbb.size)}`}</div></div>`;
-$("repMatch").addEventListener("click", e => { if (e.target.closest("[data-a=save]")) { repSaved = !repSaved; drawRepMatch(); } });
-$("repDup").innerHTML = dupHTML(DL[2]);
-$("repFree").innerHTML = `<div class="k-sheet" style="max-width:540px;border-color:var(--hairline)">${[["fits", freeHTML("need", 4.61)], ["leaves little", freeHTML("warn")], ["won't fit", freeHTML("bad")], ["already there", freeHTML("good")], ["magnet", freeHTML("magnet")]]
+R("repMatch").addEventListener("click", e => { if (e.target.closest("[data-a=save]")) { repSaved = !repSaved; drawRepMatch(); } });
+R("repDup").innerHTML = dupHTML(DL[2]);
+R("repFree").innerHTML = `<div class="k-sheet" style="max-width:540px;border-color:var(--hairline)">${[["fits", freeHTML("need", 4.61)], ["leaves little", freeHTML("warn")], ["won't fit", freeHTML("bad")], ["already there", freeHTML("good")], ["magnet", freeHTML("magnet")]]
   .map(([t, h]) => `<div class="k-grp"><span class="k-lab"><span>save to · ${t}</span></span>${h}</div>`).join("")}</div>`;
 
 // Servers
-$("repSrv").innerHTML = `<div class="k-set"><nav aria-label="Settings sections (picture)"><span class="l">settings</span>${[["⚙", "General"], ["⛁", "Servers", 1], ["◔", "Notifications"], ["⌨", "Keybindings"], ["◐", "Appearance"], ["↺", "Backup"], ["i", "About"]].map(([g, t, on]) => `<span class="it${on ? " on" : ""}"><i>${g}</i>${t}</span>`).join("")}
+R("repSrv").innerHTML = `<div class="k-set"><nav aria-label="Settings sections (picture)"><span class="l">settings</span>${[["⚙", "General"], ["⛁", "Servers", 1], ["◔", "Notifications"], ["⌨", "Keybindings"], ["◐", "Appearance"], ["↺", "Backup"], ["i", "About"]].map(([g, t, on]) => `<span class="it${on ? " on" : ""}"><i>${g}</i>${t}</span>`).join("")}
   <span class="l q">qbittorrent</span><span class="v">home 5.2.3</span>${[["⇅", "Speed"], ["◎", "Discovery and privacy"], ["⇌", "Connection"], ["⇢", "Proxy"], ["↑", "Seeding"], ["≡", "Queue"], ["▤", "Downloads and files"]].map(([g, t]) => `<span class="it"><i>${g}</i>${t}</span>`).join("")}</nav>
   <div class="pane"><div class="t">Servers<span>esc</span></div><div class="k-srv">
-    <div><span class="d"></span><div class="t"><b>home</b><span>http://127.0.0.1:8080 · API key · 5.2.3 · 16 torrents</span></div><span class="s">in use</span></div>
-    <div><span class="d"></span><div class="t"><b>nas</b><span>http://192.168.1.20:8080 · cookie · 5.2.3 · 412 torrents</span></div><span class="s"></span></div>
-    <div><span class="d err"></span><div class="t"><b>seedbox</b><span>https://sb.example.net · API key · unreachable since 09:12</span></div><span class="s err">retrying</span></div>
+    <div><span class="d"></span><div class="t"><b>home</b><span>http://127.0.0.1:8080 · qBittorrent 5.2.3 · API key · 18 torrents</span></div><span class="s">in use</span></div>
+    <div><span class="d"></span><div class="t"><b>nas</b><span>http://192.168.1.20:9091 · Transmission 4.1.3 · user and password · 412 torrents</span></div><span class="s"></span></div>
+    <div><span class="d err"></span><div class="t"><b>seedbox</b><span>https://sb.example.net · Deluge 2.2.0 · password · unreachable since 09:12</span></div><span class="s err">retrying</span></div>
     <div class="add"><span>+</span><div class="t"><span style="color:var(--fg-dark);font-size:12px">add a server</span></div><span class="s">a</span></div></div></div></div>`;
 const fp = hash("sb.example.net") + hash("seedbox") ; const pairs = fp.slice(0, 64).toUpperCase().match(/../g);
-$("repCert").innerHTML = `<div class="k-sheet narrow"><div class="k-hd"><span class="k-ic">⛁</span><div><b>seedbox</b><span class="s">https://sb.example.net</span></div><span class="k-esc">esc</span></div>
+R("repCert").innerHTML = `<div class="k-sheet narrow"><div class="k-hd"><span class="k-ic">⛁</span><div><b>seedbox</b><span class="s">https://sb.example.net</span></div><span class="k-esc">esc</span></div>
   <div class="k-ban"><i></i><span class="g">!</span><span class="tx">untrusted certificate</span></div>
   <p style="font-size:11px;color:var(--fg-dark)">The system does not trust this server's certificate, as with a self-signed one. If the fingerprint matches the server's, trust it: omaseed then accepts this certificate only.</p>
   <div class="k-fp"><span class="k-lab"><span>sha-256</span></span><span>${pairs.slice(0, 16).join(":")}</span><span>${pairs.slice(16).join(":")}</span></div>
@@ -3418,7 +3349,7 @@ function drawBar() {
       ${BAR.alt ? `<div class="altl">◔ alternative limits · ↓ 1 MB/s · ↑ 200 KB/s</div>` : ""}
       <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><polygon class="ar" points="0,40 ${pts} 100,40"/><polyline class="ln" points="${pts}"/></svg>
       <div class="scap"><span>upload · last hour</span><span>now ${spd(u)} · peak ${spd(mx * 1e6 / 60)}</span></div></div>`;
-  $("repBar").innerHTML = `<div class="barw k">
+  R("repBar").innerHTML = `<div class="barw k">
     <div class="obar" aria-label="An Omarchy bar (picture)"><span class="ws"><b>1</b><span>2</span><span>3</span><span>4</span></span><span class="clk">${new Date().toTimeString().slice(0, 5)}</span>
       <button type="button" class="me${BAR.open ? " open" : ""}" data-b="open" title="L: panel  M: alt-speed  R: open omaseed">${mark3(st, BAR.alt, 15)}${off ? "" : `<span class="sp${BAR.alt ? " alt" : ""}">↓${short(d)} ↑${short(u)}</span>`}</button></div>
     <div class="states"><span class="lbl" style="align-self:center;margin-right:4px">show</span>${BSTATES.map(([k, t]) => `<button type="button" class="k-chip${BAR.st === k ? " on" : ""}" data-b="st:${k}">${t}</button>`).join("")}</div>
@@ -3440,7 +3371,7 @@ function drawBar() {
         <div class="feed"><span class="g" style="color:var(--accent)">◆</span><span>Tears of Steel 4K (CC-BY)<span class="bd">paid back</span></span><span class="m">reached ratio 1.0 · yesterday</span></div>`)}
       <div class="ft"><b>a</b> add · <b>o</b> omaseed · <b>A</b> alt-speed · <b>j k</b> move · <b>space</b> fold · <b>esc</b> close</div></div>` : ""}</div>`;
 }
-$("repBar").addEventListener("click", e => {
+R("repBar").addEventListener("click", e => {
   const b = e.target.closest("[data-b]"); if (!b) return; const v = b.dataset.b;
   if (v === "open") BAR.open = !BAR.open;
   else if (v === "alt") BAR.alt = !BAR.alt;
@@ -3448,9 +3379,9 @@ $("repBar").addEventListener("click", e => {
   else if (v.startsWith("fold:")) BAR.fold[v.slice(5)] = !BAR.fold[v.slice(5)];
   drawBar();
 });
-$("repBar").addEventListener("auxclick", e => { if (e.button === 1 && e.target.closest("[data-b=open]")) { e.preventDefault(); BAR.alt = !BAR.alt; drawBar(); } });
+R("repBar").addEventListener("auxclick", e => { if (e.button === 1 && e.target.closest("[data-b=open]")) { e.preventDefault(); BAR.alt = !BAR.alt; drawBar(); } });
 
-$("repNotes").innerHTML = `<div class="notes">
+R("repNotes").innerHTML = `<div class="notes">
   <div class="k-notif"><div class="t"><span class="g">✓</span>Download complete<span class="app">omaseed</span></div><div class="b">archlinux-2026.09.01-x86_64.iso · 1.31 GB · linux</div><div class="a"><span>open folder</span><span>show</span></div><div class="cd"></div></div>
   <div class="k-notif warn"><div class="t"><span class="g">◌</span>home is unreachable<span class="app">omaseed</span></div><div class="b">127.0.0.1:8080 · connection refused · retrying every 10 s</div><div class="a"><span>settings</span></div><div class="cd" style="width:34%"></div></div>
   <div class="k-notif"><div class="t">home is back<span class="app">omaseed</span></div><div class="b">connected again</div><div class="cd" style="width:80%"></div></div></div>`;
@@ -3464,31 +3395,31 @@ const HELPROWS = [
   ["app", "", [[":", "Find any command by name and run it (or ctrl+shift+p); each row teaches its key"], ["ctrl+s", "Switch server"], ["A", "Turtle or burst: turns off what is on, or the last one picked back on"], ["ctrl+f", "Search with your server's search plugins"], ["ctrl+b", "Fold or unfold the rail"], ["ctrl+.", "The omaseed menu"], [", ctrl+,", "Settings"], ["q", "Hide to the tray"], ["ctrl+q", "Quit"]]],
 ];
 const helpCol = list => list.map(([h, p, rows]) => `<div class="hg"><h4>${h}</h4>${p ? `<p>${p}</p>` : ""}${rows.map(([k, t]) => `<div class="r"><b>${esc(k)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("");
-$("repHelp").innerHTML = `<div class="k-sheet" style="max-width:820px"><div class="k-hd"><span class="k-ic">?</span><div><b>Shortcuts</b><span class="s">single letters act on the table · capitals are the stronger variant · ctrl is app-level<br>hold alt to see the keys on screen · : runs any of them by name</span></div><span class="k-esc">esc</span></div>
+R("repHelp").innerHTML = `<div class="k-sheet" style="max-width:820px"><div class="k-hd"><span class="k-ic">?</span><div><b>Shortcuts</b><span class="s">single letters act on the table · capitals are the stronger variant · ctrl is app-level<br>hold alt to see the keys on screen · : runs any of them by name</span></div><span class="k-esc">esc</span></div>
   <label class="k-fld"><span style="color:var(--fg-dark);flex:none">/</span><input id="helpQ" type="text" placeholder="filter shortcuts" autocomplete="off" spellcheck="false" aria-label="Filter shortcuts"><span class="tr" id="helpN"></span></label>
   <div class="k-help"><div>${helpCol(HELPROWS.slice(0, 3))}</div><div>${helpCol(HELPROWS.slice(3))}</div></div>
   <div class="k-hints"><span><b>↑↓</b> move</span><span><b>enter</b> run</span><span><b>esc</b> clear, then close</span></div></div>`;
 $("helpQ").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase(), rows = $("repHelp").querySelectorAll(".k-help .r"); let n = 0;
+  const q = e.target.value.trim().toLowerCase(), rows = R("repHelp").querySelectorAll(".k-help .r"); let n = 0;
   rows.forEach(r => { const hit = !q || r.textContent.toLowerCase().includes(q); r.hidden = !hit; n += hit; });
-  $("repHelp").querySelectorAll(".hg").forEach(g => g.hidden = ![...g.querySelectorAll(".r")].some(r => !r.hidden));
+  R("repHelp").querySelectorAll(".hg").forEach(g => g.hidden = ![...g.querySelectorAll(".r")].some(r => !r.hidden));
   $("helpN").textContent = q ? `${n} of ${rows.length}` : "";
 });
 
 // Careful: the shared-files question answers its two choices
 let sharedPick = 0;
-const drawShared = () => $("repShared").innerHTML = `<div class="k-sheet conf wide k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Big Buck Bunny 4K (CC-BY)</span><span>3.92 GB on disk</span></div>
+const drawShared = () => R("repShared").innerHTML = `<div class="k-sheet conf wide k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Big Buck Bunny 4K (CC-BY)</span><span>3.92 GB on disk</span></div>
   <span class="k-tog on"><i></i>also delete files from disk</span>
   <div class="k-warnb"><span>Its files are also seeded by 1 torrent you're not deleting.</span><span class="l"><b>Big Buck Bunny 4K (CC-BY)</b><span> · tracker.example.net · seeding · ratio 0.42</span></span></div>
   <div class="k-pick"><div class="${sharedPick === 0 ? "cur" : ""}" data-p="0" style="cursor:pointer"><span class="r">${sharedPick === 0 ? "●" : "○"}</span><b>keep the files</b><span>delete only this torrent; the other one keeps seeding</span></div>
     <div class="${sharedPick === 1 ? "cur" : ""}" data-p="1" style="cursor:pointer"><span class="r">${sharedPick === 1 ? "●" : "○"}</span><b>delete the files and that torrent too</b><span>2 torrents, 3.92 GB</span></div></div>
   <div class="bts"><span class="cur">cancel</span><span class="dng" style="width:auto;padding:0 10px">${sharedPick ? "delete 2 with files" : "delete, keep files"}</span></div></div>`;
-$("repShared").addEventListener("click", e => { const p = e.target.closest("[data-p]"); if (p) { sharedPick = +p.dataset.p; drawShared(); } });
-$("repLast").innerHTML = `<div class="k-sheet conf k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Tears of Steel 4K (CC-BY)</span><span>6.20 GB on disk</span></div>
+R("repShared").addEventListener("click", e => { const p = e.target.closest("[data-p]"); if (p) { sharedPick = +p.dataset.p; drawShared(); } });
+R("repLast").innerHTML = `<div class="k-sheet conf k-conf"><div class="msg">Delete this torrent?</div><div class="sub"><span>Tears of Steel 4K (CC-BY)</span><span>6.20 GB on disk</span></div>
   <span class="k-tog"><i></i>also delete files from disk</span>
   <div class="k-warnb"><span>You are its only seed.<span class="l"> 2 waiting for it. Deleting it takes it out of the swarm.</span></span><span class="stop">stop instead</span></div>
   <div class="bts"><span class="cur">cancel</span><span class="dng">delete</span></div></div>`;
-$("repErr").innerHTML = `<div class="k-sheet" style="max-width:620px;border-color:var(--muted)">
+R("repErr").innerHTML = `<div class="k-sheet" style="max-width:620px;border-color:var(--muted)">
   <div class="k-list" style="background:none"><div style="grid-template-columns:minmax(0,1fr) auto"><span style="color:var(--fg-bright)">Elephants Dream 1080p (CC-BY)</span><span><span style="color:var(--red)">!</span> no access</span></div></div>
   <div class="kv" style="font-size:11px"><span class="k">status</span><span class="v"><span style="color:var(--red)">error</span><span style="color:var(--fg-dark)"> · no access</span></span></div>
   <div class="k-eb"><span class="g">✕</span><span class="h">Can't write to its save folder</span><span class="l">Permission denied, opening Elephants Dream 1080p (CC-BY)/ed_1080p.mkv</span><span class="l d">/data/torrents/movies</span><span class="l d">qBittorrent's log · ${dayhm(T0 - 95 * 60000)} · 2 times</span>
@@ -3496,14 +3427,14 @@ $("repErr").innerHTML = `<div class="k-sheet" style="max-width:620px;border-colo
 
 // Moving: the sheets as the demo library would show them, drawn once; the band's three states
 const still = h => h.replace(/ id="mvTo"/g, ' readonly tabindex="-1"');
-$("repMvSheet").innerHTML = still(mvHTML({ mk: "folder", root: "/data/torrents/movies", ids: ROWS.filter(r => r.path === "/data/torrents/movies").map(r => r.id), to: "/mnt/fast/movies", carry: true }));
-$("repMvPlaces").innerHTML = still(mvHTML({ mk: "sel", ids: ROWS.filter(r => /^(Wikipedia|ubuntu|Big Buck)/.test(r.name)).map(r => r.id), to: "/mnt/fast/library", mode: "one", open: true, pi: 1 }));
+R("repMvSheet").innerHTML = still(mvHTML({ mk: "folder", root: "/data/torrents/movies", ids: ROWS.filter(r => r.path === "/data/torrents/movies").map(r => r.id), to: "/mnt/fast/movies", carry: true }));
+R("repMvPlaces").innerHTML = still(mvHTML({ mk: "sel", ids: ROWS.filter(r => /^(Wikipedia|ubuntu|Big Buck)/.test(r.name)).map(r => r.id), to: "/mnt/fast/library", mode: "one", open: true, pi: 1 }));
 const bandHTML = (k, g, h, acts, ln, pct) => `<div class="mband${k ? " " + k : ""}"><span class="g">${g}</span><span class="h">${h}</span><span class="a">${acts.map(a => a === "details" ? `<button type="button" class="dt" tabindex="-1">details ›</button>` : `<button type="button" tabindex="-1">${a}</button>`).join("")}</span><span class="ln">${ln}</span>${pct != null ? `<i class="pg" style="width:${pct}%"></i>` : ""}</div>`;
-$("repMvBand").innerHTML = `<div class="k-sheet" style="max-width:860px;padding:0;gap:0;border-color:var(--hairline)">
+R("repMvBand").innerHTML = `<div class="k-sheet" style="max-width:860px;padding:0;gap:0;border-color:var(--hairline)">
   ${bandHTML("", "↻", "Moving movies to /mnt/fast/movies", ["pause", "show", "details"], "3 of 6 · 9.12 GB of 21.7 GB · 42 % · about 1 min left at 190 MB/s · now Tears of Steel 4K (CC-BY) (6.20 GB)", 42)}
   ${bandHTML("", "‖", "The move of movies is paused", ["resume", "end the move", "details"], "3 of 6 · 3 waiting · nothing is sent until you resume", 42)}
   ${bandHTML("g", "✓", "movies moved, loose files too", ["move back…", "show", "details", "close"], "6 torrents and 23 files at /mnt/fast/movies · in 2 min")}</div>`;
-$("repMvBack").innerHTML = `<div class="k-sheet k-mv" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Move films back</b><span class="s">each to where it was before 14:02 · 84.1 GB on disk · on home</span></div><span class="k-esc">esc</span></div>
+R("repMvBack").innerHTML = `<div class="k-sheet k-mv" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Move films back</b><span class="s">each to where it was before 14:02 · 84.1 GB on disk · on home</span></div><span class="k-esc">esc</span></div>
   <div class="rows"><div><span>/mnt/fast/films</span><span class="ar">→</span><span class="to">/srv/media/films</span><span class="n">46</span></div></div>
   <div class="k-chk"><div class="warn"><span class="g">!</span><span class="t">3 were moved again since, by the move to /mnt/usb (16:40): they stay where they are now.</span><span class="lk">move that one back first</span><span class="nt">Moving that one back first puts them where this move left them.</span></div>
     <div class="warn"><span class="g">!</span><span class="t">Automatic management stays off for the 3 that had it. Turning it on again is up to you (the torrent's menu).</span><span></span></div></div>
@@ -3511,26 +3442,26 @@ $("repMvBack").innerHTML = `<div class="k-sheet k-mv" style="max-width:560px"><d
   <div class="k-hints"><span><b>enter</b> move</span><span><b>esc</b> cancel</span></div></div>`;
 
 // Careful: a move qBittorrent accepted and then couldn't do; a qBittorrent's backups
-$("repFail").innerHTML = `<div class="k-sheet" style="max-width:520px;border-color:var(--muted)"><div class="kv" style="font-size:11px"><span class="k">status</span><span class="v" style="color:var(--green)">seeding</span></div>
+R("repFail").innerHTML = `<div class="k-sheet" style="max-width:520px;border-color:var(--muted)"><div class="kv" style="font-size:11px"><span class="k">status</span><span class="v" style="color:var(--green)">seeding</span></div>
   <div class="k-eb y"><span class="g">!</span><span class="h">The move to media/films didn't happen</span><span class="l">Permission denied, moving Sintel 1080p (CC-BY)</span><span class="l d">Its files are still in /data/torrents/movies</span><span class="l d">qBittorrent's log · today ${hm(ROWS.find(r => r.fail).fail.at)} · 2 times</span>
     <div class="eacts"><span><b>m</b>move…</span><span><b>o</b>open folder</span><span>copy the line</span><span>its lines in the log</span><span><b>x</b>dismiss</span></div></div></div>`;
 const bakRow = (g, t, b, d) => `<div style="display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:2px 10px;padding:8px 0;border-bottom:1px solid var(--faint)"><span style="color:var(--fg-dark)">${g}</span><b style="color:var(--fg-bright);font-weight:500">${t}</b><span class="k-btns" style="display:block"><span style="padding:0 10px">${b}</span></span><span style="grid-column:2/-1;color:var(--fg-dark);font-size:11px">${d}</span></div>`;
-$("repBak").innerHTML = `<div class="k-sheet" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Backup</b><span class="s">home's own settings and torrents, read from and sent to home only.</span></div><span class="k-esc">esc</span></div>
+R("repBak").innerHTML = `<div class="k-sheet" style="max-width:560px"><div class="k-hd"><span class="k-ic">↺</span><div><b>Backup</b><span class="s">home's own settings and torrents, read from and sent to home only.</span></div><span class="k-esc">esc</span></div>
   <div><span class="k-lab"><span>settings</span></span>${bakRow("↓", "Export home's settings", "export…", "Preferences, 2 categories, 3 tags, 2 RSS feeds and 5 rules. Passwords are left out.")}${bakRow("↑", "Import settings into home", "import…", "From a qBittorrent export or an omaseed backup. Every change is shown first; paths, ports and the Web UI login stay as they are unless you tick them.")}${bakRow("⇄", "Copy settings from another server", "copy…", "Read from that server just now, then shown as an import into home. Nothing changes on the other server.")}</div>
   <div><span class="k-lab"><span>torrents</span></span>${bakRow("↓", "Export home's torrents", "export…", "16 torrents with their save paths, categories, tags and limits. The ${gb(ROWS.reduce((a, r) => a + taken(r), 0))} of files stay where they are.")}${bakRow("↑", "Import torrents into home", "import…", "Adds them, lets qBittorrent check the files on disk, then starts the complete ones. Torrents already on home are skipped.")}</div></div>`;
 
 // Servers: the band when one stops answering, and the rail's servers
-$("repDown").innerHTML = `<div class="k-sheet" style="max-width:600px;padding:0;gap:0;border-color:var(--hairline)">${bandHTML("y", "!", "nas didn't answer", ["retry now", "switch server", "details"], "Nothing is listening at 192.168.1.20:8080. omaseed tries again in 7 s. The list below is from 23:26.")}
-  ${bandHTML("r", "✕", "seedbox refused the sign-in", ["edit login", "switch server", "details"], "The API key omaseed has for it is wrong. It won't try again until you change it.")}</div>`;
+R("repDown").innerHTML = `<div class="k-sheet" style="max-width:600px;padding:0;gap:0;border-color:var(--hairline)">${bandHTML("y", "!", "nas didn't answer", ["retry now", "switch server", "details"], "Nothing is listening at 192.168.1.20:9091. omaseed tries again in 7 s. The list below is from 23:26.")}
+  ${bandHTML("r", "✕", "seedbox refused the sign-in", ["edit login", "switch server", "details"], "The password omaseed has for it is wrong. It won't try again until you change it.")}</div>`;
 
 // Omarchy: the palette and the log, as drawn in the app
-$("repPal").innerHTML = `<div class="k-pal" style="margin:0;max-height:none"><label class="pq"><span class="g">:</span><input readonly tabindex="-1" value="mov" aria-label="commands"><span class="cn">3 of 44</span></label><div class="pl">
+R("repPal").innerHTML = `<div class="k-pal" style="margin:0;max-height:none"><label class="pq"><span class="g">:</span><input readonly tabindex="-1" value="mov" aria-label="commands"><span class="cn">3 of 44</span></label><div class="pl">
   <div class="pr cur"><b>move…</b><span class="kk">m</span><span class="d">torrents · 2 selected</span></div>
   <div class="pr"><b>move folder…</b><span class="kk">M</span><span class="d">library · movies</span></div>
   <div class="pr"><b>undo last move</b><span class="kk">via :</span><span class="d">library · linux · 16:24 · /mnt/fast/linux</span></div></div>
   <div class="pf"><span><b>↑↓</b> move</span><span><b>enter</b> run</span><span><b>esc</b> clear</span><span class="r">? lists every key</span></div></div>`;
 { const pick = LOG.filter(l => !/File error alert|config directory/.test(l.msg) && (l.lv >= 1 || /finished|Start moving|Added new/.test(l.msg))).slice(-7);
-  $("repLog").innerHTML = `<div class="k-sheet" style="max-width:none;padding:0;gap:0;border-color:var(--muted)"><div class="lbar">${LV.map(([t, c], i) => `<span class="lchip on" style="--c:var(${c})">${t} <b>${LOG.filter(l => l.lv === i).length}</b><kbd>${i + 1}</kbd></span>`).join("")}</div>
+  R("repLog").innerHTML = `<div class="k-sheet" style="max-width:none;padding:0;gap:0;border-color:var(--muted)"><div class="lbar">${LV.map(([t, c], i) => `<span class="lchip on" style="--c:var(${c})">${t} <b>${LOG.filter(l => l.lv === i).length}</b><kbd>${i + 1}</kbd></span>`).join("")}</div>
   <div class="lrows" style="max-height:none">${pick.map(l => `<div class="lr" style="grid-template-columns:64px 60px minmax(0,1fr);padding:4px 12px"><span class="lt">${new Date(l.t).toTimeString().slice(0, 5)}</span><span style="color:var(${l.lv ? LV[l.lv][1] : "--fg-dark"})">${LV[l.lv][0]}</span><span class="lm">${logMsg(l.msg)}</span></div>`).join("")}</div>
   <div class="foot" style="border-top:1px solid var(--hairline)"><span class="fol">● following</span><div class="hints"><span><b>w</b> next warning</span><span><b>enter</b> show torrent</span><span><b>~</b> library</span></div></div></div>`; }
 
@@ -3543,31 +3474,120 @@ const staticMenu = kind => { const keep = L; L = { kind, i: -1 }; const h = menu
   const bak = { ...SR, ans: { ...SR.ans }, on: { ...SR.on }, recent: [...SR.recent] };
   Object.assign(SR, { q: "sintel", shown: "sintel", phase: "done", ans: { a: 1, b: "failed", c: 3 }, type: "any", recent: ["sintel", "big buck bunny"], hide: false, sort: 0, cur: 0 });
   const views = [["library", "≡"], ["seed", "↑"], ["log", "~"], ["search", "⌕"]].map(([t, g]) => `<div class="rr${t === "search" ? " vw" : ""}"><span class="g">${g}</span><span class="t">${t}</span></div>`).join("");
-  $("repSearch").innerHTML = mini(`<div class="frame"><aside class="rail"><div class="rscroll"><div class="rgrp views">${views}</div>${searchRail()}</div></aside>
+  R("repSearch").innerHTML = mini(`<div class="frame"><aside class="rail"><div class="rscroll"><div class="rgrp views">${views}</div>${searchRail()}</div></aside>
     <div class="main"><div class="tbar"><div class="tt"><b>Search${jp("検索")}</b><span>${esc(searchSentence())}</span></div></div><div class="sview">${searchViewHTML()}</div></div></div>`);
   Object.assign(SR, bak);
   // create, for anyone and for a private tracker
-  $("repCrAny").innerHTML = mini(still(createHTML({ from: "/data/share/photo-walks", for: "any", fmt: 0, more: false })));
-  $("repCrPriv").innerHTML = mini(still(createHTML({ from: "/data/share/photo-walks", for: "priv", fmt: 0, more: false })));
+  R("repCrAny").innerHTML = mini(still(createHTML({ from: "/data/share/photo-walks", for: "any", fmt: 0, more: false })));
+  R("repCrPriv").innerHTML = mini(still(createHTML({ from: "/data/share/photo-walks", for: "priv", fmt: 0, more: false })));
   // turtle and burst: the choice, and the speeds against their caps
-  $("repAlt").innerHTML = mini(staticMenu("altm"), " nw");
+  R("repAlt").innerHTML = mini(staticMenu("altm"), " nw");
   const keepAS = { ...AS }, [d0, u0] = [ROWS.reduce((a, r) => a + r.dl, 0), ROWS.reduce((a, r) => a + r.ul, 0)];
   const capRow = lab => { const d = capped(d0, 0), u = capped(u0, 1);
     return `<div class="caprow"><span class="lbl">${lab}</span><div class="tbar">${speedHTML("d", "↓", d, 0)}${speedHTML("u", "↑", u, 1)}</div><div class="sline">${footHTML()}</div></div>`; };
   Object.assign(AS, { on: "turtle", until: null }); let h = capRow("turtle, by hand");
   Object.assign(AS, { on: "burst", until: new Date(Date.now() + 3600e3) }); h += capRow("burst, for an hour");
   Object.assign(AS, keepAS);
-  $("repCaps").innerHTML = mini(h);
+  R("repCaps").innerHTML = mini(h);
   // the same rows in both skins
   const pick = [["need", ROWS.find(r => r.fail)], ["arr", ROWS[0]], ["give", ROWS.find(r => r.name.startsWith("Blender"))]];
   const rowsOf = () => pick.map(([k, r]) => { const q = QS5.find(x => x[0] === k), n = ROWS.filter(x => qOf(x) === k);
     return `<div class="gh${k === "need" ? " nd" : ""}"><span class="tl">${q[1]}${jp(q[4])}</span><span class="c">${pad2(n.length)}</span><span class="r">${esc(groupRight(k, n))}</span></div>${rowHTML(r)}`; }).join("");
-  $("repSkinA").innerHTML = mini(`<div class="tbar"><div class="tt"><b>Library${jp("ライブラリ")}</b><span>${esc(sentence())}</span></div></div><div class="rows" style="padding-bottom:6px">${rowsOf()}</div>`, "", true);
+  R("repSkinA").innerHTML = mini(`<div class="tbar"><div class="tt"><b>Library${jp("ライブラリ")}</b><span>${esc(sentence())}</span></div></div><div class="rows" style="padding-bottom:6px">${rowsOf()}</div>`, "", true);
   const was = app.classList.contains("console"); app.classList.add("console");
-  $("repSkinB").innerHTML = mini(`<div class="tbar"><div class="tt"><b>Library${jp("ライブラリ")}</b><span>${esc(sentence())}</span></div></div><div class="rows" style="padding-bottom:6px">${rowsOf()}</div>`, " console", true);
+  R("repSkinB").innerHTML = mini(`<div class="tbar"><div class="tt"><b>Library${jp("ライブラリ")}</b><span>${esc(sentence())}</span></div></div><div class="rows" style="padding-bottom:6px">${rowsOf()}</div>`, " console", true);
   if (!was) app.classList.remove("console");
 })();
 
+// ── the v0.13 to v0.17 replicas: space, the files by kind, the drives, agents ──────────────
+(() => {
+  // Space: the window's own map, drawn from the demo library into a box of its own
+  const drawSpace = () => {
+    const el = R("repSpace"), rows = ROWS, tot = rows.reduce((a, r) => a + r.size, 0);
+    const small = rows.filter(r => r.size / tot < .01), big = rows.filter(r => r.size / tot >= .01), byF = {};
+    big.forEach(r => (byF[r.path] ||= []).push(r));
+    const folders = Object.entries(byF).map(([p, rs]) => ({ p, rs: rs.sort((a, b) => b.size - a.size), v: rs.reduce((a, r) => a + r.size, 0) })).sort((a, b) => b.v - a.v);
+    el.innerHTML = `<div class="w5 mini rspace"><div class="space"><div class="s1"><b>Where the space goes</b>${gb(tot)} in ${rows.length} torrents · by folder, then torrent</div>
+      <div class="s2"><span>/data/torrents · ${plural(ROWS.filter(r => r.path === "/data/torrents").length, "torrent", "torrents")} · ${gb(ROWS.filter(r => r.path === "/data/torrents").reduce((a, r) => a + r.size, 0))}</span><button type="button" tabindex="-1">move this folder…</button></div>
+      <div class="map" id="repMap"></div><div class="under"><span>under 1 %:</span>${small.slice(0, 3).map(r => `<button type="button" tabindex="-1">${esc(r.name.length > 26 ? r.name.slice(0, 12) + "…" + r.name.slice(-12) : r.name)} · ${gb(r.size)}</button>`).join("")}${small.length > 3 ? `<span>… ${small.length - 3} more</span>` : ""}</div></div></div>`;
+    requestAnimationFrame(() => {
+      const m = $("repMap"); if (!m) return; const W = m.clientWidth, H = m.clientHeight, fr = [];
+      splitMap(folders, 0, 0, W, H, fr); let html = "";
+      for (const f of fr) {
+        const head = fr.length > 1 ? 17 : 0;
+        html += `<div class="fd" style="left:${f.x}px;top:${f.y}px;width:${f.w - 1}px;height:${f.h - 1}px">${head ? `<span>${esc(f.it.p)} · ${gb(f.it.v)}</span>` : ""}</div>`;
+        const ts = []; splitMap(f.it.rs.map(r => ({ r, v: r.size })), f.x + 1, f.y + head + 1, f.w - 3, f.h - head - 3, ts);
+        for (const t of ts) { const r = t.it.r, [, c] = glyph(r), w = words(r);
+          html += `<div class="tb" style="--st:var(${c});left:${t.x + 1}px;top:${t.y + 1}px;width:${Math.max(0, t.w - 2)}px;height:${Math.max(0, t.h - 2)}px" title="${esc(r.name)} · ${gb(r.size)}">${t.w >= 70 ? `<b>${esc(r.name)}</b>` : ""}${t.h >= 50 && t.w >= 70 ? `<span>${gb(r.size)} · ${esc(w.fact)}</span>` : ""}</div>`; }
+      }
+      m.innerHTML = html;
+    });
+  };
+  drawSpace();
+  let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(drawSpace, 150); });
+
+  // The files, by kind: chips with a count and a size; a click shows only that kind
+  const FILES = [["video", "Tears.of.Steel.2012.2160p.mkv", 5.91], ["video", "Tears.of.Steel.2012.1080p.mkv", .28], ["extras", "Making.of.Tears.of.Steel.mkv", .011], ["subtitles", "tos-en.srt", .00004], ["subtitles", "tos-pt-BR.srt", .00004], ["subtitles", "tos-es.srt", .00004], ["images", "poster.jpg", .0021], ["images", "stills/001.png", .0042], ["books", "screenplay.pdf", .0008], ["archives", "blender-files.zip", .0071]];
+  const KINDS = ["video", "subtitles", "images", "books", "archives", "extras"], kn = { video: ["video", "videos"], subtitles: ["subtitle", "subtitles"], images: ["image", "images"], books: ["book", "books"], archives: ["archive", "archives"], extras: ["extra", "extras"] };
+  let only = null;
+  const drawKinds = () => {
+    const shown = FILES.filter(f => !only || f[0] === only).sort((a, b) => b[2] - a[2]);
+    R("repKinds").innerHTML = `<div class="k-sheet" style="max-width:560px;border-color:var(--hairline)"><div class="k-grp"><span class="k-lab"><span>files</span><span>${FILES.length} files · ${gb(FILES.reduce((a, f) => a + f[2], 0))}</span></span>
+      <div class="kchips">${KINDS.map(k => { const fs = FILES.filter(f => f[0] === k); return `<button type="button" data-kind="${k}" aria-pressed="${only === k}"><i>✓</i>${plural(fs.length, ...kn[k])}<span>${gb(fs.reduce((a, f) => a + f[2], 0))}</span></button>`; }).join("")}</div>
+      <div class="k-list k-files"><div class="hdr"><span>✓</span><span>Name</span><span class="r">Size ↓</span><span>Kind</span></div>${shown.map(f => `<div><span class="t">✓</span><span>${esc(f[1])}</span><span class="r">${gb(f[2])}</span><span>${f[0]}</span></div>`).join("")}</div></div></div>`;
+  };
+  R("repKinds").addEventListener("click", e => { const b = e.target.closest("[data-kind]"); if (!b) return; only = only === b.dataset.kind ? null : b.dataset.kind; drawKinds(); });
+  drawKinds();
+
+  // The drives: the room line on ntfs3 and on FAT32, the tick that waits, the files that are gone
+  R("repDrive").innerHTML = `<div class="k-sheet" style="max-width:540px;border-color:var(--hairline)">
+    <div class="k-grp"><span class="k-lab"><span>save to · /mnt/usb · ntfs3</span></span><div class="k-free"><span>needs <b>6.20 GB</b></span>${meter(52)}<span><b>11.9 GB</b> free on this drive</span></div>
+      <div class="k-drv">On this disk every file you tick takes its full size at once. Selected: 6.20 GB, so it fits.</div></div>
+    <div class="k-grp"><span class="k-lab"><span>save to · /mnt/stick · vfat</span></span><div class="k-free bad"><span>needs <b>9.41 GB</b></span>${meter(38)}<span>only <b>7.80 GB</b> free</span></div>
+      <div class="k-drv bad">Needs 9.41 GB, 7.80 GB free: every ticked file takes its full size here at once, so qBittorrent would stop with "No space left on device" before downloading. Select fewer files, or save to another disk.</div>
+      <div class="k-drv warn">1 file is 4 GiB or more, past what FAT32 can hold: qBittorrent would stop with "File too large" within seconds of the tick. <span class="lk">skip these</span></div></div></div>`;
+  R("repTick").innerHTML = `<div class="k-sheet" style="max-width:520px;padding:0;gap:0;border-color:var(--hairline)">
+    <div class="mband"><span class="g">◷</span><span class="h">Wanting 3 files, 18.4 GB, in 3 s</span><span class="a"><button type="button" tabindex="-1">undo <b>u</b></button><button type="button" tabindex="-1">send now <b>⏎</b></button></span><span class="ln">Ubuntu ISO collection · on ntfs3 they take their whole size the moment they are wanted · 21.0 GB free</span><i class="pg" style="width:66%"></i></div></div>`;
+  R("repGone").innerHTML = `<div class="k-sheet" style="max-width:720px;border-color:var(--muted)">
+    <div class="k-list" style="background:none"><div style="grid-template-columns:minmax(0,1fr) auto"><span style="color:var(--fg-bright)">Cosmos Laundromat 2K (CC-BY)</span><span><span style="color:var(--red)">!</span> files missing</span></div><div style="grid-template-columns:minmax(0,1fr) auto"><span style="color:var(--fg-bright)">Sintel 1080p (CC-BY)</span><span><span style="color:var(--red)">!</span> files missing</span></div></div>
+    <div class="k-eb"><span class="g">✕</span><span class="h">Its folder is on a drive that isn't mounted</span><span class="l">/mnt/archive · plug it in, then recheck</span><span class="l d">Cosmos Laundromat 2K (CC-BY) · since 09:12</span><div class="eacts"><span>recheck</span><span>open folder</span></div></div>
+    <div class="k-eb ok"><span class="g">✓</span><span class="h">Found every file of Sintel 1080p (CC-BY) in /mnt/media/films</span><span class="l">4 files, each at its size · nothing is moved; the torrent points there and rechecks</span><span class="l d">omaseed do locate 3f9c… --to /mnt/media/films</span></div></div>`;
+
+  // Agents: a terminal, the four lines in Settings, the window that asks
+  R("repTerm").innerHTML = `<div class="kterm"><div class="th"><span>terminal</span><span>demo data</span></div><pre><span class="p">$</span> <span class="c">omaseed errors</span>
+<b>home</b> · <span class="r">2 need you</span>
+
+<b>Elephants Dream 1080p (CC-BY)</b>  <span class="r">no access</span>
+  Can't write to its save folder
+  since 11:40 · fix: retry
+  <span class="p">log 11:40  Permission denied, opening ed_1080p.mkv</span>
+
+<b>Sintel 1080p (CC-BY)</b>           <span class="r">files missing</span>
+  its files are gone from /data/torrents/movies
+  since 09:12 · fix: locate --to FOLDER
+
+<span class="p">$</span> <span class="c">omaseed do --plan fix.txt --dry-run</span>
+<span class="g">✓</span> 2 locates, 1 move · every check passed · nothing done</pre></div>`;
+  const lv = (on, opts) => `<div class="chips">${opts.map(o => `<span class="chip${o === on ? " on" : ""}">${o}</span>`).join("")}</div>`;
+  R("repGate").innerHTML = `<div class="k-sheet kgate" style="max-width:560px;border-color:var(--hairline)">
+    <div class="srow head"><span class="ic">◈</span><div class="tx"><b>Agents</b><span>Agents can read your library and do what the lines below allow. Deleting files, renaming and settings stay yours.</span><span class="ok">Skill · linked for Claude Code and Codex.</span></div></div>
+    <div class="srow"><span class="ic">·</span><div class="tx"><b>Reads</b><span>status, errors, log, moves. Off: every word says no.</span></div>${lv("on", ["off", "on"])}</div>
+    <div class="srow"><span class="ic">·</span><div class="tx"><b>Fixes</b><span>retry, start-here, recheck, reannounce, pause, resume, dismiss, locate</span></div>${lv("ask", ["off", "ask", "allow"])}</div>
+    <div class="srow"><span class="ic">·</span><div class="tx"><b>Moves</b><span>move to a folder, move back. Never without asking.</span></div>${lv("ask", ["off", "ask"])}</div>
+    <div class="srow"><span class="ic">·</span><div class="tx"><b>Remove</b><span>a torrent whose files are gone; never its files. Never without asking.</span></div>${lv("off", ["off", "ask"])}</div></div>`;
+  const tick = new Set([0, 1, 2]);
+  const drawAsk = () => R("repAsk").innerHTML = `<div class="k-sheet kask" style="max-width:620px"><div class="k-hd"><div><b>An agent asks to run a plan</b><span class="s">omaseed do --plan</span></div><span class="k-esc">esc</span></div>
+    <div class="grp"><div class="gh"><b>Locate 2 → /mnt/media/films</b><span>${[0, 1].filter(i => tick.has(i)).length} ticked</span></div>
+      ${[["Sintel 1080p (CC-BY)", "every file found, 4 at their size"], ["Agent 327 Operation Barbershop (CC-BY)", "every file found, 2 at their size"]].map(([n, l], i) => `<button type="button" class="tr" data-t="${i}"><i>${tick.has(i) ? "✓" : ""}</i><span>${esc(n)}</span><em>${l}</em></button>`).join("")}</div>
+    <div class="grp"><div class="gh"><b>Move 1 → /mnt/fast/linux</b><span>${tick.has(2) ? 1 : 0} ticked</span></div>
+      <button type="button" class="tr" data-t="2"><i>${tick.has(2) ? "✓" : ""}</i><span>ubuntu-26.04.1-desktop-amd64.iso</span><em>6.11 GB · 74.2 GB free there</em></button></div>
+    <div class="who">Asked by <code>omaseed do --plan</code>, started from claude (process 48211), at 11:52.</div>
+    <div class="k-btns"><span class="ft">${tick.size} ticked: ${[0, 1].filter(i => tick.has(i)).length} locates, ${tick.has(2) ? 1 : 0} move</span><span>refuse</span><span class="pri cur">allow these</span></div></div>`;
+  R("repAsk").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; const i = +b.dataset.t; tick.has(i) ? tick.delete(i) : tick.add(i); drawAsk(); });
+  drawAsk();
+})();
+
+{ const keep = PAUSED; PAUSED = ROWS.filter(r => !isStopped(r)).slice(0, 9).map(r => r.id); R("repPause").innerHTML = mini(staticMenu("amenu"), " nw"); PAUSED = keep; }
 if (store.get("omaseed-site-skin") === "console") setSkin("console");
 render(); bigSeed();
 })();

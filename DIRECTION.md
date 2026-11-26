@@ -18,48 +18,62 @@ Live at omaseed.app since 2026-10-13. Diogo reviews every change as a private ar
   with demo data (labelled as such), click-to-select, the real keys, and a theme switch. The look
   comes from the approved spec `omaseed/docs/05-ui-spec-v2.html` and the real screenshots, read
   only. No redesign happens on the site.
-- **Focus is seeding**, not downloading. The seed console is the proof point.
+- ~~**Focus is seeding**, not downloading.~~ Replaced 2026-11-25: seeding is one of the pillars
+  (see Decided, 2026-11-25).
 
-## What the page says
+## What the page says (since 2026-11-25, v0.17)
 
 1. **Promise:** "Torrents, finally at home on Omarchy." in white; under it in grey, "A native
-   client for one server or many. Your theme, your keys, your seeding history. Powered by
-   qBittorrent." "Finally" carries the point: no existing torrent client fits Omarchy, this one
-   does. "A native torrent client for Omarchy" is the `<title>` and link-card description. Library
-   mock under it, Dark/Light and per-theme switch, install pill with the `makepkg` line.
-2. **The seed console, big:** upload over time (an hour to a year), ratios, a cell per day of the
-   last year, torrents few people still seed, ratio ladder, trackers. The history qBittorrent does
-   not keep; omaseed keeps it itself in `~/.local/share/omaseed/ledger/`, so it does not depend on
-   the server.
-2b. **Moving** (since v0.3.0): a whole folder onto another drive, with the files no torrent owns,
-   checked before anything is sent, followed by the band, and moved back later. Move… for a
-   selection. A playable copy in the window (the rail's folders, `m`, `M`) and replicas of the
-   sheet, the band, the places list and move back.
-3. **Any server:** this PC, a NAS, a machine on the network, several at once. API key, user and
-   password, or none for localhost. Secrets in the system keyring. Magnet links and `.torrent`
-   files open in it.
-4. **Full Omarchy integration:** follows the theme live (every bundled theme, light ones too), the
-   bar widget (a playable copy), the Omarchy menu row, the window rule, keyboard-first (`?` shows
-   every key). First run finds a server for you.
-5. **Powered by qBittorrent:** one honest line. omaseed has no engine of its own.
-6. **Built with omabox:** omaseed was developed with omabox; every window, scale and multi-monitor
-   check ran in a box, so the agent never touched the desktop. Links to omabox.app. True today:
-   see `omaseed/scripts/dev/*-walk.sh` and `docs/CHECKPOINT.md`.
-7. **New in:** the latest releases, dated, read from the omaseed repo (as omabox-site does).
-8. **Roadmap:** hand-written in plain words: "Being drawn", the open issues that wait on a design
-   board of their own (each line links to its issue), and "engines", marked planned. No versions,
-   no dates; the heading links to the issues.
-9. **Install**, again.
+   client for qBittorrent, Transmission or Deluge, on this PC or a NAS. Your theme, your keys,
+   your drives, and your coding agent, as far as you let it." Library mock under it, the try
+   buttons, the skin and theme switches, install pill with the one-line install.
+2. **Views:** "See where your disk went." Rows, table and space, with space first: the map of
+   which folders and torrents hold the room. The window's other parts (details as the story, the
+   action bar, the title's sentence, alt, the omaseed menu) as short blocks under it.
+3. **Moving and the drives:** a whole folder onto another drive, with the files no torrent owns,
+   checked before anything is sent, followed by the band, moved back later; then the drives
+   themselves: ntfs3, exFAT and FAT take a ticked file's whole size at once (the room is checked
+   first, a big tick waits with Undo, FAT32's 4 GiB limit named), a drive that isn't mounted is
+   said, `locate` points a torrent at files you moved yourself, skipped files that still take room.
+4. **Agents, as far as you let them:** `omaseed status`, `errors`, `log`, `moves` for any coding
+   agent; the skill linked where agents look; Settings › General › Agents (Reads, Fixes, Moves,
+   Remove: off, ask, allow; moves and removes always ask); the window that asks you; plans,
+   dry runs, "by an agent", add back for 30 days; deny rules for the agent's own settings. Skins
+   an agent makes, checked under every theme. Pitched by its limits, not by the AI.
+5. **The seed console:** the history the engines don't keep, in `~/.local/share/omaseed/ledger/`.
+6. **Any engine, any server:** qBittorrent, Transmission, Deluge; this PC, a NAS, several at
+   once; each engine's own settings; a Transmission library moved to a qBittorrent.
+7. **Omarchy:** the live theme, the bar widget, Trigger › Torrents in the Omarchy menu, adds that
+   open on the workspace you're on, notices, keyboard-first, the palette that finds commands,
+   servers, torrents and settings.
+8. **Also in omaseed:** a compact grid: search, create a torrent, turtle and burst, the add sheet
+   that knows your library, careful deletes, why it errored, backups, the Console skin.
+9. **Built with omabox**, the **changelog** (dated), the **roadmap**, **install** again.
 
 ## Not on the page until it is true
 
 - **Memory and CPU figures.** Nothing in the omaseed docs measures them. Measure first: omaseed on
   the :8081 playground in an omabox, a realistic torrent count, idle and under load, the method
   published next to the numbers. Never touch :8080 (Diogo's real library).
-- **"Constantly updated".** Three tags so far (v0.1.0 to v0.3.0). Dated releases show it; the words wait.
+- **"Constantly updated".** Dated releases show it (v0.1.0 to v0.17.1 in six weeks); the words wait.
 - **A roadmap page** of its own, or dates on the roadmap. The home page's Roadmap section names the
   open milestones and promises nothing more.
 - **Stars, installs, user counts.** None to show yet.
+
+## Decided (2026-11-25)
+
+- **The page leads with what sets omaseed apart, not with a tour of the window** (Diogo): the
+  views (space above all), moving a folder (a section of its own, with the drives), agents, the
+  seed console, any engine. The rest goes in a compact grid. Replaces "focus is seeding": seeding
+  is one pillar of five.
+- **No superlatives, no comparisons** (Diogo): never "only", "best", "first", "no other client",
+  "unlike X". The page says what omaseed does. Saying what an engine doesn't keep (qBittorrent
+  keeps no upload history) explains a feature and is fine; naming other clients is not.
+- **Agents are pitched by their limits**: what an agent may do is off until you turn it on,
+  moves and removes always ask, no command deletes a file. Not "AI-powered".
+- **NTFS is said exactly**: omaseed knows that ntfs3, exFAT and FAT take a ticked file's whole
+  size at once and acts on it. Never "NTFS support".
+- **Hero is engine-neutral.** "Powered by qBittorrent" alone is no longer true (v0.8.0).
 
 ## Decided (2026-11-05)
 
