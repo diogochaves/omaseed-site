@@ -3,8 +3,7 @@
 Where the work stopped and what comes next. Replace this file as the work moves on.
 
 ## Done
-- The v0.6.0 site is on main and live (approved 2026-11-05).
-- **A v0.17.1 draft, waiting for Diogo's review** (not pushed): private artifact
+- **The v0.17.1 site is on main and live** (approved and pushed 2026-11-25, `e97d0c9`). Draft:
   <https://claude.ai/artifact/6u89JRdz1zsK2ikEdKc847>, version 2; source `site/omaseed.html` in the
   working tree. It follows DIRECTION's "Decided (2026-11-25)": the page leads with what sets omaseed
   apart, in this order: Views (a live space map, the files by kind), Moving and the drives (ntfs3,
@@ -18,10 +17,9 @@ Where the work stopped and what comes next. Replace this file as the work moves 
   comparisons (DIRECTION). Checked in an omabox at 1920 and 412 px wide.
 
 ## Next (in this order)
-1. Diogo reviews the draft; then commit and push (push deploys omaseed.app).
-2. At each release: the pill's words, the changelog entry (replace it on a new minor, with its
+1. At each release: the pill's words, the changelog entry (replace it on a new minor, with its
    heading "New in v0.X."), and the Roadmap by hand.
-3. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
+2. Memory and CPU figures, measured in an omabox on the :8081 playground; `/install` and
    `/changelog` pages after the home page.
 
 ## Standing rules
